@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mortgage Calculator — Blueprint</title>
+<title>Buy vs. Move Planner</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
@@ -47,9 +47,7 @@ body{
   background:var(--panel);
   box-shadow:0 1px 3px rgba(15,44,74,0.08);
 }
-
-.sheet::before, .sheet::after,
-.corner-tl, .corner-br{
+.sheet::before, .sheet::after, .corner-tl, .corner-br{
   content:'';
   position:absolute;
   width:14px; height:14px;
@@ -62,94 +60,90 @@ body{
 
 /* title block */
 .titleblock{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-  flex-wrap:wrap;
-  gap:16px;
-  padding:28px 28px 18px;
+  padding:24px 28px 0;
   border-bottom:1px solid var(--line-faint);
 }
 .titleblock h1{
   font-family:'Space Grotesk', sans-serif;
   font-weight:700;
-  font-size:clamp(24px,4vw,34px);
-  letter-spacing:0.02em;
-  margin:0;
+  font-size:clamp(22px,4vw,30px);
+  letter-spacing:0.01em;
+  margin:0 0 2px;
   color:var(--line);
 }
 .titleblock .sub{
   font-family:'JetBrains Mono', monospace;
-  font-size:12px;
-  color:var(--line-dim);
-  letter-spacing:0.08em;
-  margin-top:6px;
-}
-.meta-row{
-  display:flex;
-  gap:22px;
-  font-family:'JetBrains Mono', monospace;
-  font-size:11px;
+  font-size:11.5px;
   color:var(--line-dim);
   letter-spacing:0.06em;
+  margin-bottom:18px;
 }
-.meta-row span b{
-  display:block;
+
+/* step tabs */
+.steps{
+  display:flex;
+  gap:2px;
+}
+.step-btn{
+  flex:1;
+  background:transparent;
+  border:none;
+  border-bottom:3px solid var(--line-faint);
+  color:var(--line-dim);
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;
+  letter-spacing:0.08em;
+  padding:10px 4px 12px;
+  cursor:pointer;
+  text-align:center;
+}
+.step-btn .n{ opacity:0.6; margin-right:4px; }
+.step-btn.active{
   color:var(--accent);
-  font-size:12px;
+  border-bottom-color:var(--accent);
+  font-weight:600;
 }
+.step-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
 
-.grid-layout{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:0;
-}
-@media (max-width:760px){
-  .grid-layout{ grid-template-columns:1fr; }
-}
-
-.panel{
-  padding:28px;
-}
-.panel + .panel{
-  border-left:1px solid var(--line-faint);
-}
-@media (max-width:760px){
-  .panel + .panel{ border-left:none; border-top:1px solid var(--line-faint); }
-}
+.screen{ padding:26px 28px 30px; }
+.screen[hidden]{ display:none; }
 
 .section-label{
   font-family:'JetBrains Mono', monospace;
   font-size:11px;
   letter-spacing:0.14em;
   color:var(--accent);
-  margin:0 0 18px;
+  margin:0 0 16px;
   display:flex;
   align-items:center;
   gap:10px;
 }
-.section-label::after{
-  content:'';
-  flex:1;
-  height:1px;
-  background:var(--line-faint);
+.section-label::after{ content:''; flex:1; height:1px; background:var(--line-faint); }
+.section-label:not(:first-child){ margin-top:28px; }
+
+.screen-intro{
+  font-size:13px;
+  color:var(--line-dim);
+  margin:-8px 0 20px;
+  max-width:62ch;
 }
 
-.field{
-  margin-bottom:18px;
+.two-col{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:0; }
+@media (max-width:720px){ .grid-2{ grid-template-columns:1fr; } }
+.grid-2 > div:first-child{ padding-right:24px; }
+.grid-2 > div:last-child{ padding-left:24px; border-left:1px solid var(--line-faint); }
+@media (max-width:720px){
+  .grid-2 > div:first-child{ padding-right:0; }
+  .grid-2 > div:last-child{ padding-left:0; border-left:none; padding-top:24px; margin-top:20px; border-top:1px solid var(--line-faint); }
 }
+
+.field{ margin-bottom:16px; }
 .field label{
-  display:flex;
-  justify-content:space-between;
-  font-size:12.5px;
-  color:var(--line-dim);
-  margin-bottom:6px;
+  display:flex; justify-content:space-between;
+  font-size:12.5px; color:var(--line-dim); margin-bottom:6px;
 }
-.field label .val{
-  font-family:'JetBrains Mono', monospace;
-  color:var(--line);
-  font-weight:600;
-}
+.field label .val{ font-family:'JetBrains Mono', monospace; color:var(--line); font-weight:600; }
 .field input[type=number], .field input[type=text], .field select{
   width:100%;
   background:var(--panel-2);
@@ -160,488 +154,158 @@ body{
   padding:9px 10px;
   border-radius:2px;
 }
-.field input[type=number]:focus, .field input[type=text]:focus, .field select:focus{
-  outline:2px solid var(--accent);
-  outline-offset:1px;
-  border-color:var(--accent);
+.field select{ font-family:'Inter', sans-serif; font-size:13.5px; }
+.field input:focus, .field select:focus{
+  outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent);
 }
-.field input[type=range]{
-  width:100%;
-  accent-color:var(--accent);
-  margin-top:4px;
-}
-.two-col{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
+.field input[type=range]{ width:100%; accent-color:var(--accent); margin-top:6px; }
+.field-hint{ font-size:11px; color:var(--line-dim); margin-top:5px; line-height:1.4; }
 
-/* results */
+.seg-toggle{ display:flex; border:1px solid var(--line-faint); overflow:hidden; }
+.seg-toggle .mode-btn{
+  flex:1; background:transparent; border:none; color:var(--line-dim);
+  font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.03em;
+  padding:9px 6px; cursor:pointer;
+}
+.seg-toggle .mode-btn + .mode-btn{ border-left:1px solid var(--line-faint); }
+.seg-toggle .mode-btn.active{ background:var(--accent-dim); color:var(--accent); }
+.seg-toggle .mode-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+
 .big-number{
   font-family:'JetBrains Mono', monospace;
-  font-size:clamp(30px,5vw,44px);
-  font-weight:700;
-  color:var(--accent);
-  line-height:1;
-  margin:2px 0 4px;
+  font-size:clamp(28px,5vw,40px);
+  font-weight:700; color:var(--accent); line-height:1; margin:2px 0 4px;
 }
 .big-number .cents{ font-size:0.5em; color:var(--line-dim); }
-.big-label{
-  font-size:12px;
-  color:var(--line-dim);
-  letter-spacing:0.04em;
-  margin-bottom:20px;
-}
+.big-label{ font-size:12px; color:var(--line-dim); margin-bottom:16px; }
 
-.breakdown{
-  border-top:1px dashed var(--line-faint);
-  margin-top:8px;
-  padding-top:14px;
-}
-.row{
-  display:flex;
-  justify-content:space-between;
-  padding:7px 0;
-  font-size:13px;
-  border-bottom:1px solid rgba(15,44,74,0.08);
-}
+.breakdown{ border-top:1px dashed var(--line-faint); margin-top:8px; padding-top:12px; }
+.row{ display:flex; justify-content:space-between; padding:7px 0; font-size:13px; border-bottom:1px solid rgba(15,44,74,0.08); }
 .row .k{ color:var(--line-dim); display:flex; align-items:center; gap:8px; }
 .row .swatch{ width:9px; height:9px; display:inline-block; border:1px solid var(--line-faint); }
 .row .v{ font-family:'JetBrains Mono', monospace; color:var(--line); }
-.row.total .v{ color:var(--accent); font-weight:700; }
 
-.stat-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-  margin-top:20px;
-}
-.stat{
-  background:var(--panel-2);
-  border:1px solid var(--line-faint);
-  padding:12px 14px;
-}
-.stat .k{ font-size:10.5px; color:var(--line-dim); letter-spacing:0.06em; margin-bottom:6px; }
-.stat .v{ font-family:'JetBrains Mono', monospace; font-size:17px; color:var(--line); }
+.stat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px; }
+.stat{ background:var(--panel-2); border:1px solid var(--line-faint); padding:11px 13px; }
+.stat .k{ font-size:10px; color:var(--line-dim); letter-spacing:0.05em; margin-bottom:5px; }
+.stat .v{ font-family:'JetBrains Mono', monospace; font-size:16px; color:var(--line); }
 
-/* chart section */
-.chart-panel{
-  border-top:1px solid var(--line-faint);
-  padding:28px;
-}
+.chart-block{ margin-top:20px; }
 svg text{ font-family:'JetBrains Mono', monospace; }
-.legend{
-  display:flex;
-  gap:22px;
-  margin-top:14px;
-  font-size:12px;
-  color:var(--line-dim);
-  flex-wrap:wrap;
-}
+.legend{ display:flex; gap:20px; margin-top:12px; font-size:11.5px; color:var(--line-dim); flex-wrap:wrap; }
 .legend .swatch{ width:10px; height:10px; display:inline-block; margin-right:6px; vertical-align:-1px; }
 
-.footer-note{
-  padding:16px 28px 26px;
-  font-size:11px;
-  color:var(--line-dim);
-  border-top:1px solid var(--line-faint);
-  font-family:'JetBrains Mono', monospace;
-  letter-spacing:0.03em;
+.readonly-field{
+  background:rgba(15,44,74,0.04); border:1px dashed var(--line-faint);
+  padding:9px 10px; font-family:'JetBrains Mono', monospace; font-size:14px;
+  color:var(--accent); margin-top:2px;
 }
 
-/* relocation comparison */
-.compare-panel{
-  border-top:2px solid var(--accent);
-  padding:28px;
+.result-card{
+  background:var(--panel-2); border:1px solid var(--line-faint);
+  padding:14px 16px; margin-top:10px; font-size:12.5px;
 }
-.compare-panel .section-label{ color:var(--line); }
-.compare-panel .section-label::after{ background:var(--accent); opacity:0.4; }
-.compare-intro{
-  font-size:13px;
-  color:var(--line-dim);
-  margin:-6px 0 22px;
-  max-width:62ch;
+.result-card .rc-tag{
+  display:inline-block; font-family:'JetBrains Mono', monospace; font-size:9.5px;
+  letter-spacing:0.08em; color:#FFFFFF; background:var(--accent);
+  padding:2px 6px; border-radius:2px; margin-bottom:8px;
 }
-.compare-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:24px;
+.result-card .rc-title{ font-weight:600; color:var(--line); margin-bottom:6px; font-family:'Space Grotesk', sans-serif; }
+.rc-row{ display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid rgba(15,44,74,0.07); color:var(--line-dim); }
+.rc-row .v{ font-family:'JetBrains Mono', monospace; color:var(--line); font-weight:600; }
+.rc-note{ color:var(--line-dim); font-size:11.5px; margin-top:8px; line-height:1.5; font-style:italic; }
+
+.btn-primary{
+  background:var(--accent-dim); border:1px solid var(--accent); color:var(--accent);
+  font-family:'JetBrains Mono', monospace; font-size:12.5px; letter-spacing:0.05em;
+  padding:11px; cursor:pointer; width:100%;
 }
-@media (max-width:760px){
-  .compare-grid{ grid-template-columns:1fr; }
+.btn-primary:hover{ background:var(--accent); color:#fff; }
+.btn-primary:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+.add-vehicle-btn{
+  display:block; width:100%; background:transparent; border:1px dashed var(--line-faint);
+  color:var(--accent); font-family:'JetBrains Mono', monospace; font-size:12px;
+  letter-spacing:0.03em; padding:9px; cursor:pointer; margin:2px 0 16px;
 }
-.scenario{
-  background:var(--panel-2);
-  border:1px solid var(--line-faint);
-  padding:20px;
+.add-vehicle-btn:hover{ background:var(--accent-dim); border-color:var(--accent); }
+.remove-link{
+  display:block; background:none; border:none; color:var(--line-dim);
+  font-family:'JetBrains Mono', monospace; font-size:10.5px; text-decoration:underline;
+  cursor:pointer; padding:0; margin:6px 0 4px;
 }
-.scenario.new-home{ border-color:var(--accent); }
-.scenario-title{
-  font-family:'Space Grotesk', sans-serif;
-  font-weight:600;
-  font-size:15px;
-  margin-bottom:14px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.remove-link:hover{ color:var(--danger); }
+
+.nav-row{ display:flex; gap:12px; margin-top:30px; }
+.nav-row .btn-back{
+  background:transparent; border:1px solid var(--line-faint); color:var(--line-dim);
+  font-family:'JetBrains Mono', monospace; font-size:12.5px; letter-spacing:0.05em;
+  padding:12px 18px; cursor:pointer;
 }
-.scenario-title .tag{
-  font-family:'JetBrains Mono', monospace;
-  font-size:10px;
-  letter-spacing:0.08em;
-  color:#FFFFFF;
-  background:var(--line-dim);
-  padding:2px 7px;
-  border-radius:2px;
+.nav-row .btn-continue{
+  flex:1; background:var(--accent); border:1px solid var(--accent); color:#fff;
+  font-family:'JetBrains Mono', monospace; font-size:12.5px; letter-spacing:0.08em;
+  font-weight:600; padding:12px; cursor:pointer;
 }
-.scenario.new-home .tag{ background:var(--accent); }
-.readonly-field{
-  background:rgba(15,44,74,0.04);
-  border:1px dashed var(--line-faint);
-  padding:9px 10px;
-  font-family:'JetBrains Mono', monospace;
-  font-size:14px;
-  color:var(--accent);
-  margin-top:2px;
+.nav-row .btn-continue:hover{ background:#9a4507; }
+
+.scenario-col{ margin-bottom:8px; }
+.scenario-head{
+  font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:15px;
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;
 }
+.scenario-head .tag{
+  font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.08em;
+  color:#fff; background:var(--line-dim); padding:2px 7px; border-radius:2px;
+}
+.scenario-col.is-new .scenario-head .tag{ background:var(--accent); }
+
 .subgroup-label{
-  font-size:10.5px;
-  letter-spacing:0.1em;
-  color:var(--line-dim);
-  margin:16px 0 10px;
-  padding-top:12px;
-  border-top:1px dashed rgba(15,44,74,0.15);
+  font-size:10px; letter-spacing:0.1em; color:var(--line-dim);
+  margin:16px 0 10px; padding-top:12px; border-top:1px dashed var(--line-faint);
 }
 .subgroup-label:first-child{ border-top:none; padding-top:0; margin-top:0; }
+.car-slot-label{ font-size:10px; letter-spacing:0.1em; color:var(--accent); margin:12px 0 6px; }
+.car-slot-label:first-child{ margin-top:0; }
 
-
-.sale-box{
-  border:1px solid var(--line-faint);
-  background:#fff;
-  padding:14px;
-  margin-bottom:18px;
-}
-.sale-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:10px;
-}
-.sale-stat{
-  background:var(--panel-2);
-  border:1px solid var(--line-faint);
-  padding:10px 12px;
-}
-.sale-stat .k{
-  font-size:10px;
-  color:var(--line-dim);
-  letter-spacing:.06em;
-  margin-bottom:5px;
-}
-.sale-stat .v{
-  font-family:'JetBrains Mono', monospace;
-  font-size:16px;
-  font-weight:700;
-  color:var(--line);
-}
-.sale-stat.primary .v{ color:var(--accent); }
-.sale-note{
-  font-size:11px;
-  color:var(--line-dim);
-  line-height:1.5;
-  margin-top:10px;
-}
-@media (max-width:460px){ .sale-grid{ grid-template-columns:1fr; } }
-
-.timing-panel{
-  margin-top:28px;
-  padding-top:24px;
-  border-top:2px solid var(--line);
-}
-.timing-panel .section-label{ color:var(--accent); }
-.timing-card{
-  border:1px solid var(--line-faint);
-  background:#fff;
-  padding:16px;
-}
-.timing-result-banner{
-  margin-top:18px;
-  padding:18px;
-  border:1px solid var(--accent);
-  background:var(--accent-dim);
-}
-.timing-result-banner .k{
-  font-family:'JetBrains Mono', monospace;
-  font-size:10px;
-  letter-spacing:.1em;
-  color:var(--line-dim);
-  margin-bottom:6px;
-}
-.timing-result-banner .v{
-  font-family:'Space Grotesk', sans-serif;
-  font-size:clamp(24px,4vw,34px);
-  font-weight:700;
-  color:var(--accent);
-}
-.timing-result-banner .sub{
-  font-size:12px;
-  color:var(--line-dim);
-  line-height:1.55;
-  margin-top:6px;
-}
-.timing-table{
-  margin-top:14px;
-  border:1px solid var(--line-faint);
-  overflow:auto;
-}
-.timing-row{
-  display:grid;
-  grid-template-columns:1.05fr 1fr 1fr .8fr 1fr;
-  min-width:660px;
-  border-bottom:1px solid rgba(15,44,74,.08);
-}
-.timing-row:last-child{ border-bottom:none; }
-.timing-row > div{
-  padding:8px 10px;
-  font-size:11px;
-  color:var(--line-dim);
-}
-.timing-row > div:not(:first-child){ text-align:right; font-family:'JetBrains Mono', monospace; }
-.timing-row.head{ background:var(--panel-2); }
-.timing-row.head > div{
-  font-size:9.5px;
-  letter-spacing:.05em;
-  font-family:'JetBrains Mono', monospace;
-  color:var(--line-dim);
-}
-.timing-row.best{ background:rgba(30,122,70,.08); }
-.timing-row.best > div:first-child{ color:var(--good); font-weight:700; }
-.timing-row.now > div:first-child{ color:var(--accent); font-weight:700; }
-.timing-positive{ color:var(--good)!important; }
-.timing-negative{ color:var(--danger)!important; }
-
-.compare-result{
-  margin-top:26px;
-  padding-top:22px;
-  border-top:1px solid var(--line-faint);
-}
-.delta-banner{
-  display:flex;
-  justify-content:space-between;
-  align-items:baseline;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-bottom:18px;
-}
-.delta-banner .delta-num{
-  font-family:'JetBrains Mono', monospace;
-  font-size:clamp(26px,4vw,36px);
-  font-weight:700;
-}
+.delta-banner{ display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:10px; margin-bottom:16px; }
+.delta-banner .delta-num{ font-family:'JetBrains Mono', monospace; font-size:clamp(26px,4vw,38px); font-weight:700; }
 .delta-banner .delta-num.more{ color:var(--danger); }
 .delta-banner .delta-num.less{ color:var(--good); }
-.delta-banner .delta-sub{
-  font-size:12px;
-  color:var(--line-dim);
+.delta-banner .delta-sub{ font-size:12px; color:var(--line-dim); }
+.commute-note{ font-size:12px; color:var(--line-dim); margin-top:12px; font-family:'JetBrains Mono', monospace; }
+.proceeds-note{
+  margin-top:20px; padding:14px 16px; background:var(--panel-2); border:1px solid var(--line-faint);
+  font-size:12.5px; color:var(--line-dim);
 }
-.commute-note{
-  font-size:12px;
-  color:var(--line-dim);
-  margin-top:14px;
-  font-family:'JetBrains Mono', monospace;
+.proceeds-note .v{ font-family:'JetBrains Mono', monospace; font-size:18px; color:var(--good); font-weight:700; display:block; margin-bottom:4px; }
+
+.footer-note{
+  padding:16px 28px 26px; font-size:11px; color:var(--line-dim);
+  border-top:1px solid var(--line-faint); font-family:'JetBrains Mono', monospace; letter-spacing:0.03em;
 }
 
-.cost-mode-toggle, .miles-mode-toggle, .vehicle-count-toggle{
-  display:flex;
-  border:1px solid var(--line-faint);
-  overflow:hidden;
-}
-.cost-mode-toggle .mode-btn, .miles-mode-toggle .mode-btn, .vehicle-count-toggle .mode-btn{
-  flex:1;
-  background:transparent;
-  border:none;
-  color:var(--line-dim);
-  font-family:'JetBrains Mono', monospace;
-  font-size:11px;
-  letter-spacing:0.03em;
-  padding:8px 6px;
-  cursor:pointer;
-}
-.cost-mode-toggle .mode-btn + .mode-btn, .miles-mode-toggle .mode-btn + .mode-btn, .vehicle-count-toggle .mode-btn + .mode-btn{
-  border-left:1px solid var(--line-faint);
-}
-.cost-mode-toggle .mode-btn.active, .miles-mode-toggle .mode-btn.active, .vehicle-count-toggle .mode-btn.active{
-  background:var(--accent-dim);
-  color:var(--accent);
-}
-.cost-mode-toggle .mode-btn:focus-visible, .miles-mode-toggle .mode-btn:focus-visible, .vehicle-count-toggle .mode-btn:focus-visible{
-  outline:2px solid var(--accent);
-  outline-offset:-2px;
-}
-
-.vehicle-lookup{ margin-top:4px; }
-.car-slot-label{
-  font-size:10px;
-  letter-spacing:0.1em;
-  color:var(--accent);
-  margin:12px 0 6px;
-}
-.car-slot-label:first-child{ margin-top:0; }
-.lookup-btn{
-  width:100%;
-  background:var(--accent-dim);
-  border:1px solid var(--accent);
-  color:var(--accent);
-  font-family:'JetBrains Mono', monospace;
-  font-size:12px;
-  letter-spacing:0.04em;
-  padding:10px;
-  cursor:pointer;
-  margin:6px 0 4px;
-}
-.lookup-btn:hover{ background:rgba(180,83,9,0.22); }
-.lookup-btn:disabled{ opacity:0.5; cursor:default; }
-.lookup-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
-
-.lookup-result{ font-size:12px; }
-.lookup-result .lr-row{
-  display:flex;
-  justify-content:space-between;
-  padding:6px 0;
-  border-bottom:1px solid rgba(15,44,74,0.08);
-  color:var(--line-dim);
-}
-.lookup-result .lr-row .v{
-  font-family:'JetBrains Mono', monospace;
-  color:var(--line);
-}
-.lookup-result .lr-note{
-  color:var(--line-dim);
-  font-size:11.5px;
-  margin-top:8px;
-  line-height:1.5;
-  font-style:italic;
-}
-.lookup-result .lr-error{
-  color:var(--danger);
-  font-size:12px;
-  margin-top:8px;
-}
-.lookup-result .lr-tag{
-  display:inline-block;
-  font-family:'JetBrains Mono', monospace;
-  font-size:9.5px;
-  letter-spacing:0.08em;
-  color:#FFFFFF;
-  background:var(--accent);
-  padding:2px 6px;
-  border-radius:2px;
-  margin-bottom:8px;
-}
-
-
-.car-allocation-block{
-  margin-top:10px;
-  padding-top:10px;
-  border-top:1px dashed rgba(15,44,74,0.15);
-}
-.car-allocation-block .readonly-field{
-  color:var(--line);
-}
-.source-note{
-  margin-top:6px;
-  font-size:10.5px;
-  color:var(--line-dim);
-  line-height:1.45;
-}
-.print-btn{
-  width:100%;
-  margin-top:26px;
-  background:transparent;
-  border:1px solid var(--accent);
-  color:var(--accent);
-  font-family:'JetBrains Mono', monospace;
-  font-size:12.5px;
-  letter-spacing:0.06em;
-  padding:12px;
-  cursor:pointer;
-}
-.print-btn:hover{ background:var(--accent-dim); }
-.print-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
-
-/* printable report — hidden on screen, only content shown when printing */
+/* printable report */
 #print-report{ display:none; }
-
-#print-report .pr-page{
-  font-family:'Inter', sans-serif;
-  color:#1A1A1A;
-  max-width:720px;
-  margin:0 auto;
-  padding:20px;
-}
-#print-report h1{
-  font-family:'Space Grotesk', sans-serif;
-  font-size:24px;
-  margin:0 0 2px;
-}
-#print-report .pr-date{
-  font-family:'JetBrains Mono', monospace;
-  font-size:11px;
-  color:#555;
-  margin-bottom:22px;
-}
-#print-report h2{
-  font-family:'Space Grotesk', sans-serif;
-  font-size:15px;
-  border-bottom:2px solid #1A1A1A;
-  padding-bottom:6px;
-  margin:26px 0 12px;
-}
-#print-report .pr-row{
-  display:flex;
-  justify-content:space-between;
-  font-size:13px;
-  padding:5px 0;
-  border-bottom:1px solid #E2E2E2;
-}
+#print-report .pr-page{ font-family:'Inter', sans-serif; color:#1A1A1A; max-width:720px; margin:0 auto; padding:20px; }
+#print-report h1{ font-family:'Space Grotesk', sans-serif; font-size:24px; margin:0 0 2px; }
+#print-report .pr-date{ font-family:'JetBrains Mono', monospace; font-size:11px; color:#555; margin-bottom:22px; }
+#print-report h2{ font-family:'Space Grotesk', sans-serif; font-size:15px; border-bottom:2px solid #1A1A1A; padding-bottom:6px; margin:26px 0 12px; }
+#print-report .pr-row{ display:flex; justify-content:space-between; font-size:13px; padding:5px 0; border-bottom:1px solid #E2E2E2; }
 #print-report .pr-row .k{ color:#444; }
 #print-report .pr-row .v{ font-family:'JetBrains Mono', monospace; font-weight:600; }
-#print-report .pr-highlight{
-  font-family:'JetBrains Mono', monospace;
-  font-size:26px;
-  font-weight:700;
-  margin:6px 0;
-}
+#print-report .pr-highlight{ font-family:'JetBrains Mono', monospace; font-size:26px; font-weight:700; margin:6px 0; }
 #print-report .pr-sub{ font-size:12px; color:#555; margin-bottom:10px; }
-#print-report .pr-note{
-  font-size:11.5px;
-  color:#555;
-  font-style:italic;
-  margin-top:10px;
-  line-height:1.5;
-}
-#print-report .pr-footer{
-  margin-top:30px;
-  padding-top:14px;
-  border-top:1px solid #ccc;
-  font-size:10.5px;
-  color:#777;
-}
-#print-report .pr-cols{
-  display:flex;
-  gap:24px;
-}
+#print-report .pr-note{ font-size:11.5px; color:#555; font-style:italic; margin-top:10px; line-height:1.5; }
+#print-report .pr-footer{ margin-top:30px; padding-top:14px; border-top:1px solid #ccc; font-size:10.5px; color:#777; }
+#print-report .pr-cols{ display:flex; gap:24px; }
 #print-report .pr-cols > div{ flex:1; }
+#print-report .pr-sub-head{ font-weight:600; color:#1A1A1A; margin-bottom:6px; }
 
 @media print{
   body *{ visibility:hidden; }
   #print-report, #print-report *{ visibility:visible; }
-  #print-report{
-    display:block;
-    position:absolute;
-    left:0; top:0; width:100%;
-    background:#fff;
-  }
+  #print-report{ display:block; position:absolute; left:0; top:0; width:100%; background:#fff; }
   body{ background:#fff; padding:0; }
 }
 </style>
@@ -653,545 +317,237 @@ svg text{ font-family:'JetBrains Mono', monospace; }
   <div class="corner-br"></div>
 
   <div class="titleblock">
-    <div>
-      <h1>MORTGAGE CALCULATOR</h1>
-      <div class="sub">HOME LOAN PAYMENT SCHEDULE — FIXED RATE</div>
-    </div>
-    <div class="meta-row">
-      <span>TYPE<b>FIXED</b></span>
-      <span>UNITS<b>USD</b></span>
-      <span>REV<b>01</b></span>
-    </div>
-  </div>
-
-  <div class="grid-layout">
-    <div class="panel">
-      <div class="section-label">INPUTS</div>
-
-      <div class="field">
-        <label>Home price <span class="val" id="v-price">$400,000</span></label>
-        <input type="number" id="price" value="400000" step="1000" min="0">
-        <input type="range" id="price-r" value="400000" min="50000" max="2000000" step="1000">
-      </div>
-
-      <div class="field location-field">
-        <label>Property location</label>
-        <input type="text" id="loc-input" placeholder="Street address, ZIP code, or City, State" autocomplete="street-address">
-        <button type="button" class="lookup-btn" id="loc-lookup-btn" style="margin-top:8px;">Estimate tax &amp; insurance for this location</button>
-        <div class="lookup-result" id="loc-lookup-result"></div>
-      </div>
-
-      <div class="two-col">
-        <div class="field">
-          <label>Down payment <span class="val" id="v-down">$80,000</span></label>
-          <input type="number" id="down" value="80000" step="1000" min="0">
-        </div>
-        <div class="field">
-          <label>Down payment % <span class="val" id="v-downpct">20%</span></label>
-          <input type="number" id="downpct" value="20" step="0.5" min="0" max="100">
-        </div>
-      </div>
-
-      <div class="two-col">
-        <div class="field">
-          <label>Interest rate <span class="val" id="v-rate">6.5%</span></label>
-          <input type="number" id="rate" value="6.5" step="0.05" min="0" max="20">
-        </div>
-        <div class="field">
-          <label>Loan term <span class="val" id="v-term">30 yrs</span></label>
-          <input type="number" id="term" value="30" step="1" min="1" max="40">
-        </div>
-      </div>
-
-      <div class="two-col">
-        <div class="field">
-          <label>Property tax /yr <span class="val" id="v-tax">$4,800</span></label>
-          <input type="number" id="tax" value="4800" step="100" min="0">
-        </div>
-        <div class="field">
-          <label>Home insurance /yr <span class="val" id="v-ins">$1,400</span></label>
-          <input type="number" id="ins" value="1400" step="50" min="0">
-        </div>
-      </div>
-
-      <div class="field">
-        <label>HOA dues /mo <span class="val" id="v-hoa">$0</span></label>
-        <input type="number" id="hoa" value="0" step="10" min="0">
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="section-label">MONTHLY PAYMENT</div>
-      <div class="big-number" id="monthly-total">$0<span class="cents">.00</span></div>
-      <div class="big-label">estimated total, principal + interest + escrow</div>
-
-      <div class="breakdown">
-        <div class="row">
-          <span class="k"><span class="swatch" style="background:var(--accent)"></span>Principal &amp; interest</span>
-          <span class="v" id="row-pi">$0</span>
-        </div>
-        <div class="row">
-          <span class="k"><span class="swatch" style="background:var(--line-dim)"></span>Property tax</span>
-          <span class="v" id="row-tax">$0</span>
-        </div>
-        <div class="row">
-          <span class="k"><span class="swatch" style="background:var(--line-faint)"></span>Insurance</span>
-          <span class="v" id="row-ins">$0</span>
-        </div>
-        <div class="row">
-          <span class="k"><span class="swatch" style="background:var(--danger)"></span>HOA</span>
-          <span class="v" id="row-hoa">$0</span>
-        </div>
-      </div>
-
-      <div class="stat-grid">
-        <div class="stat">
-          <div class="k">LOAN AMOUNT</div>
-          <div class="v" id="stat-loan">$0</div>
-        </div>
-        <div class="stat">
-          <div class="k">TOTAL INTEREST PAID</div>
-          <div class="v" id="stat-interest">$0</div>
-        </div>
-        <div class="stat">
-          <div class="k">TOTAL PAID (LIFE OF LOAN)</div>
-          <div class="v" id="stat-totalpaid">$0</div>
-        </div>
-        <div class="stat">
-          <div class="k">PAYOFF</div>
-          <div class="v" id="stat-payoff">—</div>
-        </div>
-      </div>
+    <h1>Buy vs. Move Planner</h1>
+    <div class="sub">MORTGAGE · SALE · COMMUTE — WORKS OFFLINE, NO ACCOUNT NEEDED</div>
+    <div class="steps">
+      <button type="button" class="step-btn active" data-screen="buy"><span class="n">01</span>BUY</button>
+      <button type="button" class="step-btn" data-screen="sell"><span class="n">02</span>SELL</button>
+      <button type="button" class="step-btn" data-screen="cars"><span class="n">03</span>CARS</button>
+      <button type="button" class="step-btn" data-screen="summary"><span class="n">04</span>SUMMARY</button>
     </div>
   </div>
 
-  <div class="chart-panel">
-    <div class="section-label">AMORTIZATION — PRINCIPAL VS. INTEREST OVER TIME</div>
-    <div id="chart-wrap"></div>
+  <!-- ============ SCREEN: BUY ============ -->
+  <div class="screen" id="screen-buy">
+    <div class="screen-intro">The home you'd move to. Enter the basics — location tells us the typical property tax and insurance for the area.</div>
+
+    <div class="grid-2">
+      <div>
+        <div class="section-label">PROPERTY</div>
+
+        <div class="field">
+          <label>Property location</label>
+          <input type="text" id="buy-loc-input" placeholder="Street address, ZIP, or city" autocomplete="street-address">
+        </div>
+        <div class="field">
+          <label>State</label>
+          <select id="buy-state"></select>
+        </div>
+        <div class="field" id="buy-county-field" style="display:none;">
+          <label>County <span class="val" style="font-weight:400;color:var(--line-dim);">(Mississippi has county-level data)</span></label>
+          <select id="buy-county"></select>
+        </div>
+        <button type="button" class="btn-primary" id="buy-loc-lookup-btn" style="margin-bottom:6px;">Estimate tax &amp; insurance for this state</button>
+        <div class="result-card" id="buy-loc-result" style="display:none;"></div>
+
+        <div class="field" style="margin-top:18px;">
+          <label>Home price <span class="val" id="v-buy-price">$400,000</span></label>
+          <input type="number" id="buy-price" value="400000" step="1000" min="0">
+          <input type="range" id="buy-price-r" value="400000" min="50000" max="2000000" step="1000">
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <label>Down payment <span class="val" id="v-buy-down">$80,000</span></label>
+            <input type="number" id="buy-down" value="80000" step="1000" min="0">
+          </div>
+          <div class="field">
+            <label>Down payment % <span class="val" id="v-buy-downpct">20%</span></label>
+            <input type="number" id="buy-downpct" value="20" step="0.5" min="0" max="100">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label>Interest rate <span class="val" id="v-buy-rate">6.5%</span></label>
+            <input type="number" id="buy-rate" value="6.5" step="0.05" min="0" max="20">
+          </div>
+          <div class="field">
+            <label>Loan term <span class="val" id="v-buy-term">30 yrs</span></label>
+            <input type="number" id="buy-term" value="30" step="1" min="1" max="40">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label>Property tax /yr <span class="val" id="v-buy-tax">$4,800</span></label>
+            <input type="number" id="buy-tax" value="4800" step="100" min="0">
+          </div>
+          <div class="field">
+            <label>Home insurance /yr <span class="val" id="v-buy-ins">$1,400</span></label>
+            <input type="number" id="buy-ins" value="1400" step="50" min="0">
+          </div>
+        </div>
+        <div class="field">
+          <label>HOA dues /mo <span class="val" id="v-buy-hoa">$0</span></label>
+          <input type="number" id="buy-hoa" value="0" step="10" min="0">
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">MONTHLY PAYMENT</div>
+        <div class="big-number" id="buy-monthly-total">$0<span class="cents">.00</span></div>
+        <div class="big-label">estimated total, principal + interest + escrow</div>
+
+        <div class="breakdown">
+          <div class="row"><span class="k"><span class="swatch" style="background:var(--accent)"></span>Principal &amp; interest</span><span class="v" id="buy-row-pi">$0</span></div>
+          <div class="row"><span class="k"><span class="swatch" style="background:var(--line-dim)"></span>Property tax</span><span class="v" id="buy-row-tax">$0</span></div>
+          <div class="row"><span class="k"><span class="swatch" style="background:var(--line-faint)"></span>Insurance</span><span class="v" id="buy-row-ins">$0</span></div>
+          <div class="row"><span class="k"><span class="swatch" style="background:var(--danger)"></span>HOA</span><span class="v" id="buy-row-hoa">$0</span></div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat"><div class="k">LOAN AMOUNT</div><div class="v" id="buy-stat-loan">$0</div></div>
+          <div class="stat"><div class="k">TOTAL INTEREST PAID</div><div class="v" id="buy-stat-interest">$0</div></div>
+          <div class="stat"><div class="k">TOTAL PAID, LIFE OF LOAN</div><div class="v" id="buy-stat-totalpaid">$0</div></div>
+          <div class="stat"><div class="k">PAYOFF</div><div class="v" id="buy-stat-payoff">—</div></div>
+        </div>
+
+        <div class="chart-block">
+          <div class="section-label" style="margin-top:0;">AMORTIZATION</div>
+          <div id="buy-chart-wrap"></div>
+          <div class="legend">
+            <span><span class="swatch" style="background:var(--accent)"></span>Principal</span>
+            <span><span class="swatch" style="background:var(--line-faint);opacity:.7"></span>Interest</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button type="button" class="btn-continue" data-goto="sell">Continue to Sell / Current Home →</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN: SELL ============ -->
+  <div class="screen" id="screen-sell" hidden>
+    <div class="screen-intro">The home you're in now — what it costs, and what selling it would net you.</div>
+
+    <div class="section-label">CURRENT HOUSING COST</div>
+    <div class="field" style="max-width:320px;">
+      <label>Current monthly housing cost <span class="val" id="v-sell-housing">$2,200</span></label>
+      <input type="number" id="sell-housing" value="2200" step="25" min="0">
+    </div>
+    <div class="field-hint" id="sell-housing-hint">All-in: mortgage + property tax + insurance + HOA.</div>
+
+    <div id="sell-own-block">
+      <div class="section-label">IF SELLING THIS HOME</div>
+      <div class="two-col" style="max-width:600px;">
+        <div class="field">
+          <label>Estimated home value <span class="val" id="v-sell-value">$320,000</span></label>
+          <input type="number" id="sell-value" value="320000" step="1000" min="0">
+        </div>
+        <div class="field">
+          <label>Remaining mortgage balance <span class="val" id="v-sell-balance">$180,000</span></label>
+          <input type="number" id="sell-balance" value="180000" step="1000" min="0">
+        </div>
+      </div>
+      <div class="field" style="max-width:280px;">
+        <label>Selling costs (agent + closing) <span class="val" id="v-sell-costpct">8%</span></label>
+        <input type="number" id="sell-costpct" value="8" step="0.5" min="0" max="20">
+      </div>
+      <div class="proceeds-note">
+        <span class="v" id="sell-net-proceeds">$0</span>
+        Estimated net proceeds from selling — value minus what's owed minus selling costs. This could go toward the down payment or closing costs on the new home.
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button type="button" class="btn-back" data-goto="buy">← Back</button>
+      <button type="button" class="btn-continue" data-goto="cars">Continue to Cars &amp; Commute →</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN: CARS ============ -->
+  <div class="screen" id="screen-cars" hidden>
+    <div class="screen-intro">Commute cost for each scenario — pick a make and model and it estimates fuel, maintenance, and depreciation automatically.</div>
+
+    <div class="grid-2">
+      <div class="scenario-col" data-scenario="cur">
+        <div class="scenario-head">Current commute <span class="tag">NOW</span></div>
+        <div id="cars-block-cur"></div>
+      </div>
+      <div class="scenario-col is-new" data-scenario="new">
+        <div class="scenario-head">New commute <span class="tag">MOVE</span></div>
+        <div id="cars-block-new"></div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button type="button" class="btn-back" data-goto="sell">← Back</button>
+      <button type="button" class="btn-continue" data-goto="summary">Continue to Summary →</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN: SUMMARY ============ -->
+  <div class="screen" id="screen-summary" hidden>
+    <div class="screen-intro">Housing plus commute, both scenarios, side by side.</div>
+
+    <div class="delta-banner">
+      <div>
+        <div class="delta-num" id="delta-num">$0 / mo</div>
+        <div class="delta-sub" id="delta-sub">moving changes their total monthly cost by this much</div>
+      </div>
+      <div class="delta-sub" id="delta-annual">≈ $0 per year</div>
+    </div>
+    <div id="compare-chart-wrap"></div>
     <div class="legend">
-      <span><span class="swatch" style="background:var(--accent)"></span>Principal portion of payment</span>
-      <span><span class="swatch" style="background:var(--line-faint);opacity:.7"></span>Interest portion of payment</span>
-      <span><span class="swatch" style="background:transparent;border:1px dashed var(--line)"></span>Crossover point</span>
+      <span><span class="swatch" style="background:var(--line-dim)"></span>Housing</span>
+      <span><span class="swatch" style="background:var(--accent)"></span>Commute</span>
     </div>
-  </div>
+    <div class="commute-note" id="commute-time-note"></div>
 
-  <div class="compare-panel">
-    <div class="section-label">SHOULD THEY MOVE? — CURRENT VS. NEW HOME NEAR WORK</div>
-    <div class="compare-intro">Compares what they pay now (housing + commute) against the new home estimated above, plus a shorter commute. Fill in the current side and the commute for both.</div>
+    <div class="proceeds-note" id="summary-proceeds-block" style="display:none;">
+      <span class="v" id="summary-net-proceeds">$0</span>
+      Estimated net proceeds if the current home sells — not included in the monthly comparison above, but worth factoring into the down payment.
+    </div>
 
-    <div class="compare-grid">
-      <div class="scenario">
-        <div class="scenario-title">Current home <span class="tag">NOW</span></div>
+    <div class="section-label">AFFORDABILITY — BREAK-EVEN PRICE BY RATE</div>
+    <div class="screen-intro" id="breakeven-caption" style="margin-top:-8px;"></div>
+    <div id="breakeven-chart-wrap"></div>
+    <div class="legend">
+      <span><span class="swatch" style="background:var(--accent)"></span>Max price that breaks even</span>
+      <span><span class="swatch" style="background:var(--line)"></span>Your target price</span>
+    </div>
+    <div class="field-hint" style="margin-top:10px;">Holds your current down payment %, loan term, tax rate, and insurance rate constant — only price and rate move. HOA and the new commute cost are netted out first.</div>
 
-        <div class="field">
-          <label>Current monthly housing cost <span class="val" id="v-cur-housing">$2,200</span></label>
-          <input type="number" id="cur-housing" value="2200" step="25" min="0">
-        </div>
-        <div class="commute-note" style="margin-top:-8px;margin-bottom:14px;">mortgage/rent + tax + insurance + HOA, all in</div>
-
-        <div class="subgroup-label">CURRENT HOME SALE</div>
-        <div class="sale-box">
-          <div class="two-col">
-            <div class="field">
-              <label>Expected sale price <span class="val" id="v-cur-sale-price">$0</span></label>
-              <input type="number" id="cur-sale-price" value="0" step="1000" min="0">
-            </div>
-            <div class="field">
-              <label>Mortgage payoff balance <span class="val" id="v-cur-mortgage-payoff">$0</span></label>
-              <input type="number" id="cur-mortgage-payoff" value="0" step="1000" min="0">
-            </div>
-          </div>
-          <div class="two-col">
-            <div class="field">
-              <label>Selling costs <span class="val" id="v-cur-selling-pct">6.0%</span></label>
-              <input type="number" id="cur-selling-pct" value="6" step="0.25" min="0" max="20">
-            </div>
-            <div class="field">
-              <label>Repairs / concessions <span class="val" id="v-cur-sale-other">$0</span></label>
-              <input type="number" id="cur-sale-other" value="0" step="100" min="0">
-            </div>
-          </div>
-          <div class="two-col">
-            <div class="field">
-              <label>Original purchase price <span class="val" id="v-cur-purchase-price">optional</span></label>
-              <input type="number" id="cur-purchase-price" placeholder="Optional — for profit calculation" step="1000" min="0">
-            </div>
-            <div class="field">
-              <label>Capital improvements <span class="val" id="v-cur-improvements">$0</span></label>
-              <input type="number" id="cur-improvements" value="0" step="500" min="0">
-            </div>
-          </div>
-
-          <div class="sale-grid">
-            <div class="sale-stat">
-              <div class="k">EQUITY BEFORE SALE COSTS</div>
-              <div class="v" id="sale-equity">$0</div>
-            </div>
-            <div class="sale-stat">
-              <div class="k">EST. SELLING COSTS</div>
-              <div class="v" id="sale-costs">$0</div>
-            </div>
-            <div class="sale-stat primary">
-              <div class="k">NET PROCEEDS AT CLOSING</div>
-              <div class="v" id="sale-net-proceeds">$0</div>
-            </div>
-            <div class="sale-stat">
-              <div class="k">EST. SALE PROFIT / GAIN</div>
-              <div class="v" id="sale-profit">—</div>
-            </div>
-          </div>
-          <div class="sale-note" id="sale-note">Net proceeds are the cash left after paying off the mortgage and sale costs. Profit/gain is different: your mortgage balance affects cash proceeds, but it does not determine whether the home itself was sold for a profit.</div>
-        </div>
-
-        <div class="subgroup-label">COMMUTE</div>
-        <div class="field">
-          <div class="miles-mode-toggle" data-scenario="cur">
-            <button type="button" class="mode-btn active" data-mmode="perday">One-way × days</button>
-            <button type="button" class="mode-btn" data-mmode="total">Total miles/mo</button>
-          </div>
-        </div>
-        <div class="two-col miles-mode-field" data-scenario="cur" data-mmode="perday">
-          <div class="field">
-            <label>Miles one-way <span class="val" id="v-cur-miles">18</span></label>
-            <input type="number" id="cur-miles" value="18" step="1" min="0">
-          </div>
-          <div class="field">
-            <label>Days on-site /wk <span class="val" id="v-cur-days">5</span></label>
-            <input type="number" id="cur-days" value="5" step="1" min="0" max="7">
-          </div>
-        </div>
-        <div class="field miles-mode-field" data-scenario="cur" data-mmode="total" style="display:none;">
-          <label>Total miles driven /mo <span class="val" id="v-cur-totalmiles">780</span></label>
-          <input type="number" id="cur-totalmiles" value="780" step="10" min="0">
-        </div>
-        <div class="field">
-          <div class="cost-mode-toggle" data-scenario="cur">
-            <button type="button" class="mode-btn active" data-mode="permile">$ / mile</button>
-            <button type="button" class="mode-btn" data-mode="gas">gas + MPG</button>
-            <button type="button" class="mode-btn" data-mode="car">this car</button>
-          </div>
-        </div>
-        <div class="field cost-mode-field" data-scenario="cur" data-mode="permile">
-          <label>Cost per mile <span class="val" id="v-cur-rate">$0.67</span></label>
-          <input type="number" id="cur-rate" value="0.67" step="0.01" min="0">
-        </div>
-        <div class="two-col cost-mode-field" data-scenario="cur" data-mode="gas" style="display:none;">
-          <div class="field">
-            <label>Gas price /gal <span class="val" id="v-cur-gasprice">$3.50</span></label>
-            <input type="number" id="cur-gasprice" value="3.50" step="0.05" min="0">
-          </div>
-          <div class="field">
-            <label>Car MPG <span class="val" id="v-cur-mpg">28</span></label>
-            <input type="number" id="cur-mpg" value="28" step="1" min="1">
-          </div>
-        </div>
-        <div class="cost-mode-field vehicle-lookup" data-scenario="cur" data-mode="car" style="display:none;">
-          <div class="subgroup-label" style="margin-top:0;">VEHICLES</div>
-          <div class="field">
-            <div class="vehicle-count-toggle" data-scenario="cur">
-              <button type="button" class="mode-btn active" data-count="1">1 Car</button>
-              <button type="button" class="mode-btn" data-count="2">2 Cars</button>
-            </div>
-          </div>
-
-          <div class="car-slot-label" id="cur-car1-label">CAR 1</div>
-          <div class="two-col">
-            <div class="field">
-              <label>Year</label>
-              <input type="number" id="cur-car-year" value="2018" step="1" min="1980" max="2027">
-            </div>
-            <div class="field">
-              <label>Make</label>
-              <select id="cur-car-make" data-default="Honda"></select>
-            </div>
-          </div>
-          <div class="field">
-            <label>Model</label>
-            <select id="cur-car-model" data-default="Civic"></select>
-          </div>
-          <div class="field">
-            <label>Current odometer (mi)</label>
-            <input type="number" id="cur-car-odo" value="60000" step="1000" min="0">
-          </div>
-
-          <div class="car2-block" data-scenario="cur" style="display:none;">
-            <div class="car-slot-label">CAR 2</div>
-            <div class="two-col">
-              <div class="field">
-                <label>Year</label>
-                <input type="number" id="cur-car2-year" value="2015" step="1" min="1980" max="2027">
-              </div>
-              <div class="field">
-                <label>Make</label>
-                <select id="cur-car2-make" data-default="Toyota"></select>
-              </div>
-            </div>
-            <div class="field">
-              <label>Model</label>
-              <select id="cur-car2-model" data-default="Camry"></select>
-            </div>
-            <div class="field">
-              <label>Current odometer (mi)</label>
-              <input type="number" id="cur-car2-odo" value="80000" step="1000" min="0">
-            </div>
-          </div>
-
-          <div class="two-col car-allocation-block" data-scenario="cur" style="display:none;">
-            <div class="field">
-              <label>Car 1 share of miles <span class="val" id="v-cur-car1-share">50%</span></label>
-              <input type="number" id="cur-car1-share" value="50" step="5" min="0" max="100">
-            </div>
-            <div class="field">
-              <label>Car 2 share of miles</label>
-              <div class="readonly-field" id="v-cur-car2-share">50%</div>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Gas price /gal</label>
-            <input type="number" id="cur-car-gasprice" value="3.50" step="0.05" min="0">
-          </div>
-          <button type="button" class="lookup-btn" id="cur-lookup-btn">Estimate vehicle cost</button>
-          <div class="source-note">Make/model lists include common vehicles and are expanded from NHTSA when internet access is available. EPA MPG is used when FuelEconomy.gov responds; otherwise the calculator falls back to a planning estimate.</div>
-          <div class="lookup-result" id="cur-lookup-result"></div>
-        </div>
-        <div class="field">
-          <label>Parking / tolls per month <span class="val" id="v-cur-park">$0</span></label>
-          <input type="number" id="cur-park" value="0" step="10" min="0">
-        </div>
+    <div class="section-label">TIMING — MOVE NOW OR WAIT?</div>
+    <div class="screen-intro" style="margin-top:-8px;">This section uses a different down payment assumption than the rest of the tool: it assumes you'd put your full <b>net home-sale equity</b> toward the new home, today or after waiting — since that's what actually changes if you wait.</div>
+    <div class="two-col" style="max-width:520px;">
+      <div class="field">
+        <label>Home price appreciation /yr <span class="val" id="v-appreciation">4.0%</span></label>
+        <input type="number" id="appreciation-rate" value="4.0" step="0.25" min="-10" max="15">
       </div>
-
-      <div class="scenario new-home">
-        <div class="scenario-title">New home near work <span class="tag">MOVE</span></div>
-
-        <div class="field">
-          <label>Monthly housing cost</label>
-          <div class="readonly-field" id="v-new-housing">$0.00</div>
-        </div>
-        <div class="commute-note" style="margin-top:8px;margin-bottom:14px;">↑ pulled from the mortgage estimate above</div>
-
-        <div class="subgroup-label">COMMUTE</div>
-        <div class="field">
-          <div class="miles-mode-toggle" data-scenario="new">
-            <button type="button" class="mode-btn active" data-mmode="perday">One-way × days</button>
-            <button type="button" class="mode-btn" data-mmode="total">Total miles/mo</button>
-          </div>
-        </div>
-        <div class="two-col miles-mode-field" data-scenario="new" data-mmode="perday">
-          <div class="field">
-            <label>Miles one-way <span class="val" id="v-new-miles">4</span></label>
-            <input type="number" id="new-miles" value="4" step="1" min="0">
-          </div>
-          <div class="field">
-            <label>Days on-site /wk <span class="val" id="v-new-days">5</span></label>
-            <input type="number" id="new-days" value="5" step="1" min="0" max="7">
-          </div>
-        </div>
-        <div class="field miles-mode-field" data-scenario="new" data-mmode="total" style="display:none;">
-          <label>Total miles driven /mo <span class="val" id="v-new-totalmiles">173</span></label>
-          <input type="number" id="new-totalmiles" value="173" step="10" min="0">
-        </div>
-        <div class="field">
-          <div class="cost-mode-toggle" data-scenario="new">
-            <button type="button" class="mode-btn active" data-mode="permile">$ / mile</button>
-            <button type="button" class="mode-btn" data-mode="gas">gas + MPG</button>
-            <button type="button" class="mode-btn" data-mode="car">this car</button>
-          </div>
-        </div>
-        <div class="field cost-mode-field" data-scenario="new" data-mode="permile">
-          <label>Cost per mile <span class="val" id="v-new-rate">$0.67</span></label>
-          <input type="number" id="new-rate" value="0.67" step="0.01" min="0">
-        </div>
-        <div class="two-col cost-mode-field" data-scenario="new" data-mode="gas" style="display:none;">
-          <div class="field">
-            <label>Gas price /gal <span class="val" id="v-new-gasprice">$3.50</span></label>
-            <input type="number" id="new-gasprice" value="3.50" step="0.05" min="0">
-          </div>
-          <div class="field">
-            <label>Car MPG <span class="val" id="v-new-mpg">28</span></label>
-            <input type="number" id="new-mpg" value="28" step="1" min="1">
-          </div>
-        </div>
-        <div class="cost-mode-field vehicle-lookup" data-scenario="new" data-mode="car" style="display:none;">
-          <div class="subgroup-label" style="margin-top:0;">VEHICLES</div>
-          <div class="field">
-            <div class="vehicle-count-toggle" data-scenario="new">
-              <button type="button" class="mode-btn active" data-count="1">1 Car</button>
-              <button type="button" class="mode-btn" data-count="2">2 Cars</button>
-            </div>
-          </div>
-
-          <div class="car-slot-label" id="new-car1-label">CAR 1</div>
-          <div class="two-col">
-            <div class="field">
-              <label>Year</label>
-              <input type="number" id="new-car-year" value="2018" step="1" min="1980" max="2027">
-            </div>
-            <div class="field">
-              <label>Make</label>
-              <select id="new-car-make" data-default="Honda"></select>
-            </div>
-          </div>
-          <div class="field">
-            <label>Model</label>
-            <select id="new-car-model" data-default="Civic"></select>
-          </div>
-          <div class="field">
-            <label>Current odometer (mi)</label>
-            <input type="number" id="new-car-odo" value="60000" step="1000" min="0">
-          </div>
-
-          <div class="car2-block" data-scenario="new" style="display:none;">
-            <div class="car-slot-label">CAR 2</div>
-            <div class="two-col">
-              <div class="field">
-                <label>Year</label>
-                <input type="number" id="new-car2-year" value="2015" step="1" min="1980" max="2027">
-              </div>
-              <div class="field">
-                <label>Make</label>
-                <select id="new-car2-make" data-default="Toyota"></select>
-              </div>
-            </div>
-            <div class="field">
-              <label>Model</label>
-              <select id="new-car2-model" data-default="Camry"></select>
-            </div>
-            <div class="field">
-              <label>Current odometer (mi)</label>
-              <input type="number" id="new-car2-odo" value="80000" step="1000" min="0">
-            </div>
-          </div>
-
-          <div class="two-col car-allocation-block" data-scenario="new" style="display:none;">
-            <div class="field">
-              <label>Car 1 share of miles <span class="val" id="v-new-car1-share">50%</span></label>
-              <input type="number" id="new-car1-share" value="50" step="5" min="0" max="100">
-            </div>
-            <div class="field">
-              <label>Car 2 share of miles</label>
-              <div class="readonly-field" id="v-new-car2-share">50%</div>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Gas price /gal</label>
-            <input type="number" id="new-car-gasprice" value="3.50" step="0.05" min="0">
-          </div>
-          <button type="button" class="lookup-btn" id="new-lookup-btn">Estimate vehicle cost</button>
-          <div class="source-note">Make/model lists include common vehicles and are expanded from NHTSA when internet access is available. EPA MPG is used when FuelEconomy.gov responds; otherwise the calculator falls back to a planning estimate.</div>
-          <div class="lookup-result" id="new-lookup-result"></div>
-        </div>
-        <div class="field">
-          <label>Parking / tolls per month <span class="val" id="v-new-park">$0</span></label>
-          <input type="number" id="new-park" value="0" step="10" min="0">
-        </div>
+      <div class="field">
+        <label>Years to wait <span class="val" id="v-wait-years">3</span></label>
+        <input type="number" id="wait-years" value="3" step="1" min="0" max="15">
       </div>
     </div>
 
-    <div class="compare-result">
-      <div class="delta-banner">
-        <div>
-          <div class="delta-num" id="delta-num">$0 / mo</div>
-          <div class="delta-sub" id="delta-sub">moving changes their total monthly cost by this much</div>
-        </div>
-        <div class="delta-sub" id="delta-annual">≈ $0 per year</div>
-      </div>
-      <div id="compare-chart-wrap"></div>
-      <div class="legend">
-        <span><span class="swatch" style="background:var(--line-dim)"></span>Housing</span>
-        <span><span class="swatch" style="background:var(--accent)"></span>Commute</span>
-      </div>
-      <div class="commute-note" id="commute-time-note"></div>
+    <div id="timing-chart-wrap"></div>
+    <div class="legend">
+      <span><span class="swatch" style="background:var(--accent)"></span>Net cost of waiting that many years, vs. moving now</span>
     </div>
 
-    <div class="timing-panel">
-      <div class="section-label">WHEN SHOULD THEY MOVE? — NOW VS. WAIT</div>
-      <div class="compare-intro">Tests moving now against waiting 1, 2, 3 years and so on, all measured at the same future date. The recommendation changes automatically as the assumptions change.</div>
+    <div class="result-card" id="timing-breakdown" style="margin-top:14px;"></div>
 
-      <div class="timing-card">
-        <div class="subgroup-label" style="margin-top:0;padding-top:0;border-top:none;">PLANNING WINDOW &amp; HOME ASSUMPTIONS</div>
-        <div class="two-col">
-          <div class="field">
-            <label>Planning horizon <span class="val" id="v-timing-horizon">5 yrs</span></label>
-            <input type="number" id="timing-horizon" value="5" step="1" min="1" max="10">
-          </div>
-          <div class="field">
-            <label>Current home appreciation /yr <span class="val" id="v-cur-appreciation">3.0%</span></label>
-            <input type="number" id="cur-appreciation" value="3" step="0.25" min="-10" max="20">
-          </div>
-        </div>
-        <div class="two-col">
-          <div class="field">
-            <label>New home appreciation /yr <span class="val" id="v-new-appreciation">3.0%</span></label>
-            <input type="number" id="new-appreciation" value="3" step="0.25" min="-10" max="20">
-          </div>
-          <div class="field">
-            <label>Current housing-cost growth /yr <span class="val" id="v-cur-cost-growth">3.0%</span></label>
-            <input type="number" id="cur-cost-growth" value="3" step="0.25" min="0" max="15">
-          </div>
-        </div>
+    <button type="button" class="btn-primary" id="print-report-btn" style="margin-top:24px;">Print detailed report</button>
 
-        <div class="subgroup-label">CURRENT MORTGAGE — FOR PAYOFF PROJECTION</div>
-        <div class="two-col">
-          <div class="field">
-            <label>Current mortgage rate <span class="val" id="v-cur-mortgage-rate">4.00%</span></label>
-            <input type="number" id="cur-mortgage-rate" value="4" step="0.05" min="0" max="20">
-          </div>
-          <div class="field">
-            <label>Remaining term <span class="val" id="v-cur-mortgage-years">25 yrs</span></label>
-            <input type="number" id="cur-mortgage-years" value="25" step="1" min="1" max="40">
-          </div>
-        </div>
-        <div class="sale-note">These two fields estimate how much of the current mortgage will still be owed if they wait. Use the actual rate and approximate remaining term for a better result.</div>
-
-        <div class="subgroup-label">COST OF MOVING LATER</div>
-        <div class="two-col">
-          <div class="field">
-            <label>Mortgage rate if moving later <span class="val" id="v-future-mortgage-rate">6.50%</span></label>
-            <input type="number" id="future-mortgage-rate" value="6.5" step="0.05" min="0" max="20">
-          </div>
-          <div class="field">
-            <label>Buyer closing costs <span class="val" id="v-buyer-closing-pct">3.0%</span></label>
-            <input type="number" id="buyer-closing-pct" value="3" step="0.25" min="0" max="10">
-          </div>
-        </div>
-        <div class="two-col">
-          <div class="field">
-            <label>Moving costs <span class="val" id="v-moving-costs">$2,000</span></label>
-            <input type="number" id="moving-costs" value="2000" step="250" min="0">
-          </div>
-          <div class="field">
-            <label>Unused sale cash return /yr <span class="val" id="v-cash-return">4.0%</span></label>
-            <input type="number" id="cash-return" value="4" step="0.25" min="0" max="20">
-          </div>
-        </div>
-        <div class="two-col">
-          <div class="field">
-            <label>New tax/insurance/HOA growth /yr <span class="val" id="v-new-cost-growth">3.0%</span></label>
-            <input type="number" id="new-cost-growth" value="3" step="0.25" min="0" max="15">
-          </div>
-          <div class="field">
-            <label>Commute-cost inflation /yr <span class="val" id="v-commute-inflation">2.5%</span></label>
-            <input type="number" id="commute-inflation" value="2.5" step="0.25" min="0" max="15">
-          </div>
-        </div>
-
-        <div class="timing-result-banner">
-          <div class="k">BEST FINANCIAL TIMING UNDER THESE ASSUMPTIONS</div>
-          <div class="v" id="timing-recommendation">Enter current-home sale information</div>
-          <div class="sub" id="timing-recommendation-sub">Add the expected current-home sale price and mortgage payoff above to activate the timing comparison.</div>
-        </div>
-        <div class="timing-table" id="timing-table"></div>
-        <div class="sale-note" id="timing-note">This is a financial timing model, not a forecast. It compares estimated ending home equity, unused sale cash, housing costs, commute costs, transaction costs, appreciation and mortgage paydown. It does not price lifestyle benefits, job risk, taxes on a sale, or the value of time saved commuting.</div>
-      </div>
+    <div class="nav-row">
+      <button type="button" class="btn-back" data-goto="cars">← Back</button>
     </div>
-
-    <button type="button" id="print-report-btn" class="print-btn">Print detailed report</button>
   </div>
 
   <div class="footer-note">
-    ESTIMATE ONLY — does not include PMI or taxes due on a sale. The move-timing section separately models buyer closing costs, moving costs and a user-entered future mortgage-rate assumption. Property tax and insurance are averaged monthly (escrow-style). Commute cost can use a flat per-mile rate, gas + MPG, or the selected vehicle estimate. Location-based property tax uses public Census data when available. Consult a lender for an official quote.
+    ESTIMATE ONLY — does not include PMI, closing costs, moving costs, or rate changes. Property tax and insurance are state-level averages (not specific to your exact property or county) — check your county assessor for an exact figure. Vehicle maintenance and depreciation are typical figures for the make/model, not this specific vehicle's history. Everything on this page runs locally in your browser — no account, sign-in, or server needed.
   </div>
 </div>
 
@@ -1202,1166 +558,1120 @@ const $ = id => document.getElementById(id);
 const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
 const fmt2 = n => n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 
-const priceEl = $('price'), priceR = $('price-r'), downEl = $('down'), downpctEl = $('downpct'),
-      rateEl = $('rate'), termEl = $('term'), taxEl = $('tax'), insEl = $('ins'), hoaEl = $('hoa');
+// ---- offline datasets (no network, no account needed) ----
+const STATE_TAX_DATA = {
+  AL:{name:"Alabama",rate:0.41,ins:1650}, AK:{name:"Alaska",rate:1.19,ins:1350},
+  AZ:{name:"Arizona",rate:0.66,ins:1650}, AR:{name:"Arkansas",rate:0.62,ins:2100},
+  CA:{name:"California",rate:0.75,ins:1500}, CO:{name:"Colorado",rate:0.55,ins:2400},
+  CT:{name:"Connecticut",rate:2.14,ins:1650}, DE:{name:"Delaware",rate:0.61,ins:1050},
+  DC:{name:"District of Columbia",rate:0.56,ins:1350}, FL:{name:"Florida",rate:0.86,ins:3600},
+  GA:{name:"Georgia",rate:0.90,ins:1900}, HI:{name:"Hawaii",rate:0.29,ins:650},
+  ID:{name:"Idaho",rate:0.63,ins:1250}, IL:{name:"Illinois",rate:2.08,ins:1550},
+  IN:{name:"Indiana",rate:0.83,ins:1650}, IA:{name:"Iowa",rate:1.50,ins:1750},
+  KS:{name:"Kansas",rate:1.41,ins:2400}, KY:{name:"Kentucky",rate:0.85,ins:1800},
+  LA:{name:"Louisiana",rate:0.55,ins:3100}, ME:{name:"Maine",rate:1.28,ins:1150},
+  MD:{name:"Maryland",rate:1.05,ins:1450}, MA:{name:"Massachusetts",rate:1.14,ins:1650},
+  MI:{name:"Michigan",rate:1.44,ins:1900}, MN:{name:"Minnesota",rate:1.10,ins:1900},
+  MS:{name:"Mississippi",rate:0.62,ins:2400}, MO:{name:"Missouri",rate:0.97,ins:2200},
+  MT:{name:"Montana",rate:0.84,ins:1900}, NE:{name:"Nebraska",rate:1.63,ins:2500},
+  NV:{name:"Nevada",rate:0.60,ins:1150}, NH:{name:"New Hampshire",rate:2.18,ins:1200},
+  NJ:{name:"New Jersey",rate:2.23,ins:1350}, NM:{name:"New Mexico",rate:0.80,ins:1650},
+  NY:{name:"New York",rate:1.72,ins:1550}, NC:{name:"North Carolina",rate:0.84,ins:1750},
+  ND:{name:"North Dakota",rate:0.98,ins:1900}, OH:{name:"Ohio",rate:1.59,ins:1500},
+  OK:{name:"Oklahoma",rate:0.90,ins:2900}, OR:{name:"Oregon",rate:0.93,ins:1150},
+  PA:{name:"Pennsylvania",rate:1.53,ins:1400}, RI:{name:"Rhode Island",rate:1.53,ins:1650},
+  SC:{name:"South Carolina",rate:0.57,ins:1900}, SD:{name:"South Dakota",rate:1.24,ins:1900},
+  TN:{name:"Tennessee",rate:0.66,ins:1900}, TX:{name:"Texas",rate:1.68,ins:2900},
+  UT:{name:"Utah",rate:0.60,ins:1150}, VT:{name:"Vermont",rate:1.90,ins:1150},
+  VA:{name:"Virginia",rate:0.82,ins:1350}, WA:{name:"Washington",rate:0.98,ins:1250},
+  WV:{name:"West Virginia",rate:0.58,ins:1400}, WI:{name:"Wisconsin",rate:1.61,ins:1450},
+  WY:{name:"Wyoming",rate:0.61,ins:1650}
+};
 
-let syncing = false;
+// Mississippi gets county-level detail (researched from SmartAsset and Census ACS/Tax Foundation
+// aggregate data). Effective rate = annual property tax / home value. Counties not listed here
+// fall back to the Mississippi state average (STATE_TAX_DATA.MS.rate).
+const MS_COUNTY_RATES = {
+  "DeSoto":0.55, "Forrest":0.82, "Harrison":0.62, "Hinds":0.83, "Jackson":0.66,
+  "Jones":0.52, "Lamar":0.63, "Lauderdale":0.80, "Lee":0.72, "Madison":0.65, "Rankin":0.56,
+  "Claiborne":0.31, "Amite":0.33, "Tishomingo":0.34, "Smith":0.38, "Benton":0.39,
+  "Noxubee":0.39, "Choctaw":0.40, "Clarke":0.41, "Covington":0.41, "Jasper":0.41,
+  "Chickasaw":0.42, "Copiah":0.42, "Itawamba":0.42, "Union":0.42, "Perry":0.44,
+  "Simpson":0.44, "Webster":0.44, "Tallahatchie":0.45, "Tunica":0.45, "Alcorn":0.46,
+  "Warren":0.47, "Wayne":0.47, "Yalobusha":0.47, "Monroe":0.48, "Prentiss":0.48,
+  "Washington":0.92, "Montgomery":0.81, "Leflore":0.77, "Coahoma":0.75, "Grenada":0.75
+};
+// Full list of Mississippi's 82 counties, for the dropdown (not all have a specific rate above).
+const MS_COUNTIES = ["Adams","Alcorn","Amite","Attala","Benton","Bolivar","Calhoun","Carroll",
+  "Chickasaw","Choctaw","Claiborne","Clarke","Clay","Coahoma","Copiah","Covington","DeSoto",
+  "Forrest","Franklin","George","Greene","Grenada","Hancock","Harrison","Hinds","Holmes",
+  "Humphreys","Issaquena","Itawamba","Jackson","Jasper","Jefferson","Jefferson Davis","Jones",
+  "Kemper","Lafayette","Lamar","Lauderdale","Lawrence","Leake","Lee","Leflore","Lincoln",
+  "Lowndes","Madison","Marion","Marshall","Monroe","Montgomery","Neshoba","Newton","Noxubee",
+  "Oktibbeha","Panola","Pearl River","Perry","Pike","Pontotoc","Prentiss","Quitman","Rankin",
+  "Scott","Sharkey","Simpson","Smith","Stone","Sunflower","Tallahatchie","Tate","Tippah",
+  "Tishomingo","Tunica","Union","Walthall","Warren","Washington","Wayne","Webster","Wilkinson",
+  "Winston","Yalobusha","Yazoo"];
+
+const CAR_DATA = {
+  "Toyota":{ "Camry":{mpg:32,maint:0.06,dep:0.14,life:220000,note:"Midsize sedan, strong reliability and resale value."},
+    "Corolla":{mpg:35,maint:0.05,dep:0.12,life:230000,note:"Compact sedan, low running costs."},
+    "RAV4":{mpg:29,maint:0.065,dep:0.15,life:200000,note:"Best-selling compact SUV, strong resale value."},
+    "Highlander":{mpg:24,maint:0.075,dep:0.18,life:200000,note:"3-row midsize SUV, solid reliability."},
+    "Tacoma":{mpg:22,maint:0.075,dep:0.15,life:230000,note:"Compact pickup, excellent resale value."} },
+  "Honda":{ "Accord":{mpg:32,maint:0.06,dep:0.14,life:220000,note:"Midsize sedan, consistently reliable."},
+    "Civic":{mpg:35,maint:0.05,dep:0.13,life:225000,note:"Compact sedan, low ownership costs."},
+    "CR-V":{mpg:30,maint:0.065,dep:0.16,life:200000,note:"Top-selling compact SUV."},
+    "Pilot":{mpg:24,maint:0.075,dep:0.19,life:195000,note:"3-row midsize SUV."},
+    "Odyssey":{mpg:27,maint:0.07,dep:0.16,life:200000,note:"Family minivan, roomy and reliable."} },
+  "Ford":{ "F-150":{mpg:20,maint:0.085,dep:0.19,life:225000,note:"America's best-selling full-size pickup."},
+    "Escape":{mpg:28,maint:0.07,dep:0.18,life:190000,note:"Compact SUV."},
+    "Explorer":{mpg:23,maint:0.08,dep:0.20,life:195000,note:"Midsize 3-row SUV."},
+    "Edge":{mpg:24,maint:0.075,dep:0.19,life:195000,note:"Midsize 2-row SUV."},
+    "Mustang":{mpg:24,maint:0.08,dep:0.19,life:180000,note:"Sport coupe, higher upkeep than sedans."} },
+  "Chevrolet":{ "Silverado 1500":{mpg:19,maint:0.085,dep:0.19,life:220000,note:"Full-size pickup."},
+    "Equinox":{mpg:28,maint:0.065,dep:0.18,life:190000,note:"Compact SUV."},
+    "Malibu":{mpg:30,maint:0.06,dep:0.17,life:200000,note:"Midsize sedan."},
+    "Traverse":{mpg:22,maint:0.08,dep:0.20,life:195000,note:"3-row midsize SUV."},
+    "Colorado":{mpg:22,maint:0.075,dep:0.17,life:210000,note:"Midsize pickup."} },
+  "Nissan":{ "Altima":{mpg:32,maint:0.06,dep:0.18,life:200000,note:"Midsize sedan."},
+    "Sentra":{mpg:33,maint:0.055,dep:0.16,life:210000,note:"Compact sedan."},
+    "Rogue":{mpg:29,maint:0.065,dep:0.19,life:190000,note:"Compact SUV, Nissan's top seller."},
+    "Pathfinder":{mpg:23,maint:0.08,dep:0.21,life:190000,note:"3-row midsize SUV."},
+    "Frontier":{mpg:20,maint:0.075,dep:0.16,life:220000,note:"Midsize pickup."} },
+  "Hyundai":{ "Elantra":{mpg:34,maint:0.055,dep:0.17,life:210000,note:"Compact sedan, strong warranty coverage."},
+    "Sonata":{mpg:31,maint:0.06,dep:0.18,life:210000,note:"Midsize sedan."},
+    "Tucson":{mpg:28,maint:0.065,dep:0.19,life:195000,note:"Compact SUV."},
+    "Santa Fe":{mpg:25,maint:0.075,dep:0.20,life:195000,note:"Midsize SUV."},
+    "Palisade":{mpg:22,maint:0.08,dep:0.21,life:190000,note:"3-row midsize SUV."} },
+  "Kia":{ "Forte":{mpg:33,maint:0.055,dep:0.18,life:205000,note:"Compact sedan."},
+    "K5":{mpg:31,maint:0.06,dep:0.19,life:205000,note:"Midsize sedan."},
+    "Sportage":{mpg:28,maint:0.065,dep:0.19,life:195000,note:"Compact SUV."},
+    "Sorento":{mpg:24,maint:0.075,dep:0.20,life:195000,note:"Midsize 3-row SUV."},
+    "Telluride":{mpg:21,maint:0.08,dep:0.19,life:195000,note:"Large 3-row SUV, strong resale for its class."} },
+  "Subaru":{ "Impreza":{mpg:31,maint:0.06,dep:0.16,life:210000,note:"Compact sedan/hatch, standard AWD."},
+    "Outback":{mpg:29,maint:0.07,dep:0.16,life:200000,note:"Wagon/SUV crossover, strong resale value."},
+    "Forester":{mpg:29,maint:0.07,dep:0.17,life:200000,note:"Compact SUV, standard AWD."},
+    "Crosstrek":{mpg:30,maint:0.065,dep:0.16,life:200000,note:"Small SUV, standard AWD."},
+    "Ascent":{mpg:24,maint:0.08,dep:0.20,life:195000,note:"3-row midsize SUV."} },
+  "Jeep":{ "Wrangler":{mpg:20,maint:0.095,dep:0.15,life:190000,note:"Off-road SUV — strong resale, higher repair costs."},
+    "Grand Cherokee":{mpg:22,maint:0.09,dep:0.21,life:190000,note:"Midsize SUV."},
+    "Cherokee":{mpg:25,maint:0.08,dep:0.20,life:190000,note:"Compact SUV."},
+    "Compass":{mpg:27,maint:0.075,dep:0.20,life:185000,note:"Compact SUV."},
+    "Gladiator":{mpg:19,maint:0.095,dep:0.16,life:200000,note:"Midsize pickup, off-road focused."} },
+  "Ram":{ "1500":{mpg:19,maint:0.085,dep:0.19,life:225000,note:"Full-size pickup."},
+    "2500":{mpg:15,maint:0.10,dep:0.16,life:250000,note:"Heavy-duty pickup."},
+    "ProMaster":{mpg:17,maint:0.09,dep:0.18,life:220000,note:"Full-size cargo van."} },
+  "GMC":{ "Sierra 1500":{mpg:19,maint:0.085,dep:0.19,life:220000,note:"Full-size pickup."},
+    "Terrain":{mpg:27,maint:0.07,dep:0.19,life:190000,note:"Compact SUV."},
+    "Acadia":{mpg:23,maint:0.08,dep:0.20,life:190000,note:"Midsize SUV."},
+    "Yukon":{mpg:17,maint:0.095,dep:0.21,life:200000,note:"Full-size SUV."} },
+  "BMW":{ "3 Series":{mpg:28,maint:0.11,dep:0.27,life:180000,note:"Luxury sedan — higher upkeep, faster depreciation."},
+    "5 Series":{mpg:27,maint:0.12,dep:0.28,life:180000,note:"Luxury midsize sedan."},
+    "X3":{mpg:25,maint:0.115,dep:0.28,life:175000,note:"Luxury compact SUV."},
+    "X5":{mpg:22,maint:0.13,dep:0.30,life:175000,note:"Luxury midsize SUV."} },
+  "Mercedes-Benz":{ "C-Class":{mpg:27,maint:0.115,dep:0.28,life:180000,note:"Luxury sedan — higher upkeep, faster depreciation."},
+    "E-Class":{mpg:26,maint:0.12,dep:0.29,life:180000,note:"Luxury midsize sedan."},
+    "GLC":{mpg:24,maint:0.115,dep:0.28,life:175000,note:"Luxury compact SUV."},
+    "GLE":{mpg:21,maint:0.13,dep:0.30,life:175000,note:"Luxury midsize SUV."} },
+  "Tesla":{ "Model 3":{mpg:132,maint:0.04,dep:0.20,life:200000,note:"EV — 'MPG' here is gas-equivalent; real electricity cost is often lower."},
+    "Model Y":{mpg:122,maint:0.045,dep:0.21,life:200000,note:"EV — 'MPG' here is gas-equivalent; real electricity cost is often lower."},
+    "Model S":{mpg:110,maint:0.05,dep:0.26,life:200000,note:"EV — 'MPG' here is gas-equivalent; real electricity cost is often lower."},
+    "Model X":{mpg:100,maint:0.055,dep:0.27,life:200000,note:"EV — 'MPG' here is gas-equivalent; real electricity cost is often lower."} },
+  "Volkswagen":{ "Jetta":{mpg:33,maint:0.065,dep:0.19,life:200000,note:"Compact sedan."},
+    "Tiguan":{mpg:26,maint:0.075,dep:0.20,life:190000,note:"Compact SUV."},
+    "Atlas":{mpg:22,maint:0.085,dep:0.21,life:190000,note:"3-row midsize SUV."},
+    "Passat":{mpg:29,maint:0.07,dep:0.19,life:200000,note:"Midsize sedan, common on the road."} },
+  "Mazda":{ "Mazda3":{mpg:32,maint:0.06,dep:0.17,life:210000,note:"Compact sedan/hatch, upscale interior for its class."},
+    "CX-5":{mpg:28,maint:0.07,dep:0.18,life:200000,note:"Compact SUV."},
+    "CX-9":{mpg:22,maint:0.08,dep:0.20,life:195000,note:"3-row midsize SUV."},
+    "Mazda6":{mpg:29,maint:0.065,dep:0.18,life:205000,note:"Midsize sedan, common on the road."} }
+};
+const OTHER_CAR = {mpg:28,maint:0.07,dep:0.18,life:200000,note:"Average across vehicle types — pick a specific make/model for a tailored figure, or use '$/mile' or 'gas + MPG' mode instead."};
+
+// ---- screen navigation ----
+const SCREENS = ['buy','sell','cars','summary'];
+function goToScreen(name){
+  SCREENS.forEach(s=>{
+    $('screen-'+s).hidden = (s!==name);
+    document.querySelector(`.step-btn[data-screen="${s}"]`).classList.toggle('active', s===name);
+  });
+  window.scrollTo({top:0, behavior:'instant'});
+  if(name==='summary') updateSummary();
+}
+document.querySelectorAll('.step-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> goToScreen(btn.dataset.screen));
+});
+document.querySelectorAll('[data-goto]').forEach(btn=>{
+  btn.addEventListener('click', ()=> goToScreen(btn.dataset.goto));
+});
+
+// ---- BUY screen ----
+const buyPriceEl=$('buy-price'), buyPriceR=$('buy-price-r'), buyDownEl=$('buy-down'), buyDownpctEl=$('buy-downpct'),
+      buyRateEl=$('buy-rate'), buyTermEl=$('buy-term'), buyTaxEl=$('buy-tax'), buyInsEl=$('buy-ins'), buyHoaEl=$('buy-hoa');
+
+// populate state dropdown
+const stateSel = $('buy-state');
+Object.keys(STATE_TAX_DATA).sort((a,b)=> STATE_TAX_DATA[a].name.localeCompare(STATE_TAX_DATA[b].name)).forEach(code=>{
+  const opt=document.createElement('option'); opt.value=code; opt.textContent=STATE_TAX_DATA[code].name;
+  stateSel.appendChild(opt);
+});
+stateSel.value='CA';
+
+// populate MS county dropdown (only shown when state = Mississippi)
+const countyField = $('buy-county-field');
+const countySel = $('buy-county');
+MS_COUNTIES.forEach(name=>{
+  const opt=document.createElement('option'); opt.value=name;
+  opt.textContent = name+' County'+(MS_COUNTY_RATES[name]!=null ? '' : ' (no county data — uses state avg.)');
+  countySel.appendChild(opt);
+});
+stateSel.addEventListener('change', ()=>{
+  countyField.style.display = stateSel.value==='MS' ? '' : 'none';
+});
 
 function syncDownFromAmount(){
-  const price = parseFloat(priceEl.value)||0;
-  const down = parseFloat(downEl.value)||0;
-  if(price>0){ downpctEl.value = ((down/price)*100).toFixed(1); }
+  const price=parseFloat(buyPriceEl.value)||0, down=parseFloat(buyDownEl.value)||0;
+  if(price>0) buyDownpctEl.value=((down/price)*100).toFixed(1);
 }
 function syncDownFromPct(){
-  const price = parseFloat(priceEl.value)||0;
-  const pct = parseFloat(downpctEl.value)||0;
-  downEl.value = Math.round(price*pct/100);
+  const price=parseFloat(buyPriceEl.value)||0, pct=parseFloat(buyDownpctEl.value)||0;
+  buyDownEl.value=Math.round(price*pct/100);
 }
 
-// ---- property location: tax & insurance estimate ----
-let locationLookupActive = false;
-let autofillingTaxIns = false;
-let propertyTaxRatePct = null;
-let lastLocationResult = null;
-
-const STATE_FIPS = {AL:'01',AK:'02',AZ:'04',AR:'05',CA:'06',CO:'08',CT:'09',DE:'10',DC:'11',FL:'12',GA:'13',HI:'15',ID:'16',IL:'17',IN:'18',IA:'19',KS:'20',KY:'21',LA:'22',ME:'23',MD:'24',MA:'25',MI:'26',MN:'27',MS:'28',MO:'29',MT:'30',NE:'31',NV:'32',NH:'33',NJ:'34',NM:'35',NY:'36',NC:'37',ND:'38',OH:'39',OK:'40',OR:'41',PA:'42',RI:'44',SC:'45',SD:'46',TN:'47',TX:'48',UT:'49',VT:'50',VA:'51',WA:'53',WV:'54',WI:'55',WY:'56'};
-const STATE_NAMES = {alabama:'AL',alaska:'AK',arizona:'AZ',arkansas:'AR',california:'CA',colorado:'CO',connecticut:'CT',delaware:'DE','district of columbia':'DC',florida:'FL',georgia:'GA',hawaii:'HI',idaho:'ID',illinois:'IL',indiana:'IN',iowa:'IA',kansas:'KS',kentucky:'KY',louisiana:'LA',maine:'ME',maryland:'MD',massachusetts:'MA',michigan:'MI',minnesota:'MN',mississippi:'MS',missouri:'MO',montana:'MT',nebraska:'NE',nevada:'NV','new hampshire':'NH','new jersey':'NJ','new mexico':'NM','new york':'NY','north carolina':'NC','north dakota':'ND',ohio:'OH',oklahoma:'OK',oregon:'OR',pennsylvania:'PA','rhode island':'RI','south carolina':'SC','south dakota':'SD',tennessee:'TN',texas:'TX',utah:'UT',vermont:'VT',virginia:'VA',washington:'WA','west virginia':'WV',wisconsin:'WI',wyoming:'WY'};
-// Relative state premium factors anchored to a ~$2,424 national planning benchmark for $300k dwelling coverage.
-// These are budgeting factors, not insurer quotes, and the result stays fully editable.
-const STATE_INS_FACTOR = {AL:1.28,AK:.43,AZ:.96,AR:1.36,CA:.82,CO:1.41,CT:.76,DE:.40,DC:.58,FL:2.41,GA:.81,HI:.54,ID:.60,IL:.88,IN:.80,IA:.85,KS:1.83,KY:.93,LA:2.59,ME:.50,MD:.72,MA:.70,MI:.78,MN:1.18,MS:1.43,MO:.93,MT:1.00,NE:2.72,NV:.45,NH:.43,NJ:.50,NM:.92,NY:.82,NC:.88,ND:1.05,OH:.58,OK:1.94,OR:.55,PA:.65,RI:.82,SC:1.00,SD:1.25,TN:1.05,TX:1.55,UT:.48,VT:.34,VA:.64,WA:.62,WV:.43,WI:.53,WY:.94};
-
-const esc = v => String(v??'').replace(/[&<>'"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+let locationLookupActive=false, autofillingTaxIns=false, propertyTaxRatePct=null, lastLocationResult=null;
 
 function setTaxAndInsurance(taxVal, insVal){
-  autofillingTaxIns = true;
-  taxEl.value = Math.round(taxVal);
-  insEl.value = Math.round(insVal);
-  autofillingTaxIns = false;
-  locationLookupActive = true;
-  calc();
+  autofillingTaxIns=true;
+  buyTaxEl.value=Math.round(taxVal);
+  buyInsEl.value=Math.round(insVal);
+  autofillingTaxIns=false;
+  locationLookupActive=true;
+  calcBuy();
 }
+buyTaxEl.addEventListener('input', ()=>{ if(!autofillingTaxIns) locationLookupActive=false; });
+buyInsEl.addEventListener('input', ()=>{ if(!autofillingTaxIns) locationLookupActive=false; });
 
-taxEl.addEventListener('input', ()=>{ if(!autofillingTaxIns) locationLookupActive = false; });
-insEl.addEventListener('input', ()=>{ if(!autofillingTaxIns) locationLookupActive = false; });
+function lookupLocation(){
+  const code = stateSel.value;
+  const stateData = STATE_TAX_DATA[code];
+  const price = parseFloat(buyPriceEl.value)||0;
+  const locText = $('buy-loc-input').value.trim();
 
-function parseStateAbbr(text){
-  const clean = String(text||'').trim();
-  const abbr = clean.match(/(?:,|\s)\s*([A-Za-z]{2})(?:\s+\d{5}(?:-\d{4})?)?\s*$/);
-  if(abbr && STATE_FIPS[abbr[1].toUpperCase()]) return abbr[1].toUpperCase();
-  const low = clean.toLowerCase();
-  for(const [name,code] of Object.entries(STATE_NAMES)) if(low.includes(name)) return code;
-  return null;
-}
+  let rate = stateData.rate;
+  let tag = 'STATE AVERAGE';
+  let sourceNote = 'State-level average, not specific to this address.';
+  let placeName = stateData.name;
 
-function insuranceEstimate(stateAbbr, homePrice){
-  const national300 = 2424;
-  const factor = STATE_INS_FACTOR[stateAbbr] || 1;
-  const scale = Math.min(2.2, Math.max(.55, Math.pow(Math.max(homePrice,50000)/300000, .72)));
-  return national300 * factor * scale;
-}
-
-const STATE_PROPERTY_TAX_RATE = {AL:.37,AK:.94,AZ:.48,AR:.56,CA:.70,CO:.50,CT:1.54,DE:.54,DC:.60,FL:.78,GA:.79,HI:.29,ID:.50,IL:1.88,IN:.76,IA:1.33,KS:1.21,KY:.74,LA:.55,ME:.98,MD:.92,MA:1.00,MI:1.19,MN:1.00,MS:.58,MO:.89,MT:.61,NE:1.44,NV:.50,NH:1.50,NJ:1.88,NM:.63,NY:1.30,NC:.66,ND:.92,OH:1.36,OK:.79,OR:.81,PA:1.26,RI:1.12,SC:.49,SD:1.00,TN:.52,TX:1.40,UT:.48,VT:1.51,VA:.78,WA:.75,WV:.51,WI:1.32,WY:.53};
-let countyTaxDataset = null;
-let countyTaxDatasetTried = false;
-
-function parseCsv(text){
-  const rows=[]; let row=[], cell='', q=false;
-  for(let i=0;i<text.length;i++){
-    const c=text[i];
-    if(c==='"'){
-      if(q && text[i+1]==='"'){ cell+='"'; i++; } else q=!q;
-    }else if(c===',' && !q){ row.push(cell); cell=''; }
-    else if((c==='\n' || c==='\r') && !q){
-      if(c==='\r' && text[i+1]==='\n') i++;
-      row.push(cell); cell=''; if(row.some(v=>v!=='')) rows.push(row); row=[];
-    }else cell+=c;
-  }
-  if(cell || row.length){ row.push(cell); rows.push(row); }
-  return rows;
-}
-
-async function loadCountyTaxDataset(){
-  if(countyTaxDatasetTried) return countyTaxDataset;
-  countyTaxDatasetTried=true;
-  try{
-    const res=await fetch('https://nationalmortgagecenter.com/api/property-tax/county-dataset');
-    if(!res.ok) throw new Error('county dataset unavailable');
-    const rows=parseCsv(await res.text());
-    const headers=(rows.shift()||[]).map(h=>h.trim());
-    const idx=Object.fromEntries(headers.map((h,i)=>[h,i]));
-    const map=new Map();
-    for(const r of rows){
-      const fips=(r[idx.county_fips]||'').trim().padStart(5,'0');
-      const rate=Number(r[idx.effective_tax_rate]);
-      if(/^\d{5}$/.test(fips) && rate>0){
-        map.set(fips,{ratePct:rate*100, county:r[idx.county]||'', stateAbbr:r[idx.state_abbreviation]||'', source:'National Mortgage Center 2026 county dataset / 2024 ACS'});
-      }
+  if(code==='MS'){
+    const county = countySel.value;
+    placeName = county+' County, MS';
+    if(MS_COUNTY_RATES[county]!=null){
+      rate = MS_COUNTY_RATES[county];
+      tag = 'COUNTY DATA';
+      sourceNote = `${county} County effective rate, from Census ACS / SmartAsset-reported county data.`;
+    } else {
+      rate = stateData.rate;
+      tag = 'STATE AVERAGE';
+      sourceNote = `No specific rate found for ${county} County — using the Mississippi state average instead.`;
     }
-    countyTaxDataset=map.size?map:null;
-  }catch{ countyTaxDataset=null; }
-  return countyTaxDataset;
-}
-
-async function taxRateForCounty(stateAbbr,stateFips,countyFips,countyName){
-  const fullFips=String(stateFips||STATE_FIPS[stateAbbr]||'').padStart(2,'0')+String(countyFips||'').padStart(3,'0');
-  const ds=await loadCountyTaxDataset();
-  const row=ds?.get(fullFips);
-  if(row) return {ratePct:row.ratePct, sourceName:`${row.county || countyName || 'County'} — ${row.source}`, dataTier:'county-city-rate'};
-  const stateRate=STATE_PROPERTY_TAX_RATE[stateAbbr];
-  if(stateRate>0) return {ratePct:stateRate, sourceName:`${stateAbbr} statewide effective rate — Tax Foundation 2026 (2024 ACS)`, dataTier:'state-estimate'};
-  throw new Error('No tax-rate estimate available for that state');
-}
-function censusJsonp(url){
-  return new Promise((resolve,reject)=>{
-    const cb='__census_cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
-    const script=document.createElement('script');
-    const timer=setTimeout(()=>cleanup(new Error('Census geocoder timed out')),12000);
-    function cleanup(err,data){ clearTimeout(timer); try{delete window[cb]}catch{}; script.remove(); err?reject(err):resolve(data); }
-    window[cb]=data=>cleanup(null,data);
-    script.onerror=()=>cleanup(new Error('Census geocoder unavailable'));
-    script.src=url + (url.includes('?')?'&':'?') + 'format=jsonp&callback=' + encodeURIComponent(cb);
-    document.head.appendChild(script);
-  });
-}
-
-async function zipInfo(zip){
-  const res = await fetch(`https://api.zippopotam.us/us/${encodeURIComponent(zip)}`);
-  if(!res.ok) throw new Error('ZIP not found');
-  const d=await res.json();
-  const p=d.places?.[0]||{}; return {zip, stateAbbr:p['state abbreviation']||null, city:p['place name']||'', stateName:p.state||'', lat:Number(p.latitude), lon:Number(p.longitude)};
-}
-
-async function cityStateInfo(city,stateAbbr){
-  const res=await fetch(`https://api.zippopotam.us/us/${encodeURIComponent(stateAbbr)}/${encodeURIComponent(city)}`);
-  if(!res.ok) throw new Error('City not found');
-  const d=await res.json();
-  const zips=(d.places||[]).map(p=>p['post code']).filter(Boolean);
-  if(!zips.length) throw new Error('No ZIP codes found');
-  return {zips:[...new Set(zips)].slice(0,5), stateAbbr, places:d.places||[]};
-}
-
-async function countyFromCoordinates(lat,lon){
-  if(!Number.isFinite(lat) || !Number.isFinite(lon)) throw new Error('Location coordinates unavailable');
-  const url=`https://geocoding.geo.census.gov/geocoder/geographies/coordinates?x=${encodeURIComponent(lon)}&y=${encodeURIComponent(lat)}&benchmark=Public_AR_Current&vintage=Current_Current`;
-  const d=await censusJsonp(url);
-  const g=d?.result?.geographies||{};
-  const state=g.States?.[0];
-  const county=g.Counties?.[0] || Object.values(g).flat().find(x=>x && x.COUNTY && x.STATE && /County|Parish|Borough|Municipio|Planning Region/i.test(x.NAME||''));
-  if(!county) throw new Error('County could not be resolved');
-  return {stateFips:state?.STATE||county.STATE, stateAbbr:state?.STUSAB||null, countyFips:county.COUNTY, countyName:county.NAME||''};
-}
-
-async function estimateFromLocation(loc, price){
-  const zipMatch=loc.match(/\b(\d{5})(?:-\d{4})?\b/);
-  if(zipMatch && !/^\s*\d+\s+\S/.test(loc)){
-    const z=await zipInfo(zipMatch[1]);
-    const geo=await countyFromCoordinates(z.lat,z.lon);
-    const stateAbbr=geo.stateAbbr||z.stateAbbr;
-    const tax=await taxRateForCounty(stateAbbr,geo.stateFips,geo.countyFips,geo.countyName);
-    return {resolvedLocation:`${z.city}, ${stateAbbr} ${z.zip}`, stateAbbr, dataTier:tax.dataTier, effectiveTaxRatePct:tax.ratePct, sourceName:tax.sourceName};
   }
 
-  // Full street address: Census Geocoder resolves the county without an API key.
-  if(/^\s*\d+\s+\S/.test(loc)){
-    const url='https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?address='+encodeURIComponent(loc)+'&benchmark=Public_AR_Current&vintage=Current_Current';
-    const d=await censusJsonp(url);
-    const m=d?.result?.addressMatches?.[0];
-    if(!m) throw new Error('Address not found');
-    const state=m.geographies?.States?.[0];
-    const county=m.geographies?.Counties?.[0] || Object.values(m.geographies||{}).flat().find(g=>g && g.COUNTY && g.STATE && /County|Parish|Borough|Municipio|Planning Region/i.test(g.NAME||''));
-    const stateFips=state?.STATE || county?.STATE;
-    const countyFips=county?.COUNTY;
-    const stateAbbr=state?.STUSAB || m.addressComponents?.state || parseStateAbbr(m.matchedAddress);
-    if(!stateFips || !countyFips) throw new Error('County could not be resolved');
-    const tax=await taxRateForCounty(stateAbbr,stateFips,countyFips,county?.NAME);
-    return {resolvedLocation:m.matchedAddress||loc, stateAbbr, dataTier:tax.dataTier, effectiveTaxRatePct:tax.ratePct, sourceName:tax.sourceName};
-  }
+  const estTax = price * rate/100;
+  const estIns = stateData.ins * (price>0 ? Math.max(0.6, Math.min(2, price/350000)) : 1);
 
-  // City, State: Zippopotam resolves a representative coordinate; Census Geocoder resolves county.
-  const stateAbbr=parseStateAbbr(loc);
-  if(stateAbbr){
-    const stateName=Object.keys(STATE_NAMES).find(n=>STATE_NAMES[n]===stateAbbr)||'';
-    const city=loc.replace(new RegExp(',?\\s*(?:'+stateAbbr+'|'+stateName+')\\s*$','i'),'').trim().replace(/,$/,'');
-    try{
-      const info=await cityStateInfo(city,stateAbbr);
-      const p=info.places?.[0];
-      if(p){
-        const geo=await countyFromCoordinates(Number(p.latitude),Number(p.longitude));
-        const tax=await taxRateForCounty(stateAbbr,geo.stateFips,geo.countyFips,geo.countyName);
-        return {resolvedLocation:`${city}, ${stateAbbr}`, stateAbbr, dataTier:tax.dataTier, effectiveTaxRatePct:tax.ratePct, sourceName:tax.sourceName};
-      }
-    }catch{}
-    const rate=STATE_PROPERTY_TAX_RATE[stateAbbr];
-    if(rate>0) return {resolvedLocation:`${city}, ${stateAbbr}`, stateAbbr, dataTier:'state-estimate', effectiveTaxRatePct:rate, sourceName:`${stateAbbr} statewide effective rate — Tax Foundation 2026 (2024 ACS)`};
-  }
-  throw new Error('Use a full street address, ZIP code, or City, State.');
+  propertyTaxRatePct = rate;
+  lastLocationResult = { resolvedLocation: (locText? locText+', ' : '')+placeName, rate, tax:estTax, ins:estIns };
+
+  const resultEl=$('buy-loc-result');
+  resultEl.style.display='block';
+  resultEl.innerHTML = `
+    <div class="rc-tag">${tag}</div>
+    <div class="rc-row"><span>Location</span><span class="v">${lastLocationResult.resolvedLocation}</span></div>
+    <div class="rc-row"><span>Effective tax rate</span><span class="v">${rate.toFixed(2)}%</span></div>
+    <div class="rc-row"><span>Est. annual property tax</span><span class="v">$${Math.round(estTax).toLocaleString()}</span></div>
+    <div class="rc-row"><span>Est. annual insurance</span><span class="v">$${Math.round(estIns).toLocaleString()}</span></div>
+    <div class="rc-note">${sourceNote} Tax and insurance fields below were updated, and you can still edit them by hand.</div>
+  `;
+  setTaxAndInsurance(estTax, estIns);
 }
-async function lookupLocation(){
-  const btn = $('loc-lookup-btn');
-  const resultEl = $('loc-lookup-result');
-  const loc = $('loc-input').value.trim();
-  const price = parseFloat(priceEl.value)||0;
-  if(!loc){
-    resultEl.innerHTML = `<div class="lr-error">Enter an address, ZIP code, or city and state first.</div>`;
-    return;
-  }
-  btn.disabled = true;
-  btn.textContent = 'Looking up…';
-  resultEl.innerHTML = '';
+$('buy-loc-lookup-btn').addEventListener('click', lookupLocation);
 
-  try{
-    const parsed=await estimateFromLocation(loc,price);
-    propertyTaxRatePct = Number(parsed.effectiveTaxRatePct)||0;
-    const tax=price*propertyTaxRatePct/100;
-    const ins=insuranceEstimate(parsed.stateAbbr,price);
-    lastLocationResult = {...parsed, estimatedAnnualPropertyTax:tax, estimatedAnnualInsurance:ins};
-
-    const tierLabel = { 'specific-property':'Specific property record', 'county-city-rate':'County-level property-tax estimate', 'zip-estimate':'Local ZIP-code estimate', 'state-estimate':'State-level fallback' }[parsed.dataTier] || parsed.dataTier;
-    resultEl.innerHTML = `
-      <div class="lr-tag">PUBLIC DATA ESTIMATE</div>
-      <div class="lr-row"><span>Resolved location</span><span class="v">${esc(parsed.resolvedLocation||loc)}</span></div>
-      <div class="lr-row"><span>Property-tax basis</span><span class="v">${esc(tierLabel)}</span></div>
-      <div class="lr-row"><span>Effective tax rate</span><span class="v">${propertyTaxRatePct.toFixed(3)}%</span></div>
-      <div class="lr-row"><span>Est. annual property tax</span><span class="v">$${Math.round(tax).toLocaleString()}</span></div>
-      <div class="lr-row"><span>Est. annual insurance</span><span class="v">$${Math.round(ins).toLocaleString()}</span></div>
-      <div class="lr-note">Property tax uses the best available public county/state effective-rate data (${esc(parsed.sourceName||'local estimate')}). Insurance is a state-level budgeting model adjusted for home value, not a quote. Both fields below remain editable.</div>
-    `;
-    setTaxAndInsurance(tax,ins);
-  }catch(err){
-    resultEl.innerHTML = `<div class="lr-error">Couldn't resolve that location automatically. ${esc(err?.message||'Try a full street address, ZIP code, or City, State.')} You can still enter tax and insurance manually.</div>`;
-  }finally{
-    btn.disabled = false;
-    btn.textContent = 'Estimate tax & insurance for this location';
+function reapplyLocationTaxRate(){
+  if(locationLookupActive && propertyTaxRatePct!=null){
+    const price=parseFloat(buyPriceEl.value)||0;
+    autofillingTaxIns=true;
+    buyTaxEl.value=Math.round(price*propertyTaxRatePct/100);
+    autofillingTaxIns=false;
   }
 }
 
-$('loc-lookup-btn').addEventListener('click', lookupLocation);
+function calcBuy(){
+  const price=parseFloat(buyPriceEl.value)||0;
+  const down=Math.min(parseFloat(buyDownEl.value)||0, price);
+  const rate=parseFloat(buyRateEl.value)||0;
+  const term=parseFloat(buyTermEl.value)||30;
+  const tax=parseFloat(buyTaxEl.value)||0;
+  const ins=parseFloat(buyInsEl.value)||0;
+  const hoa=parseFloat(buyHoaEl.value)||0;
 
-function calc(){
-  const price = parseFloat(priceEl.value)||0;
-  const down = Math.min(parseFloat(downEl.value)||0, price);
-  const rate = parseFloat(rateEl.value)||0;
-  const term = parseFloat(termEl.value)||30;
-  const tax = parseFloat(taxEl.value)||0;
-  const ins = parseFloat(insEl.value)||0;
-  const hoa = parseFloat(hoaEl.value)||0;
-
-  const loan = Math.max(price-down, 0);
-  const n = term*12;
-  const r = (rate/100)/12;
+  const loan=Math.max(price-down,0);
+  const n=term*12;
+  const r=(rate/100)/12;
   let M;
-  if(r===0){ M = n>0 ? loan/n : 0; }
-  else{ M = loan * (r*Math.pow(1+r,n)) / (Math.pow(1+r,n)-1); }
-  if(!isFinite(M)) M = 0;
+  if(r===0){ M = n>0 ? loan/n : 0; } else { M = loan*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1); }
+  if(!isFinite(M)) M=0;
 
-  // amortization schedule
-  let balance = loan;
-  const schedule = [];
-  let cumInterest = 0;
-  let crossoverMonth = null;
+  let balance=loan, cumInterest=0;
+  const schedule=[];
   for(let m=1;m<=n;m++){
-    const interestPay = balance*r;
-    let principalPay = M - interestPay;
-    if(principalPay > balance) principalPay = balance;
-    balance -= principalPay;
-    cumInterest += interestPay;
+    const interestPay=balance*r;
+    let principalPay=M-interestPay;
+    if(principalPay>balance) principalPay=balance;
+    balance-=principalPay;
+    cumInterest+=interestPay;
     schedule.push({m, interestPay, principalPay, balance});
-    if(crossoverMonth===null && principalPay >= interestPay) crossoverMonth = m;
     if(balance<=0.5) break;
   }
 
-  const taxMo = tax/12, insMo = ins/12;
-  const totalMonthly = M + taxMo + insMo + hoa;
+  const taxMo=tax/12, insMo=ins/12;
+  const totalMonthly=M+taxMo+insMo+hoa;
 
-  // update labels
-  $('v-price').textContent = fmt(price);
-  $('v-down').textContent = fmt(down);
-  $('v-downpct').textContent = (price>0 ? ((down/price)*100).toFixed(1) : '0') + '%';
-  $('v-rate').textContent = rate.toFixed(2) + '%';
-  $('v-term').textContent = term + ' yrs';
-  $('v-tax').textContent = fmt(tax);
-  $('v-ins').textContent = fmt(ins);
-  $('v-hoa').textContent = fmt(hoa);
-  priceR.value = price;
+  $('v-buy-price').textContent=fmt(price);
+  $('v-buy-down').textContent=fmt(down);
+  $('v-buy-downpct').textContent=(price>0?((down/price)*100).toFixed(1):'0')+'%';
+  $('v-buy-rate').textContent=rate.toFixed(2)+'%';
+  $('v-buy-term').textContent=term+' yrs';
+  $('v-buy-tax').textContent=fmt(tax);
+  $('v-buy-ins').textContent=fmt(ins);
+  $('v-buy-hoa').textContent=fmt(hoa);
+  buyPriceR.value=price;
 
-  const [dollars, cents] = fmt2(totalMonthly).split('.');
-  $('monthly-total').innerHTML = '$'+dollars+'<span class="cents">.'+cents+'</span>';
-  $('row-pi').textContent = fmt(M);
-  $('row-tax').textContent = fmt(taxMo);
-  $('row-ins').textContent = fmt(insMo);
-  $('row-hoa').textContent = fmt(hoa);
+  const [dollars,cents]=fmt2(totalMonthly).split('.');
+  $('buy-monthly-total').innerHTML='$'+dollars+'<span class="cents">.'+cents+'</span>';
+  $('buy-row-pi').textContent=fmt(M);
+  $('buy-row-tax').textContent=fmt(taxMo);
+  $('buy-row-ins').textContent=fmt(insMo);
+  $('buy-row-hoa').textContent=fmt(hoa);
+  $('buy-stat-loan').textContent=fmt(loan);
+  $('buy-stat-interest').textContent=fmt(cumInterest);
+  $('buy-stat-totalpaid').textContent=fmt(cumInterest+loan);
+  $('buy-stat-payoff').textContent=(schedule.length/12).toFixed(1)+' yrs';
 
-  $('stat-loan').textContent = fmt(loan);
-  $('stat-interest').textContent = fmt(cumInterest);
-  $('stat-totalpaid').textContent = fmt(cumInterest + loan);
-  const payoffYears = schedule.length/12;
-  $('stat-payoff').textContent = payoffYears.toFixed(1) + ' yrs';
-
-  drawChart(schedule, M, crossoverMonth, n);
-
-  window.__newHomeMonthly = totalMonthly;
-  updateComparison();
+  drawAmortChart(schedule, M, n);
+  window.__buyMonthly = totalMonthly;
+  if(!$('screen-summary').hidden) updateSummary();
 }
 
-function drawChart(schedule, M, crossoverMonth, n){
-  const wrap = $('chart-wrap');
-  const W = wrap.clientWidth > 0 ? wrap.clientWidth : 960;
-  const H = 260;
-  const padL = 46, padR = 20, padT = 14, padB = 30;
-  const plotW = W - padL - padR, plotH = H - padT - padB;
-
+function drawAmortChart(schedule, M, n){
+  const wrap=$('buy-chart-wrap');
+  const W = wrap.clientWidth>0?wrap.clientWidth:900;
+  const H=240, padL=44, padR=18, padT=12, padB=28;
+  const plotW=W-padL-padR, plotH=H-padT-padB;
   if(schedule.length===0){ wrap.innerHTML=''; return; }
 
-  const step = Math.max(1, Math.floor(schedule.length/120)); // sample for perf
-  const pts = schedule.filter((s,i)=> i%step===0 || i===schedule.length-1);
-
+  const step=Math.max(1, Math.floor(schedule.length/120));
+  const pts=schedule.filter((s,i)=> i%step===0 || i===schedule.length-1);
   const x = i => padL + (i/(pts.length-1||1))*plotW;
-  const yInterest = s => padT + (1 - s.interestPay/M) * plotH;
-  const yPrincipal = s => padT; // top baseline for stacked areas below
 
-  // stacked: principal (bottom, from H up) + interest (top)
-  let principalPath = `M ${padL} ${padT+plotH} `;
-  let interestTopPath = `M ${padL} ${padT} `;
+  let principalPath=`M ${padL} ${padT+plotH} `;
+  let interestPath=`M ${padL} ${padT} `;
   pts.forEach((s,i)=>{
-    const px = x(i);
-    const principalFrac = s.principalPay / M;
-    const interestFrac = s.interestPay / M;
-    const yPrincipalTop = padT + plotH*(1-principalFrac);
-    principalPath += `L ${px} ${yPrincipalTop} `;
-    interestTopPath += `L ${px} ${padT + plotH*interestFrac} `;
+    const px=x(i);
+    const principalFrac=s.principalPay/M, interestFrac=s.interestPay/M;
+    principalPath += `L ${px} ${padT+plotH*(1-principalFrac)} `;
+    interestPath += `L ${px} ${padT+plotH*interestFrac} `;
   });
   principalPath += `L ${padL+plotW} ${padT+plotH} Z`;
-
-  // interest area = full area minus principal area, drawn as its own polygon
-  let interestPath = `M ${padL} ${padT} `;
-  pts.forEach((s,i)=>{
-    const px = x(i);
-    const interestFrac = s.interestPay / M;
-    interestPath += `L ${px} ${padT + plotH*interestFrac} `;
-  });
   interestPath += `L ${padL+plotW} ${padT} Z`;
 
-  // gridlines (years)
-  const years = Math.round(n/12);
-  let gridLines = '';
+  const years=Math.round(n/12);
   const yearStep = years<=10?1: years<=20?2:5;
+  let gridLines='';
   for(let yr=0; yr<=years; yr+=yearStep){
-    const idx = Math.min(pts.length-1, Math.round((yr*12/n)*(pts.length-1)));
-    const gx = x(idx);
-    gridLines += `<line x1="${gx}" y1="${padT}" x2="${gx}" y2="${padT+plotH}" stroke="var(--line-faint)" stroke-width="0.5" opacity="0.35"/>`;
+    const idx=Math.min(pts.length-1, Math.round((yr*12/n)*(pts.length-1)));
+    const gx=x(idx);
+    gridLines += `<line x1="${gx}" y1="${padT}" x2="${gx}" y2="${padT+plotH}" stroke="var(--line-faint)" stroke-width="0.5" opacity="0.5"/>`;
     gridLines += `<text x="${gx}" y="${H-8}" fill="var(--line-dim)" font-size="10" text-anchor="middle">Y${yr}</text>`;
   }
 
-  // crossover marker
-  let crossoverMarkup = '';
-  if(crossoverMonth){
-    const idx = pts.reduce((best,p,i)=> Math.abs(p.m-crossoverMonth) < Math.abs(pts[best].m-crossoverMonth) ? i : best, 0);
-    const cx = x(idx);
-    crossoverMarkup = `
-      <line x1="${cx}" y1="${padT}" x2="${cx}" y2="${padT+plotH}" stroke="var(--line)" stroke-width="1" stroke-dasharray="4 3"/>
-      <circle cx="${cx}" cy="${padT+plotH/2}" r="3" fill="var(--line)"/>
-      <text x="${cx}" y="${padT-2}" fill="var(--line)" font-size="10" text-anchor="middle">YR ${(crossoverMonth/12).toFixed(1)}</text>
-    `;
-  }
-
-  const svg = `
-  <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
+  wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
     <rect x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" fill="none" stroke="var(--line-faint)" stroke-width="1"/>
     ${gridLines}
-    <path d="${principalPath}" fill="var(--accent)" fill-opacity="0.55" stroke="var(--accent)" stroke-width="1.2"/>
-    <path d="${interestPath}" fill="var(--line-faint)" fill-opacity="0.4" stroke="var(--line-dim)" stroke-width="1"/>
-    ${crossoverMarkup}
+    <path d="${principalPath}" fill="var(--accent)" fill-opacity="0.5" stroke="var(--accent)" stroke-width="1.2"/>
+    <path d="${interestPath}" fill="var(--line-faint)" fill-opacity="0.55" stroke="var(--line-dim)" stroke-width="1"/>
     <text x="${padL-8}" y="${padT+6}" fill="var(--line-dim)" font-size="10" text-anchor="end">100%</text>
     <text x="${padL-8}" y="${padT+plotH}" fill="var(--line-dim)" font-size="10" text-anchor="end">0%</text>
   </svg>`;
-  wrap.innerHTML = svg;
 }
 
-// ---- relocation comparison ----
-const curHousingEl = $('cur-housing'), curMilesEl = $('cur-miles'), curDaysEl = $('cur-days'),
-      curRateEl = $('cur-rate'), curParkEl = $('cur-park'), curGasEl = $('cur-gasprice'), curMpgEl = $('cur-mpg'),
-      curTotalMilesEl = $('cur-totalmiles'),
-      newMilesEl = $('new-miles'), newDaysEl = $('new-days'), newRateEl = $('new-rate'), newParkEl = $('new-park'),
-      newGasEl = $('new-gasprice'), newMpgEl = $('new-mpg'), newTotalMilesEl = $('new-totalmiles');
+buyPriceEl.addEventListener('input', ()=>{ syncDownFromAmount(); reapplyLocationTaxRate(); calcBuy(); });
+buyPriceR.addEventListener('input', ()=>{ buyPriceEl.value=buyPriceR.value; syncDownFromAmount(); reapplyLocationTaxRate(); calcBuy(); });
+buyDownEl.addEventListener('input', ()=>{ syncDownFromAmount(); calcBuy(); });
+buyDownpctEl.addEventListener('input', ()=>{ syncDownFromPct(); calcBuy(); });
+[buyRateEl, buyTermEl, buyTaxEl, buyInsEl, buyHoaEl].forEach(el=> el.addEventListener('input', calcBuy));
+window.addEventListener('resize', ()=>{ calcBuy(); if(!$('screen-cars').hidden){ renderCarInfo('cur'); renderCarInfo('new'); } if(!$('screen-summary').hidden) updateSummary(); });
 
-const costMode = { cur: 'permile', new: 'permile' };
-const milesMode = { cur: 'perday', new: 'perday' };
-const vehicleCount = { cur: 1, new: 1 };
-const vehicleData = { cur: null, new: null }; // { cars: [ {mpg, maintPerMile, depPerMile, lifespanMiles, notes}, ... ] }
+// ---- SELL screen ----
+const sellHousingEl=$('sell-housing'), sellValueEl=$('sell-value'), sellBalanceEl=$('sell-balance'), sellCostpctEl=$('sell-costpct');
 
-const COMMON_CARS = {
-  Toyota:['4Runner','Camry','Camry Hybrid','Corolla','Corolla Cross','Crown','GR86','Highlander','Highlander Hybrid','Land Cruiser','Prius','RAV4','RAV4 Hybrid','Sequoia','Sienna','Tacoma','Tundra','Venza'],
-  Honda:['Accord','Accord Hybrid','Civic','CR-V','CR-V Hybrid','HR-V','Odyssey','Passport','Pilot','Ridgeline'],
-  Ford:['Bronco','Bronco Sport','Edge','Escape','Expedition','Explorer','F-150','F-150 Lightning','Maverick','Mustang','Mustang Mach-E','Ranger'],
-  Chevrolet:['Blazer','Bolt EV','Colorado','Equinox','Malibu','Silverado 1500','Suburban','Tahoe','Trailblazer','Traverse','Trax'],
-  Nissan:['Altima','Armada','Frontier','Kicks','Leaf','Maxima','Murano','Pathfinder','Rogue','Sentra','Titan','Versa','Z'],
-  Hyundai:['Elantra','Elantra Hybrid','Ioniq 5','Ioniq 6','Kona','Palisade','Santa Cruz','Santa Fe','Sonata','Tucson','Venue'],
-  Kia:['Carnival','EV6','EV9','Forte','K5','Niro','Seltos','Sorento','Soul','Sportage','Telluride'],
-  Subaru:['Ascent','BRZ','Crosstrek','Forester','Impreza','Legacy','Outback','Solterra','WRX'],
-  Mazda:['CX-30','CX-5','CX-50','CX-70','CX-90','Mazda3','MX-5 Miata'],
-  Volkswagen:['Atlas','Atlas Cross Sport','Golf GTI','Golf R','ID.4','Jetta','Taos','Tiguan'],
-  Jeep:['Cherokee','Compass','Gladiator','Grand Cherokee','Grand Cherokee L','Renegade','Wagoneer','Wrangler'],
-  GMC:['Acadia','Canyon','Sierra 1500','Terrain','Yukon'],
-  Ram:['1500','2500','3500','ProMaster'],
-  Dodge:['Challenger','Charger','Durango','Hornet'],
-  Buick:['Enclave','Encore GX','Envision','Envista'],
-  Cadillac:['CT4','CT5','Escalade','LYRIQ','XT4','XT5','XT6'],
-  Lexus:['ES','GX','IS','LC','LS','LX','NX','RC','RX','TX','UX'],
-  Acura:['Integra','MDX','RDX','TLX','ZDX'],
-  BMW:['2 Series','3 Series','4 Series','5 Series','7 Series','i4','i5','iX','X1','X2','X3','X4','X5','X6','X7'],
-  'Mercedes-Benz':['A-Class','C-Class','CLA','CLE','E-Class','EQE','EQS','GLA','GLB','GLC','GLE','GLS','S-Class'],
-  Audi:['A3','A4','A5','A6','A7','A8','e-tron GT','Q3','Q4 e-tron','Q5','Q7','Q8'],
-  Volvo:['C40','S60','S90','V60','V90','XC40','XC60','XC90'],
-  Tesla:['Model 3','Model S','Model X','Model Y','Cybertruck'],
-  Porsche:['718 Boxster','718 Cayman','911','Cayenne','Macan','Panamera','Taycan'],
-  Mitsubishi:['Eclipse Cross','Mirage','Outlander','Outlander PHEV'],
-  Lincoln:['Aviator','Corsair','Nautilus','Navigator'],
-  Chrysler:['300','Pacifica','Voyager'],
-  Rivian:['R1S','R1T']
-};
+function calcSell(){
+  const housing=parseFloat(sellHousingEl.value)||0;
+  $('v-sell-housing').textContent=fmt(housing);
+  window.__sellMonthly = housing;
 
-function populateMakeSelect(el, defaultMake){
-  const makes=Object.keys(COMMON_CARS).sort((a,b)=>a.localeCompare(b));
-  el.innerHTML=makes.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
-  el.value=defaultMake && COMMON_CARS[defaultMake] ? defaultMake : makes[0];
+  const value=parseFloat(sellValueEl.value)||0;
+  const balance=parseFloat(sellBalanceEl.value)||0;
+  const costPct=parseFloat(sellCostpctEl.value)||0;
+  const netProceeds = value - balance - (value*costPct/100);
+  $('v-sell-value').textContent=fmt(value);
+  $('v-sell-balance').textContent=fmt(balance);
+  $('v-sell-costpct').textContent=costPct+'%';
+  $('sell-net-proceeds').textContent=fmt(netProceeds);
+  window.__netProceeds = netProceeds;
+
+  if(!$('screen-summary').hidden) updateSummary();
 }
-function populateModelSelect(makeEl, modelEl, defaultModel){
-  const models=(COMMON_CARS[makeEl.value]||[]).slice();
-  modelEl.innerHTML=models.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
-  if(defaultModel && models.includes(defaultModel)) modelEl.value=defaultModel;
+[sellHousingEl, sellValueEl, sellBalanceEl, sellCostpctEl].forEach(el=> el.addEventListener('input', calcSell));
+
+// ---- CARS screen ----
+function carsBlockHTML(s, defaults){
+  return `
+    <div class="section-label" style="margin-top:0;">COMMUTE</div>
+    <div class="field">
+      <div class="seg-toggle miles-mode-toggle" data-scenario="${s}">
+        <button type="button" class="mode-btn active" data-mmode="perday">One-way × days</button>
+        <button type="button" class="mode-btn" data-mmode="total">Total miles/mo</button>
+      </div>
+    </div>
+    <div class="two-col miles-mode-field" data-scenario="${s}" data-mmode="perday">
+      <div class="field"><label>Miles one-way <span class="val" id="v-${s}-miles">${defaults.miles}</span></label>
+        <input type="number" id="${s}-miles" value="${defaults.miles}" step="1" min="0"></div>
+      <div class="field"><label>Days on-site /wk <span class="val" id="v-${s}-days">${defaults.days}</span></label>
+        <input type="number" id="${s}-days" value="${defaults.days}" step="1" min="0" max="7"></div>
+    </div>
+    <div class="field miles-mode-field" data-scenario="${s}" data-mmode="total" style="display:none;">
+      <label>Total miles driven /mo <span class="val" id="v-${s}-totalmiles">${defaults.totalmiles}</span></label>
+      <input type="number" id="${s}-totalmiles" value="${defaults.totalmiles}" step="10" min="0">
+    </div>
+
+    <div class="field">
+      <div class="seg-toggle cost-mode-toggle" data-scenario="${s}">
+        <button type="button" class="mode-btn active" data-mode="gas">gas+MPG</button>
+        <button type="button" class="mode-btn" data-mode="car">By vehicle</button>
+      </div>
+    </div>
+    <div class="two-col cost-mode-field" data-scenario="${s}" data-mode="gas">
+      <div class="field"><label>Gas price /gal <span class="val" id="v-${s}-gasprice">$3.50</span></label>
+        <input type="number" id="${s}-gasprice" value="3.50" step="0.05" min="0"></div>
+      <div class="field"><label>Car MPG <span class="val" id="v-${s}-mpg">28</span></label>
+        <input type="number" id="${s}-mpg" value="28" step="1" min="1"></div>
+    </div>
+
+    <div class="cost-mode-field" data-scenario="${s}" data-mode="car" style="display:none;">
+      <div class="subgroup-label" style="margin-top:0;">VEHICLES</div>
+
+      <div class="car-slot-label" id="${s}-car1-label" style="display:none;">CAR 1</div>
+      <div class="two-col">
+        <div class="field"><label>Make</label><select id="${s}-car-make"></select></div>
+        <div class="field"><label>Model</label><select id="${s}-car-model"></select></div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Year</label>
+          <input type="number" id="${s}-car-year" value="2020" step="1" min="1980" max="2027"></div>
+        <div class="field"><label>Current odometer (mi)</label>
+          <input type="number" id="${s}-car-odo" value="60000" step="1000" min="0"></div>
+      </div>
+
+      <div class="car2-block" data-scenario="${s}" style="display:none;">
+        <div class="car-slot-label">CAR 2</div>
+        <div class="two-col">
+          <div class="field"><label>Make</label><select id="${s}-car2-make"></select></div>
+          <div class="field"><label>Model</label><select id="${s}-car2-model"></select></div>
+        </div>
+        <div class="two-col">
+          <div class="field"><label>Year</label>
+            <input type="number" id="${s}-car2-year" value="2018" step="1" min="1980" max="2027"></div>
+          <div class="field"><label>Current odometer (mi)</label>
+            <input type="number" id="${s}-car2-odo" value="80000" step="1000" min="0"></div>
+        </div>
+        <button type="button" class="remove-link remove-vehicle-btn" data-scenario="${s}">Remove vehicle</button>
+      </div>
+
+      <button type="button" class="add-vehicle-btn" data-scenario="${s}">+ Add vehicle</button>
+
+      <div class="field"><label>Gas price /gal</label>
+        <input type="number" id="${s}-car-gasprice" value="3.50" step="0.05" min="0"></div>
+      <div class="result-card" id="${s}-car-result"></div>
+    </div>
+  `;
 }
-async function mergeNhtsaModels(year, make, modelEl){
-  try{
-    const u=`https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeYear/make/${encodeURIComponent(make)}/modelyear/${encodeURIComponent(year)}?format=json`;
-    const r=await fetch(u);
-    if(!r.ok) return;
-    const d=await r.json();
-    const current=modelEl.value;
-    const live=(d.Results||[]).map(x=>x.Model_Name).filter(Boolean);
-    const merged=[...new Set([...(COMMON_CARS[make]||[]),...live])].sort((a,b)=>a.localeCompare(b));
-    if(merged.length){ modelEl.innerHTML=merged.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join(''); if(merged.includes(current)) modelEl.value=current; }
-  }catch{}
-}
-function initVehicleDropdowns(){
-  [['cur',1],['cur',2],['new',1],['new',2]].forEach(([scenario,slot])=>{
-    const suffix=slot===2?'-car2-':'-car-';
-    const makeEl=$(scenario+suffix+'make'), modelEl=$(scenario+suffix+'model'), yearEl=$(scenario+suffix+'year');
-    const dMake=makeEl.dataset.default || 'Toyota', dModel=modelEl.dataset.default || '';
-    populateMakeSelect(makeEl,dMake); populateModelSelect(makeEl,modelEl,dModel);
-    const refresh=()=>{ populateModelSelect(makeEl,modelEl,''); mergeNhtsaModels(yearEl.value,makeEl.value,modelEl); vehicleData[scenario]=null; $(scenario+'-lookup-result').innerHTML=''; updateComparison(); };
-    makeEl.addEventListener('change',refresh);
-    yearEl.addEventListener('change',()=>{ mergeNhtsaModels(yearEl.value,makeEl.value,modelEl); vehicleData[scenario]=null; $(scenario+'-lookup-result').innerHTML=''; updateComparison(); });
-    mergeNhtsaModels(yearEl.value,makeEl.value,modelEl);
-  });
-}
+$('cars-block-cur').innerHTML = carsBlockHTML('cur', {miles:18, days:5, totalmiles:780});
+$('cars-block-new').innerHTML = carsBlockHTML('new', {miles:4, days:5, totalmiles:173});
 
-function getCarShares(scenario){
-  if(vehicleCount[scenario]===1) return [1];
-  const el=$(scenario+'-car1-share');
-  const pct=Math.max(0,Math.min(100,parseFloat(el?.value)||0));
-  if(el) el.value=pct;
-  const p=pct/100;
-  const v1=$('v-'+scenario+'-car1-share'), v2=$('v-'+scenario+'-car2-share');
-  if(v1) v1.textContent=pct.toFixed(0)+'%';
-  if(v2) v2.textContent=(100-pct).toFixed(0)+'%';
-  return [p,1-p];
-}
+const costMode={cur:'gas', new:'gas'};
+const milesMode={cur:'perday', new:'perday'};
+const vehicleCount={cur:1, new:1};
 
-document.querySelectorAll('.cost-mode-toggle').forEach(toggle=>{
-  const scenario = toggle.dataset.scenario;
-  toggle.querySelectorAll('.mode-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const mode = btn.dataset.mode;
-      costMode[scenario] = mode;
-      toggle.querySelectorAll('.mode-btn').forEach(b=> b.classList.toggle('active', b===btn));
-      document.querySelectorAll(`.cost-mode-field[data-scenario="${scenario}"]`).forEach(f=>{
-        f.style.display = (f.dataset.mode===mode) ? '' : 'none';
-      });
-      updateComparison();
-    });
-  });
-});
+// When "By vehicle" is turned on for the current commute, the new commute defaults to the
+// same car — most households don't buy a different car just because they moved. Stays in
+// sync as the current car's details change, until the new commute's own car fields are
+// edited directly, at which point it's treated as an intentional override.
+let newCarSyncedFromCur=false, syncingCarProgrammatically=false;
+function syncNewCarFromCur(){
+  syncingCarProgrammatically=true;
 
-document.querySelectorAll('.miles-mode-toggle').forEach(toggle=>{
-  const scenario = toggle.dataset.scenario;
-  toggle.querySelectorAll('.mode-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const mmode = btn.dataset.mmode;
-      milesMode[scenario] = mmode;
-      toggle.querySelectorAll('.mode-btn').forEach(b=> b.classList.toggle('active', b===btn));
-      document.querySelectorAll(`.miles-mode-field[data-scenario="${scenario}"]`).forEach(f=>{
-        f.style.display = (f.dataset.mmode===mmode) ? '' : 'none';
-      });
-      if(vehicleData[scenario]) renderVehicleResult(scenario);
-      updateComparison();
-    });
-  });
-});
+  const newMake1=$('new-car-make'), newModel1=$('new-car-model');
+  newMake1.value=$('cur-car-make').value;
+  populateModelDropdown(newMake1, newModel1, $('cur-car-model').value);
+  $('new-car-year').value=$('cur-car-year').value;
+  $('new-car-odo').value=$('cur-car-odo').value;
 
-document.querySelectorAll('.vehicle-count-toggle').forEach(toggle=>{
-  const scenario = toggle.dataset.scenario;
-  toggle.querySelectorAll('.mode-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const count = Number(btn.dataset.count);
-      vehicleCount[scenario] = count;
-      toggle.querySelectorAll('.mode-btn').forEach(b=> b.classList.toggle('active', b===btn));
-      document.querySelector(`.car2-block[data-scenario="${scenario}"]`).style.display = count===2 ? '' : 'none';
-      const alloc=document.querySelector(`.car-allocation-block[data-scenario="${scenario}"]`);
-      if(alloc) alloc.style.display = count===2 ? '' : 'none';
-      $(scenario+'-car1-label').style.display = count===2 ? '' : 'none';
-      vehicleData[scenario] = null; // stale after changing vehicle count, needs re-lookup
-      $(scenario+'-lookup-result').innerHTML = '';
-      updateComparison();
-    });
-  });
-});
-
-function getMonthlyMiles(scenario){
-  if(milesMode[scenario]==='total'){
-    return parseFloat((scenario==='cur'?curTotalMilesEl:newTotalMilesEl).value)||0;
-  }
-  const miles = parseFloat((scenario==='cur'?curMilesEl:newMilesEl).value)||0;
-  const days = parseFloat((scenario==='cur'?curDaysEl:newDaysEl).value)||0;
-  return miles*2*days*4.33;
-}
-
-async function lookupEpaMpg(year,make,model){
-  try{
-    const optUrl=`https://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year=${encodeURIComponent(year)}&make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`;
-    const optRes=await fetch(optUrl,{headers:{'Accept':'application/xml'}});
-    if(!optRes.ok) throw new Error('EPA options unavailable');
-    const optXml=new DOMParser().parseFromString(await optRes.text(),'application/xml');
-    const items=[...optXml.querySelectorAll('menuItem')];
-    if(!items.length) throw new Error('EPA configuration not found');
-    const id=items[0].querySelector('value')?.textContent?.trim();
-    const optionText=items[0].querySelector('text')?.textContent?.trim()||model;
-    if(!id) throw new Error('EPA vehicle ID missing');
-    const vRes=await fetch(`https://www.fueleconomy.gov/ws/rest/vehicle/${encodeURIComponent(id)}`,{headers:{'Accept':'application/xml'}});
-    if(!vRes.ok) throw new Error('EPA vehicle record unavailable');
-    const vXml=new DOMParser().parseFromString(await vRes.text(),'application/xml');
-    const mpg=Number(vXml.querySelector('comb08')?.textContent || vXml.querySelector('combA08')?.textContent || 0);
-    if(!(mpg>0)) throw new Error('EPA MPG unavailable');
-    return {mpg, optionText};
-  }catch{return null;}
-}
-
-function fallbackMpg(make,model){
-  const t=(make+' '+model).toLowerCase();
-  if(/tesla|rivian|\bev\b|ioniq 5|ioniq 6|mach-e|lightning|lyriq|taycan|solterra|id\.4|e-tron|zdx|eqe|eqs/.test(t)) return 95; // MPGe-style planning proxy
-  if(/prius|hybrid|phev|niro/.test(t)) return 42;
-  if(/tundra|sequoia|tahoe|suburban|yukon|escalade|expedition|navigator|ram 2500|ram 3500|sierra 1500|silverado|f-150|gladiator/.test(t)) return 19;
-  if(/4runner|land cruiser|bronco|wrangler|gx|lx|x7|gls|wagoneer|armada|durango/.test(t)) return 20;
-  if(/civic|corolla|mazda3|elantra|forte|sentra|versa|jetta|impreza/.test(t)) return 32;
-  if(/camry|accord|sonata|k5|malibu|legacy|a4|3 series|c-class|es/.test(t)) return 29;
-  if(/rav4|cr-v|tucson|sportage|rogue|forester|cx-5|escape|equinox|tiguan|q5|x3|rx/.test(t)) return 27;
-  return 25;
-}
-function vehiclePlanningAssumptions(year,make,model,odo){
-  const age=Math.max(0,new Date().getFullYear()-Number(year||new Date().getFullYear()));
-  const premium=/BMW|Mercedes|Audi|Porsche|Land Rover|Jaguar/i.test(make);
-  const reliable=/Toyota|Lexus|Honda|Acura|Mazda|Subaru/i.test(make);
-  let maint=.075 + Math.min(age,15)*.004 + (premium?.05:0) - (reliable?.012:0);
-  maint=Math.max(.055,Math.min(.20,maint));
-  let dep=age<=3?.22:age<=7?.14:age<=12?.09:.055;
-  if(premium) dep+=.025;
-  const lifespan=reliable?250000:(premium?190000:220000);
-  return {maintPerMile:maint,depPerMile:dep,lifespanMiles:lifespan};
-}
-
-async function lookupSingleCar(scenario, slot){
-  const suffix = slot===2 ? '-car2-' : '-car-';
-  const year = $(scenario+suffix+'year').value;
-  const make = $(scenario+suffix+'make').value;
-  const model = $(scenario+suffix+'model').value;
-  const odo = parseFloat($(scenario+suffix+'odo').value)||0;
-  if(!make || !model) return null;
-  const epa=await lookupEpaMpg(year,make,model);
-  const mpg=epa?.mpg || fallbackMpg(make,model);
-  const isEV=/Tesla|Rivian|Ioniq 5|Ioniq 6|Mach-E|Lightning|LYRIQ|Taycan|Solterra|ID\.4|e-tron|ZDX|EQE|EQS/i.test(make+' '+model);
-  const a=vehiclePlanningAssumptions(year,make,model,odo);
-  return {
-    year, make, model, mpg, isEV,
-    maintPerMile:a.maintPerMile,
-    depPerMile:a.depPerMile,
-    lifespanMiles:a.lifespanMiles,
-    notes: epa ? `MPG uses a matching EPA FuelEconomy.gov configuration (${epa.optionText}). Maintenance, depreciation and lifespan are planning estimates.` : `EPA MPG was not reachable for this selection, so MPG uses a built-in vehicle-class estimate. Maintenance, depreciation and lifespan are planning estimates.`
-  };
-}
-async function lookupVehicle(scenario){
-  const btn = $(scenario+'-lookup-btn');
-  const resultEl = $(scenario+'-lookup-result');
-  const count = vehicleCount[scenario];
-
-  btn.disabled = true;
-  btn.textContent = 'Looking up…';
-  resultEl.innerHTML = '';
-
-  try{
-    const calls = [lookupSingleCar(scenario, 1)];
-    if(count===2) calls.push(lookupSingleCar(scenario, 2));
-    const cars = (await Promise.all(calls)).filter(Boolean);
-
-    if(cars.length===0){
-      resultEl.innerHTML = `<div class="lr-error">Enter a make and model first.</div>`;
-      vehicleData[scenario] = null;
-    }else{
-      vehicleData[scenario] = { cars };
-      renderVehicleResult(scenario);
+  if(vehicleCount.cur===2){
+    if(vehicleCount.new!==2){
+      vehicleCount.new=2;
+      document.querySelector('.car2-block[data-scenario="new"]').style.display='';
+      $('new-car1-label').style.display='';
+      document.querySelector('.add-vehicle-btn[data-scenario="new"]').style.display='none';
     }
-  }catch(err){
-    resultEl.innerHTML = `<div class="lr-error">Couldn't look that up — try again, or switch to another cost mode.</div>`;
-    vehicleData[scenario] = null;
-  }finally{
-    btn.disabled = false;
-    btn.textContent = 'Estimate vehicle cost';
-    updateComparison();
-  }
-}
-
-function carPerMile(car, gasPrice){
-  const fuelPerMile = car.isEV ? 0.045 : (car.mpg>0 ? gasPrice/car.mpg : 0);
-  return fuelPerMile + car.maintPerMile + car.depPerMile;
-}
-
-function blendedPerMile(scenario){
-  const vd = vehicleData[scenario];
-  if(!vd || !vd.cars.length) return 0;
-  const gasPrice = parseFloat($(scenario+'-car-gasprice').value)||0;
-  const perMiles = vd.cars.map(c=> carPerMile(c, gasPrice));
-  const shares=getCarShares(scenario);
-  return perMiles.reduce((sum,v,i)=>sum+v*(shares[i]??0),0);
-}
-
-function renderVehicleResult(scenario){
-  const resultEl = $(scenario+'-lookup-result');
-  const vd = vehicleData[scenario];
-  if(!vd){ resultEl.innerHTML=''; return; }
-  const gasPrice = parseFloat($(scenario+'-car-gasprice').value)||0;
-  const monthlyMiles = getMonthlyMiles(scenario);
-  const annualMiles = monthlyMiles*12;
-  const shares = getCarShares(scenario);
-
-  const carRows = vd.cars.map((car,i)=>{
-    const fuelPerMile = car.isEV ? 0.045 : (car.mpg>0 ? gasPrice/car.mpg : 0);
-    const totalPerMile = fuelPerMile + car.maintPerMile + car.depPerMile;
-    const odo = parseFloat($(scenario+(i===0?'-car-':'-car2-')+'odo').value)||0;
-    const remainingMiles = Math.max(car.lifespanMiles - odo, 0);
-    const perCarAnnualMiles = annualMiles * (shares[i]??0);
-    const pctPerYear = car.lifespanMiles>0 ? (perCarAnnualMiles/car.lifespanMiles)*100 : 0;
-    const yearsToEndOfLife = perCarAnnualMiles>0 ? (remainingMiles/perCarAnnualMiles) : Infinity;
-    return `
-      <div class="car-slot-label" style="margin-top:${i===0?'0':'12px'};">${vd.cars.length>1 ? 'CAR '+(i+1)+' — ' : ''}${car.year} ${car.make} ${car.model}</div>
-      <div class="lr-row"><span>Typical MPG</span><span class="v">${car.mpg.toFixed(0)}</span></div>
-      <div class="lr-row"><span>Maintenance / mi</span><span class="v">$${car.maintPerMile.toFixed(3)}</span></div>
-      <div class="lr-row"><span>Depreciation / mi</span><span class="v">$${car.depPerMile.toFixed(3)}</span></div>
-      <div class="lr-row"><span>${car.isEV?'Electricity / mi (planning)':'Fuel / mi (at $'+gasPrice.toFixed(2)+'/gal)'}</span><span class="v">$${fuelPerMile.toFixed(3)}</span></div>
-      <div class="lr-row"><span>Cost / mi</span><span class="v" style="color:var(--accent)">$${totalPerMile.toFixed(3)}</span></div>
-      <div class="lr-row"><span>Expected lifespan</span><span class="v">${car.lifespanMiles.toLocaleString()} mi</span></div>
-      <div class="lr-note">${vd.cars.length>1 ? `At the selected ${(shares[i]*100).toFixed(0)}% mileage share, this car` : `This driving`} adds ~${Math.round(perCarAnnualMiles).toLocaleString()} mi/yr — about ${pctPerYear.toFixed(1)}% of its expected lifetime miles every year${isFinite(yearsToEndOfLife) ? `, or roughly ${yearsToEndOfLife.toFixed(1)} years to use up its remaining life on this driving alone` : ''}. ${car.notes}</div>
-    `;
-  }).join('');
-
-  const blended = blendedPerMile(scenario);
-  const blendedNote = vd.cars.length>1 ? `<div class="lr-row" style="margin-top:6px;border-top:1px solid var(--line-faint);padding-top:8px;"><span>Household cost / mi (mileage-weighted)</span><span class="v" style="color:var(--accent)">$${blended.toFixed(3)}</span></div>` : '';
-
-  resultEl.innerHTML = `<div class="lr-tag">AI ESTIMATE</div>${carRows}${blendedNote}`;
-}
-
-function effectiveRate(scenario){
-  if(costMode[scenario]==='car'){
-    return blendedPerMile(scenario);
-  }
-  if(costMode[scenario]==='gas'){
-    const gas = parseFloat((scenario==='cur'?curGasEl:newGasEl).value)||0;
-    const mpg = parseFloat((scenario==='cur'?curMpgEl:newMpgEl).value)||1;
-    return mpg>0 ? gas/mpg : 0;
-  }
-  return parseFloat((scenario==='cur'?curRateEl:newRateEl).value)||0;
-}
-
-function monthlyCommuteCost(scenario, rate, park){
-  return (getMonthlyMiles(scenario)*rate) + park;
-}
-
-function updateHomeSale(){
-  const salePrice = parseFloat($('cur-sale-price').value)||0;
-  const payoff = parseFloat($('cur-mortgage-payoff').value)||0;
-  const sellingPct = parseFloat($('cur-selling-pct').value)||0;
-  const otherCosts = parseFloat($('cur-sale-other').value)||0;
-  const purchasePrice = parseFloat($('cur-purchase-price').value)||0;
-  const improvements = parseFloat($('cur-improvements').value)||0;
-
-  const sellingCosts = salePrice * sellingPct / 100;
-  const equityBeforeCosts = salePrice - payoff;
-  const netProceeds = salePrice - payoff - sellingCosts - otherCosts;
-  const profit = purchasePrice>0 ? salePrice - sellingCosts - otherCosts - purchasePrice - improvements : null;
-
-  $('v-cur-sale-price').textContent = fmt(salePrice);
-  $('v-cur-mortgage-payoff').textContent = fmt(payoff);
-  $('v-cur-selling-pct').textContent = sellingPct.toFixed(1)+'%';
-  $('v-cur-sale-other').textContent = fmt(otherCosts);
-  $('v-cur-purchase-price').textContent = purchasePrice>0 ? fmt(purchasePrice) : 'optional';
-  $('v-cur-improvements').textContent = fmt(improvements);
-  $('sale-equity').textContent = fmt(equityBeforeCosts);
-  $('sale-costs').textContent = fmt(sellingCosts + otherCosts);
-  $('sale-net-proceeds').textContent = fmt(netProceeds);
-  $('sale-net-proceeds').style.color = netProceeds < 0 ? 'var(--danger)' : 'var(--accent)';
-  $('sale-profit').textContent = profit===null ? '—' : fmt(profit);
-  $('sale-profit').style.color = profit===null ? 'var(--line)' : (profit < 0 ? 'var(--danger)' : 'var(--good)');
-
-  window.__homeSale = {salePrice,payoff,sellingPct,otherCosts,purchasePrice,improvements,sellingCosts,equityBeforeCosts,netProceeds,profit};
-  return window.__homeSale;
-}
-
-function timingMortgagePayment(principal, annualRatePct, years){
-  principal=Math.max(Number(principal)||0,0);
-  years=Math.max(Number(years)||0,0);
-  if(principal<=0 || years<=0) return 0;
-  const n=Math.round(years*12);
-  const r=(Number(annualRatePct)||0)/100/12;
-  if(r===0) return principal/n;
-  return principal*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);
-}
-
-function timingRemainingBalance(principal, annualRatePct, years, monthsPaid){
-  principal=Math.max(Number(principal)||0,0);
-  const totalMonths=Math.max(Math.round((Number(years)||0)*12),0);
-  const m=Math.min(Math.max(Math.round(Number(monthsPaid)||0),0),totalMonths);
-  if(principal<=0 || totalMonths<=0 || m>=totalMonths) return 0;
-  const r=(Number(annualRatePct)||0)/100/12;
-  const pmt=timingMortgagePayment(principal,annualRatePct,years);
-  if(r===0) return Math.max(principal-pmt*m,0);
-  const bal=principal*Math.pow(1+r,m)-pmt*((Math.pow(1+r,m)-1)/r);
-  return Math.max(bal,0);
-}
-
-function timingGrowth(base, annualPct, months){
-  return (Number(base)||0)*Math.pow(1+(Number(annualPct)||0)/100,(Number(months)||0)/12);
-}
-
-function timingInputs(){
-  return {
-    horizon: Math.max(1,Math.min(10,Math.round(parseFloat($('timing-horizon').value)||5))),
-    curApp: parseFloat($('cur-appreciation').value)||0,
-    newApp: parseFloat($('new-appreciation').value)||0,
-    curCostGrowth: parseFloat($('cur-cost-growth').value)||0,
-    curMortgageRate: parseFloat($('cur-mortgage-rate').value)||0,
-    curMortgageYears: Math.max(parseFloat($('cur-mortgage-years').value)||1,1),
-    futureRate: parseFloat($('future-mortgage-rate').value)||0,
-    buyerClosingPct: parseFloat($('buyer-closing-pct').value)||0,
-    movingCosts: parseFloat($('moving-costs').value)||0,
-    cashReturn: parseFloat($('cash-return').value)||0,
-    newCostGrowth: parseFloat($('new-cost-growth').value)||0,
-    commuteInflation: parseFloat($('commute-inflation').value)||0
-  };
-}
-
-function simulateMoveAtYear(moveYear, a){
-  const horizonMonths=a.horizon*12;
-  const moveMonth=Math.min(Math.max(Math.round(moveYear*12),0),horizonMonths);
-  const sale=window.__homeSale || updateHomeSale();
-  const curHousing0=parseFloat(curHousingEl.value)||0;
-  const curCommute0=monthlyCommuteCost('cur',effectiveRate('cur'),parseFloat(curParkEl.value)||0);
-  const newCommute0=monthlyCommuteCost('new',effectiveRate('new'),parseFloat(newParkEl.value)||0);
-
-  // Current mortgage paydown while waiting.
-  const curLoanPI=timingMortgagePayment(sale.payoff,a.curMortgageRate,a.curMortgageYears);
-  const curFixedPI=Math.min(curHousing0,curLoanPI || curHousing0);
-  const curVariableHousing=Math.max(curHousing0-curFixedPI,0);
-
-  let cumulativeOutflow=0;
-  for(let m=0;m<moveMonth;m++){
-    const curHousingMonth=curFixedPI+timingGrowth(curVariableHousing,a.curCostGrowth,m);
-    const curCommuteMonth=timingGrowth(curCommute0,a.commuteInflation,m);
-    cumulativeOutflow += curHousingMonth+curCommuteMonth;
+    const newMake2=$('new-car2-make'), newModel2=$('new-car2-model');
+    newMake2.value=$('cur-car2-make').value;
+    populateModelDropdown(newMake2, newModel2, $('cur-car2-model').value);
+    $('new-car2-year').value=$('cur-car2-year').value;
+    $('new-car2-odo').value=$('cur-car2-odo').value;
+  } else if(vehicleCount.new===2){
+    vehicleCount.new=1;
+    document.querySelector('.car2-block[data-scenario="new"]').style.display='none';
+    $('new-car1-label').style.display='none';
+    document.querySelector('.add-vehicle-btn[data-scenario="new"]').style.display='';
   }
 
-  const yearsUntilMove=moveMonth/12;
-  const salePriceAtMove=timingGrowth(sale.salePrice,a.curApp,moveMonth);
-  const payoffAtMove=timingRemainingBalance(sale.payoff,a.curMortgageRate,a.curMortgageYears,moveMonth);
-  const otherSaleCosts=timingGrowth(sale.otherCosts,a.curCostGrowth,moveMonth);
-  const sellingCostsAtMove=salePriceAtMove*sale.sellingPct/100+otherSaleCosts;
-  const netProceedsAtMove=salePriceAtMove-payoffAtMove-sellingCostsAtMove;
-
-  const newPrice0=parseFloat(priceEl.value)||0;
-  const newPriceAtMove=timingGrowth(newPrice0,a.newApp,moveMonth);
-  const downPct=Math.max(0,Math.min(100,parseFloat(downpctEl.value)||0));
-  const downAtMove=newPriceAtMove*downPct/100;
-  const buyerClosing=newPriceAtMove*a.buyerClosingPct/100;
-  const movingAtMove=timingGrowth(a.movingCosts,a.curCostGrowth,moveMonth);
-  const unusedSaleCash=netProceedsAtMove-downAtMove-buyerClosing-movingAtMove;
-
-  const mortgageRate=moveMonth===0 ? (parseFloat(rateEl.value)||0) : a.futureRate;
-  const newTerm=Math.max(parseFloat(termEl.value)||30,1);
-  const newLoan=Math.max(newPriceAtMove-downAtMove,0);
-  const newPI=timingMortgagePayment(newLoan,mortgageRate,newTerm);
-
-  const tax0=parseFloat(taxEl.value)||0;
-  const ins0=parseFloat(insEl.value)||0;
-  const hoa0=parseFloat(hoaEl.value)||0;
-  const priceRatio=newPrice0>0 ? newPriceAtMove/newPrice0 : 1;
-  const taxAtMove=tax0*priceRatio;
-  const insAtMove=ins0*priceRatio;
-  const hoaAtMove=timingGrowth(hoa0,a.newCostGrowth,moveMonth);
-
-  for(let m=moveMonth;m<horizonMonths;m++){
-    const ownedMonths=m-moveMonth;
-    const escrow=(timingGrowth(taxAtMove/12,a.newCostGrowth,ownedMonths)+timingGrowth(insAtMove/12,a.newCostGrowth,ownedMonths)+timingGrowth(hoaAtMove,a.newCostGrowth,ownedMonths));
-    const newCommuteMonth=timingGrowth(newCommute0,a.commuteInflation,m);
-    cumulativeOutflow += newPI+escrow+newCommuteMonth;
-  }
-
-  const monthsOwned=horizonMonths-moveMonth;
-  const endLoanBalance=timingRemainingBalance(newLoan,mortgageRate,newTerm,monthsOwned);
-  const endHomeValue=timingGrowth(newPrice0,a.newApp,horizonMonths);
-  const endHomeEquity=endHomeValue-endLoanBalance;
-  const unusedCashAtEnd=unusedSaleCash*Math.pow(1+a.cashReturn/100,(horizonMonths-moveMonth)/12);
-
-  // Equal household income is intentionally omitted; it cancels across all move dates.
-  const position=endHomeEquity+unusedCashAtEnd-cumulativeOutflow;
-  return {moveYear,moveMonth,position,salePriceAtMove,payoffAtMove,netProceedsAtMove,newPriceAtMove,mortgageRate,endHomeEquity,unusedSaleCash,unusedCashAtEnd,cumulativeOutflow};
+  syncingCarProgrammatically=false;
+  renderCarInfo('new');
+  refreshSummaryIfVisible();
 }
 
-function updateMoveTiming(){
-  const a=timingInputs();
-  $('v-timing-horizon').textContent=a.horizon+' yr'+(a.horizon===1?'':'s');
-  $('v-cur-appreciation').textContent=a.curApp.toFixed(1)+'%';
-  $('v-new-appreciation').textContent=a.newApp.toFixed(1)+'%';
-  $('v-cur-cost-growth').textContent=a.curCostGrowth.toFixed(1)+'%';
-  $('v-cur-mortgage-rate').textContent=a.curMortgageRate.toFixed(2)+'%';
-  $('v-cur-mortgage-years').textContent=a.curMortgageYears.toFixed(a.curMortgageYears%1?1:0)+' yrs';
-  $('v-future-mortgage-rate').textContent=a.futureRate.toFixed(2)+'%';
-  $('v-buyer-closing-pct').textContent=a.buyerClosingPct.toFixed(1)+'%';
-  $('v-moving-costs').textContent=fmt(a.movingCosts);
-  $('v-cash-return').textContent=a.cashReturn.toFixed(1)+'%';
-  $('v-new-cost-growth').textContent=a.newCostGrowth.toFixed(1)+'%';
-  $('v-commute-inflation').textContent=a.commuteInflation.toFixed(1)+'%';
-
-  const sale=window.__homeSale || updateHomeSale();
-  if(!sale.salePrice || sale.salePrice<=0){
-    $('timing-recommendation').textContent='Enter current-home sale information';
-    $('timing-recommendation-sub').textContent='Add the expected current-home sale price and mortgage payoff above to activate the timing comparison.';
-    $('timing-table').innerHTML='';
-    window.__timingAnalysis=null;
+function populateMakeDropdown(sel, defaultMake){
+  Object.keys(CAR_DATA).forEach(make=>{
+    const opt=document.createElement('option'); opt.value=make; opt.textContent=make; sel.appendChild(opt);
+  });
+  const otherOpt=document.createElement('option'); otherOpt.value='Other'; otherOpt.textContent='Other / not listed'; sel.appendChild(otherOpt);
+  sel.value=defaultMake;
+}
+function populateModelDropdown(makeSel, modelSel, defaultModel){
+  const make=makeSel.value;
+  modelSel.innerHTML='';
+  if(make==='Other'){
+    modelSel.disabled=true;
+    const opt=document.createElement('option'); opt.value=''; opt.textContent='— average vehicle —'; modelSel.appendChild(opt);
     return;
   }
-
-  const results=[];
-  for(let y=0;y<=a.horizon;y++) results.push(simulateMoveAtYear(y,a));
-  const now=results[0];
-  const best=results.reduce((x,r)=>r.position>x.position?r:x,results[0]);
-  const waiting=results.filter(r=>r.moveYear>0);
-  const bestWait=waiting.length ? waiting.reduce((x,r)=>r.position>x.position?r:x,waiting[0]) : null;
-
-  let headline,sub;
-  if(best.moveYear===0){
-    headline='MOVE NOW';
-    const adv=bestWait ? best.position-bestWait.position : 0;
-    sub=`Under these assumptions, moving now produces the strongest estimated financial position at the end of ${a.horizon} year${a.horizon===1?'':'s'}${bestWait ? ` — about ${fmt(Math.abs(adv))} better than the best waiting option (wait ${bestWait.moveYear} year${bestWait.moveYear===1?'':'s'})` : ''}.`;
-  }else{
-    const adv=best.position-now.position;
-    headline=`WAIT ABOUT ${best.moveYear} YEAR${best.moveYear===1?'':'S'}`;
-    sub=`Under these assumptions, waiting about ${best.moveYear} year${best.moveYear===1?'':'s'} produces the strongest estimated financial position at the end of ${a.horizon} years — about ${fmt(Math.abs(adv))} better than moving now.`;
-  }
-  $('timing-recommendation').textContent=headline;
-  $('timing-recommendation-sub').textContent=sub;
-
-  const rows=results.map(r=>{
-    const delta=r.position-now.position;
-    const deltaText=r.moveYear===0?'BASELINE':(delta>=0?`+${fmt(delta)}`:`−${fmt(Math.abs(delta))}`);
-    const classes=['timing-row'];
-    if(r.moveYear===0) classes.push('now');
-    if(r.moveYear===best.moveYear) classes.push('best');
-    const dclass=r.moveYear===0?'':(delta>=0?'timing-positive':'timing-negative');
-    return `<div class="${classes.join(' ')}"><div>${r.moveYear===0?'Move now':`Wait ${r.moveYear} yr${r.moveYear===1?'':'s'}`}${r.moveYear===best.moveYear?' ★':''}</div><div>${fmt(r.netProceedsAtMove)}</div><div>${fmt(r.newPriceAtMove)}</div><div>${r.mortgageRate.toFixed(2)}%</div><div class="${dclass}">${deltaText}</div></div>`;
-  }).join('');
-  $('timing-table').innerHTML=`<div class="timing-row head"><div>MOVE DATE</div><div>SALE PROCEEDS</div><div>NEW HOME PRICE</div><div>RATE</div><div>VS. MOVE NOW</div></div>${rows}`;
-  $('timing-note').textContent=`Compared through the end of year ${a.horizon}. The model assumes the same down-payment percentage (${downpctEl.value||0}%) whenever the move occurs. A later-move mortgage rate of ${a.futureRate.toFixed(2)}% is applied to delayed purchases. Equal household income is omitted because it is the same in every scenario.`;
-  window.__timingAnalysis={assumptions:a,results,best,now,bestWait,headline,sub};
+  modelSel.disabled=false;
+  Object.keys(CAR_DATA[make]).forEach(m=>{
+    const opt=document.createElement('option'); opt.value=m; opt.textContent=m; modelSel.appendChild(opt);
+  });
+  if(defaultModel && CAR_DATA[make][defaultModel]) modelSel.value=defaultModel;
 }
 
-function updateComparison(){
-  updateHomeSale();
-  const curHousing = parseFloat(curHousingEl.value)||0;
-  const curRate = effectiveRate('cur');
-  const curPark = parseFloat(curParkEl.value)||0;
+['cur','new'].forEach(s=>{
+  const make1=$(s+'-car-make'), model1=$(s+'-car-model');
+  populateMakeDropdown(make1, 'Honda');
+  populateModelDropdown(make1, model1, 'Civic');
+  make1.addEventListener('change', ()=>{
+    populateModelDropdown(make1, model1, null); renderCarInfo(s); refreshSummaryIfVisible();
+    if(s==='cur' && newCarSyncedFromCur) syncNewCarFromCur();
+    if(s==='new' && !syncingCarProgrammatically) newCarSyncedFromCur=false;
+  });
+  model1.addEventListener('change', ()=>{
+    renderCarInfo(s); refreshSummaryIfVisible();
+    if(s==='cur' && newCarSyncedFromCur) syncNewCarFromCur();
+    if(s==='new' && !syncingCarProgrammatically) newCarSyncedFromCur=false;
+  });
 
-  const newHousing = window.__newHomeMonthly || 0;
-  const newRate = effectiveRate('new');
-  const newPark = parseFloat(newParkEl.value)||0;
+  const make2=$(s+'-car2-make'), model2=$(s+'-car2-model');
+  populateMakeDropdown(make2, 'Toyota');
+  populateModelDropdown(make2, model2, 'Camry');
+  make2.addEventListener('change', ()=>{
+    populateModelDropdown(make2, model2, null); renderCarInfo(s); refreshSummaryIfVisible();
+    if(s==='cur' && newCarSyncedFromCur) syncNewCarFromCur();
+    if(s==='new' && !syncingCarProgrammatically) newCarSyncedFromCur=false;
+  });
+  model2.addEventListener('change', ()=>{
+    renderCarInfo(s); refreshSummaryIfVisible();
+    if(s==='cur' && newCarSyncedFromCur) syncNewCarFromCur();
+    if(s==='new' && !syncingCarProgrammatically) newCarSyncedFromCur=false;
+  });
+});
 
-  const curCommute = monthlyCommuteCost('cur', curRate, curPark);
-  const newCommute = monthlyCommuteCost('new', newRate, newPark);
+function refreshSummaryIfVisible(){ if(!$('screen-summary').hidden) updateSummary(); }
 
-  const curTotal = curHousing + curCommute;
-  const newTotal = newHousing + newCommute;
-  const delta = newTotal - curTotal;
+document.querySelectorAll('.cost-mode-toggle').forEach(toggle=>{
+  const s=toggle.dataset.scenario;
+  toggle.querySelectorAll('.mode-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      costMode[s]=btn.dataset.mode;
+      toggle.querySelectorAll('.mode-btn').forEach(b=> b.classList.toggle('active', b===btn));
+      document.querySelectorAll(`.cost-mode-field[data-scenario="${s}"]`).forEach(f=> f.style.display = f.dataset.mode===costMode[s] ? '' : 'none');
+      renderCarInfo(s); refreshSummaryIfVisible();
 
-  // labels
-  $('v-cur-housing').textContent = fmt(curHousing);
-  $('v-cur-miles').textContent = parseFloat(curMilesEl.value)||0;
-  $('v-cur-days').textContent = parseFloat(curDaysEl.value)||0;
-  if(curTotalMilesEl) $('v-cur-totalmiles').textContent = parseFloat(curTotalMilesEl.value)||0;
-  $('v-cur-rate').textContent = '$'+curRate.toFixed(2);
-  if(curGasEl) $('v-cur-gasprice').textContent = '$'+(parseFloat(curGasEl.value)||0).toFixed(2);
-  if(curMpgEl) $('v-cur-mpg').textContent = parseFloat(curMpgEl.value)||0;
-  $('v-cur-park').textContent = fmt(curPark);
-  $('v-new-housing').textContent = '$'+fmt2(newHousing);
-  $('v-new-miles').textContent = parseFloat(newMilesEl.value)||0;
-  $('v-new-days').textContent = parseFloat(newDaysEl.value)||0;
-  if(newTotalMilesEl) $('v-new-totalmiles').textContent = parseFloat(newTotalMilesEl.value)||0;
-  $('v-new-rate').textContent = '$'+newRate.toFixed(2);
-  if(newGasEl) $('v-new-gasprice').textContent = '$'+(parseFloat(newGasEl.value)||0).toFixed(2);
-  if(newMpgEl) $('v-new-mpg').textContent = parseFloat(newMpgEl.value)||0;
-  $('v-new-park').textContent = fmt(newPark);
+      if(s==='cur' && costMode.cur==='car'){
+        newCarSyncedFromCur=true;
+        if(costMode.new!=='car'){
+          costMode.new='car';
+          const newToggle=document.querySelector('.cost-mode-toggle[data-scenario="new"]');
+          newToggle.querySelectorAll('.mode-btn').forEach(b=> b.classList.toggle('active', b.dataset.mode==='car'));
+          document.querySelectorAll('.cost-mode-field[data-scenario="new"]').forEach(f=> f.style.display = f.dataset.mode==='car' ? '' : 'none');
+        }
+        syncNewCarFromCur();
+      }
+    });
+  });
+});
+document.querySelectorAll('.miles-mode-toggle').forEach(toggle=>{
+  const s=toggle.dataset.scenario;
+  toggle.querySelectorAll('.mode-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      milesMode[s]=btn.dataset.mmode;
+      toggle.querySelectorAll('.mode-btn').forEach(b=> b.classList.toggle('active', b===btn));
+      document.querySelectorAll(`.miles-mode-field[data-scenario="${s}"]`).forEach(f=> f.style.display = f.dataset.mmode===milesMode[s] ? '' : 'none');
+      renderCarInfo(s); refreshSummaryIfVisible();
+    });
+  });
+});
+document.querySelectorAll('.add-vehicle-btn').forEach(btn=>{
+  const s=btn.dataset.scenario;
+  btn.addEventListener('click', ()=>{
+    vehicleCount[s]=2;
+    document.querySelector(`.car2-block[data-scenario="${s}"]`).style.display='';
+    $(s+'-car1-label').style.display='';
+    btn.style.display='none';
+    renderCarInfo(s); refreshSummaryIfVisible();
+    if(s==='cur' && newCarSyncedFromCur) syncNewCarFromCur();
+    if(s==='new' && !syncingCarProgrammatically) newCarSyncedFromCur=false;
+  });
+});
+document.querySelectorAll('.remove-vehicle-btn').forEach(btn=>{
+  const s=btn.dataset.scenario;
+  btn.addEventListener('click', ()=>{
+    vehicleCount[s]=1;
+    document.querySelector(`.car2-block[data-scenario="${s}"]`).style.display='none';
+    $(s+'-car1-label').style.display='none';
+    document.querySelector(`.add-vehicle-btn[data-scenario="${s}"]`).style.display='';
+    renderCarInfo(s); refreshSummaryIfVisible();
+    if(s==='cur' && newCarSyncedFromCur) syncNewCarFromCur();
+    if(s==='new' && !syncingCarProgrammatically) newCarSyncedFromCur=false;
+  });
+});
 
-  const deltaEl = $('delta-num');
-  deltaEl.className = 'delta-num ' + (delta>0?'more':(delta<0?'less':''));
-  deltaEl.textContent = delta===0 ? 'No change' : (fmt(Math.abs(delta)) + ' / mo ' + (delta>0?'MORE':'LESS'));
-  $('delta-sub').textContent = delta===0
-    ? 'moving costs about the same per month'
-    : (delta>0 ? 'moving costs more per month than staying — the bigger mortgage outweighs the shorter commute' : 'moving costs less per month than staying — the shorter commute outweighs the bigger mortgage');
-  $('delta-annual').textContent = delta===0 ? '' : ('≈ ' + fmt(Math.abs(delta)*12) + ' per year ' + (delta>0?'more':'less'));
+function getMonthlyMiles(s){
+  if(milesMode[s]==='total') return parseFloat($(s+'-totalmiles').value)||0;
+  const miles=parseFloat($(s+'-miles').value)||0, days=parseFloat($(s+'-days').value)||0;
+  return miles*2*days*4.33;
+}
+// Depreciation slows and maintenance rises as a car ages — this applies that curve to the
+// baseline make/model figures. Split into an age-based primitive so the timing analysis below
+// can also ask "what would this car's costs look like N years from now" without duplicating logic.
+function ageAdjustByAge(base, age){
+  let depMult=1.0, maintMult=1.0, bracket='4–7 yrs old (baseline)';
+  if(age<=3){ depMult=1.35; maintMult=0.65; bracket='0–3 yrs old'; }
+  else if(age<=7){ depMult=1.0; maintMult=1.0; bracket='4–7 yrs old'; }
+  else if(age<=12){ depMult=0.55; maintMult=1.35; bracket='8–12 yrs old'; }
+  else { depMult=0.30; maintMult=1.75; bracket='13+ yrs old'; }
+  return { ...base, dep: base.dep*depMult, maint: base.maint*maintMult, age, bracket };
+}
+function ageAdjust(base, year){
+  const age = 2026 - (parseInt(year)||2020);
+  return ageAdjustByAge(base, age);
+}
+function carBaseStats(s, slot){
+  const suffix = slot===2 ? '-car2-' : '-car-';
+  const make=$(s+suffix+'make').value;
+  if(make==='Other'||!make) return OTHER_CAR;
+  const model=$(s+suffix+'model').value;
+  return (CAR_DATA[make] && CAR_DATA[make][model]) ? CAR_DATA[make][model] : OTHER_CAR;
+}
+function getCarStats(s, slot){
+  const suffix = slot===2 ? '-car2-' : '-car-';
+  const yearEl=$(s+suffix+'year');
+  const year = yearEl ? yearEl.value : 2020;
+  return ageAdjust(carBaseStats(s, slot), year);
+}
+function blendedPerMile(s){
+  const gasPrice=parseFloat($(s+'-car-gasprice').value)||0;
+  const cars=[getCarStats(s,1)];
+  if(vehicleCount[s]===2) cars.push(getCarStats(s,2));
+  const perMiles=cars.map(c=> (c.mpg>0?gasPrice/c.mpg:0)+c.maint+c.dep);
+  return perMiles.reduce((a,b)=>a+b,0)/perMiles.length;
+}
+function effectiveRate(s){
+  if(costMode[s]==='car') return blendedPerMile(s);
+  const gas=parseFloat($(s+'-gasprice').value)||0, mpg=parseFloat($(s+'-mpg').value)||1;
+  return mpg>0?gas/mpg:0;
+}
+function monthlyCommuteCost(s){
+  return getMonthlyMiles(s)*effectiveRate(s);
+}
 
-  // commute distance note (time not costed, just informational)
-  const curMonthlyMiles = getMonthlyMiles('cur');
-  const newMonthlyMiles = getMonthlyMiles('new');
-  const mileDelta = curMonthlyMiles - newMonthlyMiles;
-  $('commute-time-note').textContent =
-    `Driving ${newMonthlyMiles.toFixed(0)} mi/month near the new job vs ${curMonthlyMiles.toFixed(0)} mi/month now`
-    + (mileDelta>0 ? ` — ${mileDelta.toFixed(0)} fewer miles a month.` : mileDelta<0 ? ` — ${Math.abs(mileDelta).toFixed(0)} more miles a month.` : '.');
+function renderCarInfo(s){
+  const resultEl=$(s+'-car-result');
+  if(!resultEl) return;
+  const gasPrice=parseFloat($(s+'-car-gasprice').value)||0;
+  const monthlyMiles=getMonthlyMiles(s);
+  const annualMiles=monthlyMiles*12;
+  const count=vehicleCount[s];
+  const perCarAnnualMiles=annualMiles/count;
+
+  let rows='';
+  for(let slot=1; slot<=count; slot++){
+    const car=getCarStats(s, slot);
+    const fuelPerMile=car.mpg>0?gasPrice/car.mpg:0;
+    const totalPerMile=fuelPerMile+car.maint+car.dep;
+    const odo=parseFloat($(s+(slot===2?'-car2-':'-car-')+'odo').value)||0;
+    const remaining=Math.max(car.life-odo,0);
+    const pctPerYear=car.life>0?(perCarAnnualMiles/car.life)*100:0;
+    const yearsToEnd=perCarAnnualMiles>0?(remaining/perCarAnnualMiles):Infinity;
+    const makeVal=$(s+(slot===2?'-car2-':'-car-')+'make').value;
+    const modelVal=$(s+(slot===2?'-car2-':'-car-')+'model').value;
+    const yearVal=$(s+(slot===2?'-car2-':'-car-')+'year').value;
+    const label = makeVal==='Other' ? `${yearVal} average vehicle` : `${yearVal} ${makeVal} ${modelVal}`;
+    rows += `
+      <div class="car-slot-label" style="margin-top:${slot===1?'0':'12px'};">${count>1?'CAR '+slot+' — ':''}${label}</div>
+      <div class="rc-row"><span>MPG${car.mpg>90?' (equiv.)':''}</span><span class="v">${car.mpg.toFixed(0)}</span></div>
+      <div class="rc-row"><span>Maintenance/mi</span><span class="v">$${car.maint.toFixed(3)}</span></div>
+      <div class="rc-row"><span>Depreciation/mi</span><span class="v">$${car.dep.toFixed(3)}</span></div>
+      <div class="rc-row"><span>Fuel/mi (at $${gasPrice.toFixed(2)}/gal)</span><span class="v">$${fuelPerMile.toFixed(3)}</span></div>
+      <div class="rc-row"><span>Cost/mi</span><span class="v" style="color:var(--accent)">$${totalPerMile.toFixed(3)}</span></div>
+      <div class="rc-note">${car.age}-year-old vehicle (${car.bracket}) — maintenance and depreciation are adjusted for age: older cars have less value left to lose per mile but need more upkeep. Adds ~${Math.round(perCarAnnualMiles).toLocaleString()} mi/yr — ${pctPerYear.toFixed(1)}% of its expected ${car.life.toLocaleString()}-mi life${isFinite(yearsToEnd)?`, ~${yearsToEnd.toFixed(1)} yrs to use up what's left on this driving alone`:''}. ${car.note}</div>
+    `;
+  }
+  const blendedRow = count>1 ? `<div class="rc-row" style="margin-top:6px;border-top:1px solid var(--line-faint);padding-top:8px;"><span>Blended cost/mi</span><span class="v" style="color:var(--accent)">$${blendedPerMile(s).toFixed(3)}</span></div>` : '';
+  resultEl.innerHTML = `<div class="rc-tag">ESTIMATE</div>${rows}${blendedRow}`;
+}
+
+['cur','new'].forEach(s=>{
+  [`${s}-miles`,`${s}-days`,`${s}-totalmiles`,`${s}-gasprice`,`${s}-mpg`,`${s}-car-year`,`${s}-car-odo`,`${s}-car2-year`,`${s}-car2-odo`,`${s}-car-gasprice`].forEach(id=>{
+    const el=$(id);
+    if(el) el.addEventListener('input', ()=>{
+      const vId='v-'+id;
+      if($(vId)){
+        if(id.includes('rate')) $(vId).textContent='$'+(parseFloat(el.value)||0).toFixed(2);
+        else if(id.includes('gasprice')) $(vId).textContent='$'+(parseFloat(el.value)||0).toFixed(2);
+        else $(vId).textContent=el.value;
+      }
+      renderCarInfo(s); refreshSummaryIfVisible();
+
+      const isCarSpecField = id===`${s}-car-year`||id===`${s}-car-odo`||id===`${s}-car2-year`||id===`${s}-car2-odo`;
+      if(isCarSpecField){
+        if(s==='cur' && newCarSyncedFromCur) syncNewCarFromCur();
+        if(s==='new' && !syncingCarProgrammatically) newCarSyncedFromCur=false;
+      }
+    });
+  });
+  renderCarInfo(s);
+});
+
+// ---- SUMMARY screen ----
+function drawCompareChart(curHousing, curCommute, newHousing, newCommute){
+  const wrap=$('compare-chart-wrap');
+  const W=wrap.clientWidth>0?wrap.clientWidth:900, H=130;
+  const padL=90, padR=70, padT=10, barH=30, gap=34;
+  const plotW=W-padL-padR;
+  const maxTotal=Math.max(curHousing+curCommute, newHousing+newCommute, 1);
+  const scale=v=>(v/maxTotal)*plotW;
+  function bar(y,label,housing,commute){
+    const hw=scale(housing), cw=scale(commute), total=housing+commute;
+    return `<text x="${padL-10}" y="${y+barH/2+4}" fill="var(--line-dim)" font-size="11" text-anchor="end">${label}</text>
+      <rect x="${padL}" y="${y}" width="${hw}" height="${barH}" fill="var(--line-dim)" fill-opacity="0.6"/>
+      <rect x="${padL+hw}" y="${y}" width="${cw}" height="${barH}" fill="var(--accent)" fill-opacity="0.85"/>
+      <text x="${padL+hw+cw+8}" y="${y+barH/2+4}" fill="var(--line)" font-size="12" font-family="JetBrains Mono, monospace" font-weight="600">${fmt(total)}</text>`;
+  }
+  wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    ${bar(padT,'NOW',curHousing,curCommute)}
+    ${bar(padT+barH+gap,'MOVE',newHousing,newCommute)}
+  </svg>`;
+}
+
+// ---- break-even affordability: max home price where new total = current total ----
+// Solved in closed form: down%, term, effective tax rate, and effective insurance rate are
+// held at their current Buy-screen values (as fractions of price), so everything scales
+// linearly with price except HOA and commute, which are fixed dollar amounts.
+function loanFactor(ratePct, termYears){
+  const n=termYears*12, rm=(ratePct/100)/12;
+  if(rm===0) return n>0 ? 1/n : 0;
+  return (rm*Math.pow(1+rm,n))/(Math.pow(1+rm,n)-1);
+}
+function breakEvenInputs(){
+  const price=parseFloat(buyPriceEl.value)||0;
+  const tax=parseFloat(buyTaxEl.value)||0;
+  const ins=parseFloat(buyInsEl.value)||0;
+  return {
+    downFrac: (parseFloat(buyDownpctEl.value)||0)/100,
+    term: parseFloat(buyTermEl.value)||30,
+    taxRateFrac: price>0 ? tax/price : 0,
+    insRateFrac: price>0 ? ins/price : 0,
+    hoa: parseFloat(buyHoaEl.value)||0,
+    newCommute: monthlyCommuteCost('new'),
+    curTotal: (window.__sellMonthly||0) + monthlyCommuteCost('cur')
+  };
+}
+function computeBreakEvenPrice(ratePct, inputs){
+  const k=loanFactor(ratePct, inputs.term);
+  const denom=(1-inputs.downFrac)*k + inputs.taxRateFrac/12 + inputs.insRateFrac/12;
+  const numer=inputs.curTotal - inputs.hoa - inputs.newCommute;
+  if(denom<=0) return 0;
+  return Math.max(0, numer/denom);
+}
+
+function drawBreakEvenChart(){
+  const wrap=$('breakeven-chart-wrap');
+  const inputs=breakEvenInputs();
+  const currentRate=parseFloat(buyRateEl.value)||0;
+  const currentPrice=parseFloat(buyPriceEl.value)||0;
+  const currentBreakEven=computeBreakEvenPrice(currentRate, inputs);
+
+  const rateMin=Math.max(0, Math.min(3, currentRate-2));
+  const rateMax=Math.max(9.5, currentRate+2);
+  const steps=24;
+  const pts=[];
+  for(let i=0;i<=steps;i++){
+    const r=rateMin+(rateMax-rateMin)*(i/steps);
+    pts.push({r, p:computeBreakEvenPrice(r, inputs)});
+  }
+
+  const affordable = currentPrice<=currentBreakEven;
+  $('breakeven-caption').innerHTML = inputs.curTotal - inputs.hoa - inputs.newCommute <= 0
+    ? `Even a $0 home wouldn't break even here — HOA and the new commute alone already exceed what you pay now.`
+    : `At <b>${currentRate.toFixed(2)}%</b>, the most you could pay is <b>${fmt(currentBreakEven)}</b> before the new home costs more per month than staying. Your current target of ${fmt(currentPrice)} is `
+      + `<span style="color:var(${affordable?'--good':'--danger'});font-weight:600;">${fmt(Math.abs(currentPrice-currentBreakEven))} ${affordable?'under':'over'}</span> that line.`;
+
+  const W=wrap.clientWidth>0?wrap.clientWidth:900, H=260;
+  const padL=64, padR=20, padT=16, padB=32;
+  const plotW=W-padL-padR, plotH=H-padT-padB;
+  const maxPrice=Math.max(...pts.map(p=>p.p), currentPrice, 1)*1.08;
+
+  const x = r => padL + ((r-rateMin)/(rateMax-rateMin))*plotW;
+  const y = p => padT + plotH*(1-(p/maxPrice));
+
+  let curvePath=`M ${x(pts[0].r)} ${y(pts[0].p)} `;
+  pts.forEach(pt=> curvePath += `L ${x(pt.r)} ${y(pt.p)} `);
+
+  // y-axis gridlines (price)
+  const priceStep = maxPrice>1200000?250000: maxPrice>600000?100000: maxPrice>250000?50000:25000;
+  let yGrid='';
+  for(let v=0; v<=maxPrice; v+=priceStep){
+    const gy=y(v);
+    yGrid += `<line x1="${padL}" y1="${gy}" x2="${padL+plotW}" y2="${gy}" stroke="var(--line-faint)" stroke-width="0.5" opacity="0.6"/>
+      <text x="${padL-8}" y="${gy+3}" fill="var(--line-dim)" font-size="10" text-anchor="end">$${Math.round(v/1000)}k</text>`;
+  }
+  // x-axis ticks (rate)
+  let xGrid='';
+  const rateStep = (rateMax-rateMin)>8?2:(rateMax-rateMin)>4?1:0.5;
+  for(let r=Math.ceil(rateMin/rateStep)*rateStep; r<=rateMax; r+=rateStep){
+    xGrid += `<text x="${x(r)}" y="${H-10}" fill="var(--line-dim)" font-size="10" text-anchor="middle">${r.toFixed(rateStep<1?1:0)}%</text>`;
+  }
+
+  const curX=x(currentRate), curY=y(currentBreakEven);
+  const targetY=y(currentPrice);
+  const targetColor = affordable ? 'var(--good)' : 'var(--danger)';
+
+  wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
+    <rect x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" fill="none" stroke="var(--line-faint)" stroke-width="1"/>
+    ${yGrid}
+    ${xGrid}
+    <line x1="${padL}" y1="${targetY}" x2="${padL+plotW}" y2="${targetY}" stroke="var(--line)" stroke-width="1.3" stroke-dasharray="5 3"/>
+    <text x="${padL+plotW-4}" y="${targetY-6}" fill="var(--line)" font-size="10.5" text-anchor="end">your target: ${fmt(currentPrice)}</text>
+    <path d="${curvePath}" fill="none" stroke="var(--accent)" stroke-width="2"/>
+    <line x1="${curX}" y1="${padT}" x2="${curX}" y2="${padT+plotH}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
+    <circle cx="${curX}" cy="${curY}" r="4" fill="var(--accent)"/>
+    <text x="${curX}" y="${curY-10}" fill="var(--accent)" font-size="11" font-weight="600" text-anchor="middle">${fmt(currentBreakEven)}</text>
+    <circle cx="${curX}" cy="${targetY}" r="4" fill="${targetColor}"/>
+  </svg>`;
+}
+
+// ---- timing: move now vs wait N years ----
+// Projects home price appreciation onto both the new home's price and the current home's
+// equity, recomputes the new mortgage using that *future* equity as the down payment (rather
+// than the Buy screen's manual down %, since equity is what actually changes with time), and
+// ages the current car forward using the same maintenance/depreciation curve used elsewhere.
+function timingAnalysis(W){
+  const g=(parseFloat($('appreciation-rate').value)||0)/100;
+  const price0=parseFloat(buyPriceEl.value)||0;
+  const value0=parseFloat(sellValueEl.value)||0;
+  const balance0=parseFloat(sellBalanceEl.value)||0;
+  const sellCostPct=(parseFloat(sellCostpctEl.value)||0)/100;
+  const taxRateFrac=price0>0 ? (parseFloat(buyTaxEl.value)||0)/price0 : 0;
+  const insRateFrac=price0>0 ? (parseFloat(buyInsEl.value)||0)/price0 : 0;
+  const hoa=parseFloat(buyHoaEl.value)||0;
+  const rate=parseFloat(buyRateEl.value)||0;
+  const term=parseFloat(buyTermEl.value)||30;
+  const k=loanFactor(rate, term);
+  const newCommute0=monthlyCommuteCost('new');
+  const curTotal0=(window.__sellMonthly||0)+monthlyCommuteCost('cur');
+
+  const priceAt = t => price0*Math.pow(1+g,t);
+  const equityNetAt = t => Math.max(0, value0*Math.pow(1+g,t)*(1-sellCostPct) - balance0);
+  const newTotalAt = t => {
+    const p=priceAt(t);
+    const loan=Math.max(0, p-equityNetAt(t));
+    return loan*k + p*taxRateFrac/12 + p*insRateFrac/12 + hoa + newCommute0;
+  };
+
+  const moveNowMonthly=newTotalAt(0);
+  const laterMonthly=newTotalAt(W);
+  const H=W+10; // rolling 10-year post-move comparison window, so both strategies are compared over the same total span
+
+  const waitOpportunityCost = W*12*(curTotal0-moveNowMonthly);
+  const recurringPriceEffect = (H-W)*12*(laterMonthly-moveNowMonthly);
+
+  let carAgingCost=0, carModeCur=(costMode['cur']==='car');
+  if(carModeCur){
+    const monthlyMilesCur=getMonthlyMiles('cur');
+    const count=vehicleCount['cur'];
+    let deltaSum=0;
+    for(let slot=1; slot<=count; slot++){
+      const suffix=slot===2?'-car2-':'-car-';
+      const yearEl=$('cur'+suffix+'year');
+      const carYear=yearEl?yearEl.value:2020;
+      const baseAge=2026-(parseInt(carYear)||2020);
+      const base=carBaseStats('cur', slot);
+      const nowAdj=ageAdjustByAge(base, baseAge);
+      const laterAdj=ageAdjustByAge(base, baseAge+W);
+      deltaSum += (laterAdj.dep+laterAdj.maint) - (nowAdj.dep+nowAdj.maint);
+    }
+    const avgDeltaPerMile=(deltaSum/count)/2; // averages start/end delta as a simple approximation over the wait period
+    carAgingCost = 12*W*monthlyMilesCur*avgDeltaPerMile;
+  }
+
+  const netImpact = waitOpportunityCost + recurringPriceEffect + carAgingCost;
+  return { W, H, g, moveNowMonthly, laterMonthly, priceNow:price0, priceLater:priceAt(W),
+    equityNow:equityNetAt(0), equityLater:equityNetAt(W),
+    waitOpportunityCost, recurringPriceEffect, carAgingCost, netImpact, carModeCur };
+}
+
+function drawTimingChart(selectedW){
+  const wrap=$('timing-chart-wrap');
+  const maxW=15;
+  const pts=[];
+  for(let w=0; w<=maxW; w++) pts.push({w, impact:timingAnalysis(w).netImpact});
+
+  const W_px=wrap.clientWidth>0?wrap.clientWidth:900, H_px=220;
+  const padL=64, padR=20, padT=16, padB=28;
+  const plotW=W_px-padL-padR, plotH=H_px-padT-padB;
+  const maxAbs=Math.max(...pts.map(p=>Math.abs(p.impact)), 1)*1.15;
+
+  const x = w => padL + (w/maxW)*plotW;
+  const y = v => padT + plotH*(1-((v+maxAbs)/(2*maxAbs)));
+  const zeroY = y(0);
+
+  let path=`M ${x(0)} ${y(pts[0].impact)} `;
+  pts.forEach(p=> path += `L ${x(p.w)} ${y(p.impact)} `);
+
+  let xGrid='';
+  for(let w=0; w<=maxW; w+=3){
+    xGrid += `<text x="${x(w)}" y="${H_px-8}" fill="var(--line-dim)" font-size="10" text-anchor="middle">${w}y</text>`;
+  }
+  const valStep = maxAbs>40000?20000: maxAbs>15000?5000:2000;
+  let yGrid='';
+  for(let v=-Math.floor(maxAbs/valStep)*valStep; v<=maxAbs; v+=valStep){
+    const gy=y(v);
+    yGrid += `<line x1="${padL}" y1="${gy}" x2="${padL+plotW}" y2="${gy}" stroke="var(--line-faint)" stroke-width="0.5" opacity="${v===0?0:0.5}"/>
+      <text x="${padL-8}" y="${gy+3}" fill="var(--line-dim)" font-size="9.5" text-anchor="end">${v===0?'$0':(v>0?'+':'−')+'$'+Math.round(Math.abs(v)/1000)+'k'}</text>`;
+  }
+
+  const selX=x(selectedW), selY=y(timingAnalysis(selectedW).netImpact);
+  const selColor = timingAnalysis(selectedW).netImpact>0 ? 'var(--danger)' : 'var(--good)';
+
+  wrap.innerHTML = `<svg viewBox="0 0 ${W_px} ${H_px}" width="100%" height="${H_px}" xmlns="http://www.w3.org/2000/svg">
+    <rect x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" fill="none" stroke="var(--line-faint)" stroke-width="1"/>
+    ${yGrid}
+    ${xGrid}
+    <line x1="${padL}" y1="${zeroY}" x2="${padL+plotW}" y2="${zeroY}" stroke="var(--line)" stroke-width="1"/>
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2"/>
+    <line x1="${selX}" y1="${padT}" x2="${selX}" y2="${padT+plotH}" stroke="${selColor}" stroke-width="1" stroke-dasharray="3 3" opacity="0.7"/>
+    <circle cx="${selX}" cy="${selY}" r="4.5" fill="${selColor}"/>
+  </svg>`;
+}
+
+function renderTimingBreakdown(){
+  const W=parseFloat($('wait-years').value)||0;
+  const t=timingAnalysis(W);
+  $('v-appreciation').textContent=(parseFloat($('appreciation-rate').value)||0).toFixed(2)+'%';
+  $('v-wait-years').textContent=W;
+
+  drawTimingChart(W);
+
+  const netColor = t.netImpact>0 ? 'var(--danger)' : (t.netImpact<0 ? 'var(--good)' : 'var(--line)');
+  const netLabel = t.netImpact===0 ? 'No difference' : (fmt(Math.abs(t.netImpact))+' '+(t.netImpact>0?'MORE than moving now':'LESS than moving now'));
+
+  const carRow = t.carModeCur
+    ? `<div class="rc-row"><span>Current car aging ${W} more yrs</span><span class="v">${t.carAgingCost>=0?'+':'−'}${fmt(Math.abs(t.carAgingCost))}</span></div>`
+    : `<div class="rc-row"><span>Current car aging</span><span class="v" style="color:var(--line-dim);">n/a — switch 'By vehicle' mode on current commute</span></div>`;
+
+  $('timing-breakdown').innerHTML = `
+    <div class="rc-title">Waiting ${W} year${W===1?'':'s'}, then moving — compared over the next ${t.H} years</div>
+    <div class="rc-row"><span>New home price then</span><span class="v">${fmt(t.priceLater)} <span style="color:var(--line-dim);">(vs ${fmt(t.priceNow)} today)</span></span></div>
+    <div class="rc-row"><span>Your home equity then</span><span class="v">${fmt(t.equityLater)} <span style="color:var(--line-dim);">(vs ${fmt(t.equityNow)} today)</span></span></div>
+    <div class="rc-row"><span>New payment then, using that equity</span><span class="v">${fmt(t.laterMonthly)}/mo <span style="color:var(--line-dim);">(vs ${fmt(t.moveNowMonthly)}/mo now)</span></span></div>
+    <div class="rc-row" style="margin-top:8px;border-top:1px solid var(--line-faint);padding-top:8px;"><span>Paying current costs during the wait</span><span class="v">${t.waitOpportunityCost>=0?'+':'−'}${fmt(Math.abs(t.waitOpportunityCost))}</span></div>
+    <div class="rc-row"><span>Pricier home, net of extra equity, over ${t.H-W} yrs</span><span class="v">${t.recurringPriceEffect>=0?'+':'−'}${fmt(Math.abs(t.recurringPriceEffect))}</span></div>
+    ${carRow}
+    <div class="rc-row" style="margin-top:8px;border-top:1px solid var(--line-faint);padding-top:8px;"><span style="font-weight:600;color:var(--line);">NET — waiting ${W} yr${W===1?'':'s'} vs moving now</span><span class="v" style="color:${netColor};font-size:15px;font-weight:700;">${netLabel}</span></div>
+    <div class="rc-note">Assumes your current home and the new home appreciate at the same rate, your current monthly cost and loan rate stay flat, and mortgage tax/insurance scale with price. A real future rate could be higher or lower than today's — this only sweeps price, not rate.</div>
+  `;
+}
+$('appreciation-rate').addEventListener('input', renderTimingBreakdown);
+$('wait-years').addEventListener('input', renderTimingBreakdown);
+
+function updateSummary(){
+  const curHousing=window.__sellMonthly||0;
+  const newHousing=window.__buyMonthly||0;
+  const curCommute=monthlyCommuteCost('cur');
+  const newCommute=monthlyCommuteCost('new');
+  const curTotal=curHousing+curCommute, newTotal=newHousing+newCommute;
+  const delta=newTotal-curTotal;
+
+  const deltaEl=$('delta-num');
+  deltaEl.className='delta-num '+(delta>0?'more':(delta<0?'less':''));
+  deltaEl.textContent = delta===0 ? 'No change' : (fmt(Math.abs(delta))+' / mo '+(delta>0?'MORE':'LESS'));
+  $('delta-sub').textContent = delta===0 ? 'moving costs about the same per month'
+    : (delta>0 ? 'moving costs more per month than staying — the bigger mortgage outweighs the shorter commute'
+               : 'moving costs less per month than staying — the shorter commute outweighs the bigger mortgage');
+  $('delta-annual').textContent = delta===0 ? '' : ('≈ '+fmt(Math.abs(delta)*12)+' per year '+(delta>0?'more':'less'));
+
+  const curMiles=getMonthlyMiles('cur'), newMiles=getMonthlyMiles('new');
+  const mileDelta=curMiles-newMiles;
+  $('commute-time-note').textContent = `Driving ${newMiles.toFixed(0)} mi/month near the new job vs ${curMiles.toFixed(0)} mi/month now`
+    + (mileDelta>0?` — ${mileDelta.toFixed(0)} fewer miles a month.`: mileDelta<0?` — ${Math.abs(mileDelta).toFixed(0)} more miles a month.`:'.');
 
   drawCompareChart(curHousing, curCommute, newHousing, newCommute);
-  updateMoveTiming();
-}
+  drawBreakEvenChart();
+  renderTimingBreakdown();
 
-function drawCompareChart(curHousing, curCommute, newHousing, newCommute){
-  const wrap = $('compare-chart-wrap');
-  const W = wrap.clientWidth > 0 ? wrap.clientWidth : 900;
-  const H = 130;
-  const padL = 90, padR = 70, padT = 10, padB = 10;
-  const barH = 30, gap = 34;
-  const plotW = W - padL - padR;
-  const maxTotal = Math.max(curHousing+curCommute, newHousing+newCommute, 1);
-
-  const scale = v => (v/maxTotal)*plotW;
-
-  function bar(y, label, housing, commute){
-    const hw = scale(housing);
-    const cw = scale(commute);
-    const total = housing+commute;
-    return `
-      <text x="${padL-10}" y="${y+barH/2+4}" fill="var(--line-dim)" font-size="11" text-anchor="end">${label}</text>
-      <rect x="${padL}" y="${y}" width="${hw}" height="${barH}" fill="var(--line-dim)" fill-opacity="0.55"/>
-      <rect x="${padL+hw}" y="${y}" width="${cw}" height="${barH}" fill="var(--accent)" fill-opacity="0.85"/>
-      <text x="${padL+hw+cw+8}" y="${y+barH/2+4}" fill="var(--line)" font-size="12" font-family="JetBrains Mono, monospace" font-weight="600">${fmt(total)}</text>
-    `;
-  }
-
-  const svg = `
-  <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    ${bar(padT, 'NOW', curHousing, curCommute)}
-    ${bar(padT+barH+gap, 'MOVE', newHousing, newCommute)}
-  </svg>`;
-  wrap.innerHTML = svg;
-}
-
-$('cur-lookup-btn').addEventListener('click', ()=> lookupVehicle('cur'));
-$('new-lookup-btn').addEventListener('click', ()=> lookupVehicle('new'));
-
-['cur-car-gasprice','cur-car-odo','cur-car2-odo','cur-miles','cur-days','cur-totalmiles','cur-car1-share'].forEach(id=>{
-  const el = $(id);
-  if(el) el.addEventListener('input', ()=>{ if(vehicleData.cur) renderVehicleResult('cur'); });
-});
-['new-car-gasprice','new-car-odo','new-car2-odo','new-miles','new-days','new-totalmiles','new-car1-share'].forEach(id=>{
-  const el = $(id);
-  if(el) el.addEventListener('input', ()=>{ if(vehicleData.new) renderVehicleResult('new'); });
-});
-
-['cur-sale-price','cur-mortgage-payoff','cur-selling-pct','cur-sale-other','cur-purchase-price','cur-improvements'].forEach(id=>{
-  const el=$(id);
-  if(el) el.addEventListener('input', updateComparison);
-});
-
-['timing-horizon','cur-appreciation','new-appreciation','cur-cost-growth','cur-mortgage-rate','cur-mortgage-years','future-mortgage-rate','buyer-closing-pct','moving-costs','cash-return','new-cost-growth','commute-inflation'].forEach(id=>{
-  const el=$(id);
-  if(el) el.addEventListener('input', updateMoveTiming);
-});
-
-[curHousingEl, curMilesEl, curDaysEl, curTotalMilesEl, curRateEl, curParkEl, curGasEl, curMpgEl,
- newMilesEl, newDaysEl, newTotalMilesEl, newRateEl, newParkEl, newGasEl, newMpgEl]
-  .filter(Boolean)
-  .forEach(el => el.addEventListener('input', updateComparison));
-
-// events
-function reapplyLocationTaxRate(){
-  if(locationLookupActive && propertyTaxRatePct!=null){
-    const price = parseFloat(priceEl.value)||0;
-    autofillingTaxIns = true;
-    taxEl.value = Math.round(price * propertyTaxRatePct/100);
-    if(lastLocationResult?.stateAbbr) insEl.value = Math.round(insuranceEstimate(lastLocationResult.stateAbbr,price));
-    autofillingTaxIns = false;
+  const proceedsBlock=$('summary-proceeds-block');
+  if(window.__netProceeds!=null){
+    proceedsBlock.style.display='block';
+    $('summary-net-proceeds').textContent=fmt(window.__netProceeds);
+  } else {
+    proceedsBlock.style.display='none';
   }
 }
-priceEl.addEventListener('input', ()=>{ syncDownFromAmount(); reapplyLocationTaxRate(); calc(); });
-priceR.addEventListener('input', ()=>{ priceEl.value = priceR.value; syncDownFromAmount(); reapplyLocationTaxRate(); calc(); });
-downEl.addEventListener('input', ()=>{ syncDownFromAmount(); calc(); });
-downpctEl.addEventListener('input', ()=>{ syncDownFromPct(); calc(); });
-[rateEl, termEl, taxEl, insEl, hoaEl].forEach(el=> el.addEventListener('input', calc));
-window.addEventListener('resize', ()=>{ calc(); updateComparison(); });
 
 // ---- printable report ----
-function commuteModeLabel(scenario){
-  const toggle = document.querySelector(`.cost-mode-toggle[data-scenario="${scenario}"]`);
-  const active = toggle.querySelector('.mode-btn.active');
-  return active ? active.textContent : '';
+function commuteModeLabel(s){
+  const active=document.querySelector(`.cost-mode-toggle[data-scenario="${s}"] .mode-btn.active`);
+  return active?active.textContent:'';
 }
-
-function vehicleReportBlock(scenario, label){
-  const vd = vehicleData[scenario];
-  if(!vd || !vd.cars.length) return '';
-  const gasPrice = parseFloat($(scenario+'-car-gasprice').value)||0;
-
-  const shares=getCarShares(scenario);
-  const monthlyMiles=getMonthlyMiles(scenario);
-  const carRows = vd.cars.map((car,i)=>{
-    const fuelPerMile = car.isEV ? 0.045 : (car.mpg>0 ? gasPrice/car.mpg : 0);
-    const totalPerMile = fuelPerMile + car.maintPerMile + car.depPerMile;
-    const allocatedMiles=monthlyMiles*(shares[i]??0);
-    return `
-      <div class="pr-row"><span class="k">${label}${vd.cars.length>1 ? ' — Car '+(i+1) : ''} vehicle</span><span class="v">${car.year} ${car.make} ${car.model}</span></div>
-      <div class="pr-row"><span class="k">Typical MPG</span><span class="v">${car.mpg.toFixed(0)}</span></div>
-      <div class="pr-row"><span class="k">Maintenance / mi</span><span class="v">$${car.maintPerMile.toFixed(3)}</span></div>
-      <div class="pr-row"><span class="k">Depreciation / mi</span><span class="v">$${car.depPerMile.toFixed(3)}</span></div>
-      <div class="pr-row"><span class="k">${car.isEV?'Electricity / mi (planning)':'Fuel / mi (at $'+gasPrice.toFixed(2)+'/gal)'}</span><span class="v">$${fuelPerMile.toFixed(3)}</span></div>
-      <div class="pr-row"><span class="k">Cost / mi</span><span class="v">$${totalPerMile.toFixed(3)}</span></div>
-      <div class="pr-row"><span class="k">Miles allocated /mo</span><span class="v">${Math.round(allocatedMiles).toLocaleString()} mi${vd.cars.length>1?' ('+(shares[i]*100).toFixed(0)+'%)':''}</span></div>
-      <div class="pr-row"><span class="k">Expected lifespan</span><span class="v">${car.lifespanMiles.toLocaleString()} mi</span></div>
-      <div class="pr-note">${car.notes}</div>
-    `;
-  }).join('');
-
-  const blendedRow = vd.cars.length>1
-    ? `<div class="pr-row"><span class="k">Household cost / mi (mileage-weighted)</span><span class="v">$${blendedPerMile(scenario).toFixed(3)}</span></div>`
-    : '';
-
-  return carRows + blendedRow;
+function vehicleReportBlock(s, label){
+  if(costMode[s]!=='car') return '';
+  const gasPrice=parseFloat($(s+'-car-gasprice').value)||0;
+  const count=vehicleCount[s];
+  let rows='';
+  for(let slot=1; slot<=count; slot++){
+    const car=getCarStats(s, slot);
+    const fuelPerMile=car.mpg>0?gasPrice/car.mpg:0;
+    const totalPerMile=fuelPerMile+car.maint+car.dep;
+    const makeVal=$(s+(slot===2?'-car2-':'-car-')+'make').value;
+    const modelVal=$(s+(slot===2?'-car2-':'-car-')+'model').value;
+    const yearVal=$(s+(slot===2?'-car2-':'-car-')+'year').value;
+    const nm = makeVal==='Other' ? `${yearVal} average vehicle` : `${yearVal} ${makeVal} ${modelVal}`;
+    rows += `
+      <div class="pr-row"><span class="k">${label}${count>1?' — Car '+slot:''}</span><span class="v">${nm}</span></div>
+      <div class="pr-row"><span class="k">MPG</span><span class="v">${car.mpg.toFixed(0)}</span></div>
+      <div class="pr-row"><span class="k">Maintenance/mi</span><span class="v">$${car.maint.toFixed(3)}</span></div>
+      <div class="pr-row"><span class="k">Depreciation/mi</span><span class="v">$${car.dep.toFixed(3)}</span></div>
+      <div class="pr-row"><span class="k">Fuel/mi</span><span class="v">$${fuelPerMile.toFixed(3)}</span></div>
+      <div class="pr-row"><span class="k">Cost/mi</span><span class="v">$${totalPerMile.toFixed(3)}</span></div>
+      <div class="pr-note">${car.note}</div>`;
+  }
+  if(count>1) rows += `<div class="pr-row"><span class="k">Blended cost/mi</span><span class="v">$${blendedPerMile(s).toFixed(3)}</span></div>`;
+  return rows;
 }
 
 function buildPrintReport(){
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const curHousing=window.__sellMonthly||0, newHousing=window.__buyMonthly||0;
+  const curCommute=monthlyCommuteCost('cur'), newCommute=monthlyCommuteCost('new');
 
   const html = `
   <div class="pr-page">
-    <h1>Mortgage &amp; Relocation Report</h1>
+    <h1>Buy vs. Move Report</h1>
     <div class="pr-date">Generated ${dateStr}</div>
 
     <h2>New Home — Mortgage Estimate</h2>
-    ${lastLocationResult ? `<div class="pr-row"><span class="k">Property location</span><span class="v">${lastLocationResult.resolvedLocation||''}</span></div>` : ''}
-    <div class="pr-row"><span class="k">Home price</span><span class="v">${$('v-price').textContent}</span></div>
-    <div class="pr-row"><span class="k">Down payment</span><span class="v">${$('v-down').textContent} (${$('v-downpct').textContent})</span></div>
-    <div class="pr-row"><span class="k">Interest rate</span><span class="v">${$('v-rate').textContent}</span></div>
-    <div class="pr-row"><span class="k">Loan term</span><span class="v">${$('v-term').textContent}</span></div>
-    <div class="pr-row"><span class="k">Property tax /yr</span><span class="v">${$('v-tax').textContent}</span></div>
-    <div class="pr-row"><span class="k">Insurance /yr</span><span class="v">${$('v-ins').textContent}</span></div>
-    <div class="pr-row"><span class="k">HOA /mo</span><span class="v">${$('v-hoa').textContent}</span></div>
+    ${lastLocationResult ? `<div class="pr-row"><span class="k">Property location</span><span class="v">${lastLocationResult.resolvedLocation}</span></div>` : ''}
+    <div class="pr-row"><span class="k">Home price</span><span class="v">${$('v-buy-price').textContent}</span></div>
+    <div class="pr-row"><span class="k">Down payment</span><span class="v">${$('v-buy-down').textContent} (${$('v-buy-downpct').textContent})</span></div>
+    <div class="pr-row"><span class="k">Interest rate</span><span class="v">${$('v-buy-rate').textContent}</span></div>
+    <div class="pr-row"><span class="k">Loan term</span><span class="v">${$('v-buy-term').textContent}</span></div>
+    <div class="pr-row"><span class="k">Property tax /yr</span><span class="v">${$('v-buy-tax').textContent}</span></div>
+    <div class="pr-row"><span class="k">Insurance /yr</span><span class="v">${$('v-buy-ins').textContent}</span></div>
+    <div class="pr-row"><span class="k">HOA /mo</span><span class="v">${$('v-buy-hoa').textContent}</span></div>
+    <div class="pr-highlight">${$('buy-monthly-total').textContent}<span style="font-size:14px;font-weight:400;"> / mo</span></div>
+    <div class="pr-row"><span class="k">— Principal &amp; interest</span><span class="v">${$('buy-row-pi').textContent}</span></div>
+    <div class="pr-row"><span class="k">— Property tax</span><span class="v">${$('buy-row-tax').textContent}</span></div>
+    <div class="pr-row"><span class="k">— Insurance</span><span class="v">${$('buy-row-ins').textContent}</span></div>
+    <div class="pr-row"><span class="k">— HOA</span><span class="v">${$('buy-row-hoa').textContent}</span></div>
+    <div class="pr-row"><span class="k">Loan amount</span><span class="v">${$('buy-stat-loan').textContent}</span></div>
+    <div class="pr-row"><span class="k">Total interest paid</span><span class="v">${$('buy-stat-interest').textContent}</span></div>
+    <div class="pr-row"><span class="k">Total paid, life of loan</span><span class="v">${$('buy-stat-totalpaid').textContent}</span></div>
+    <div class="pr-row"><span class="k">Payoff</span><span class="v">${$('buy-stat-payoff').textContent}</span></div>
 
-    <div class="pr-highlight">${$('monthly-total').textContent}<span style="font-size:14px;font-weight:400;"> / mo</span></div>
-    <div class="pr-sub">Estimated total monthly payment, principal + interest + escrow</div>
-    <div class="pr-row"><span class="k">— Principal &amp; interest</span><span class="v">${$('row-pi').textContent}</span></div>
-    <div class="pr-row"><span class="k">— Property tax</span><span class="v">${$('row-tax').textContent}</span></div>
-    <div class="pr-row"><span class="k">— Insurance</span><span class="v">${$('row-ins').textContent}</span></div>
-    <div class="pr-row"><span class="k">— HOA</span><span class="v">${$('row-hoa').textContent}</span></div>
+    <h2>Current Home / Sale</h2>
+    <div class="pr-row"><span class="k">Current housing cost /mo</span><span class="v">${$('v-sell-housing').textContent}</span></div>
+    <div class="pr-row"><span class="k">Estimated home value</span><span class="v">${$('v-sell-value').textContent}</span></div>
+    <div class="pr-row"><span class="k">Remaining mortgage balance</span><span class="v">${$('v-sell-balance').textContent}</span></div>
+    <div class="pr-row"><span class="k">Selling costs</span><span class="v">${$('v-sell-costpct').textContent}</span></div>
+    <div class="pr-row"><span class="k">Est. net proceeds from sale</span><span class="v">${$('sell-net-proceeds').textContent}</span></div>
 
-    <div class="pr-row"><span class="k">Loan amount</span><span class="v">${$('stat-loan').textContent}</span></div>
-    <div class="pr-row"><span class="k">Total interest paid</span><span class="v">${$('stat-interest').textContent}</span></div>
-    <div class="pr-row"><span class="k">Total paid, life of loan</span><span class="v">${$('stat-totalpaid').textContent}</span></div>
-    <div class="pr-row"><span class="k">Payoff</span><span class="v">${$('stat-payoff').textContent}</span></div>
-
-    <h2>Current Home — Sale Proceeds</h2>
-    <div class="pr-row"><span class="k">Expected sale price</span><span class="v">${$('v-cur-sale-price').textContent}</span></div>
-    <div class="pr-row"><span class="k">Mortgage payoff balance</span><span class="v">${$('v-cur-mortgage-payoff').textContent}</span></div>
-    <div class="pr-row"><span class="k">Selling costs</span><span class="v">${$('v-cur-selling-pct').textContent} + ${$('v-cur-sale-other').textContent} repairs/concessions</span></div>
-    <div class="pr-row"><span class="k">Equity before sale costs</span><span class="v">${$('sale-equity').textContent}</span></div>
-    <div class="pr-highlight">${$('sale-net-proceeds').textContent}<span style="font-size:14px;font-weight:400;"> net proceeds</span></div>
-    <div class="pr-sub">Estimated cash left after paying the mortgage payoff and selling costs.</div>
-    ${parseFloat($('cur-purchase-price').value)>0 ? `<div class="pr-row"><span class="k">Original purchase price</span><span class="v">${$('v-cur-purchase-price').textContent}</span></div><div class="pr-row"><span class="k">Capital improvements</span><span class="v">${$('v-cur-improvements').textContent}</span></div><div class="pr-row"><span class="k">Estimated sale profit / gain</span><span class="v">${$('sale-profit').textContent}</span></div>` : ''}
-    <div class="pr-note">Mortgage payoff reduces cash received at closing, but it is not itself a selling loss. Sale profit/gain is shown separately when an original purchase price is entered.</div>
-
-    <h2>Relocation Comparison</h2>
+    <h2>Commute Comparison</h2>
     <div class="pr-cols">
       <div>
-        <div class="pr-sub" style="font-weight:600;color:#1A1A1A;">Current home</div>
-        <div class="pr-row"><span class="k">Housing /mo</span><span class="v">${$('v-cur-housing').textContent}</span></div>
+        <div class="pr-sub-head">Current</div>
         <div class="pr-row"><span class="k">Commute</span><span class="v">${milesMode.cur==='total' ? $('v-cur-totalmiles').textContent+' mi/mo' : $('v-cur-miles').textContent+' mi × '+$('v-cur-days').textContent+'/wk'}</span></div>
-        <div class="pr-row"><span class="k">Commute cost mode</span><span class="v">${commuteModeLabel('cur')}</span></div>
-        <div class="pr-row"><span class="k">Parking/tolls /mo</span><span class="v">${$('v-cur-park').textContent}</span></div>
+        <div class="pr-row"><span class="k">Cost mode</span><span class="v">${commuteModeLabel('cur')}</span></div>
+        <div class="pr-row"><span class="k">Commute cost /mo</span><span class="v">${fmt(curCommute)}</span></div>
+        ${vehicleReportBlock('cur','Vehicle')}
       </div>
       <div>
-        <div class="pr-sub" style="font-weight:600;color:#1A1A1A;">New home, near work</div>
-        <div class="pr-row"><span class="k">Housing /mo</span><span class="v">${$('v-new-housing').textContent}</span></div>
+        <div class="pr-sub-head">New, near work</div>
         <div class="pr-row"><span class="k">Commute</span><span class="v">${milesMode.new==='total' ? $('v-new-totalmiles').textContent+' mi/mo' : $('v-new-miles').textContent+' mi × '+$('v-new-days').textContent+'/wk'}</span></div>
-        <div class="pr-row"><span class="k">Commute cost mode</span><span class="v">${commuteModeLabel('new')}</span></div>
-        <div class="pr-row"><span class="k">Parking/tolls /mo</span><span class="v">${$('v-new-park').textContent}</span></div>
+        <div class="pr-row"><span class="k">Cost mode</span><span class="v">${commuteModeLabel('new')}</span></div>
+        <div class="pr-row"><span class="k">Commute cost /mo</span><span class="v">${fmt(newCommute)}</span></div>
+        ${vehicleReportBlock('new','Vehicle')}
       </div>
     </div>
 
+    <h2>Bottom Line</h2>
+    <div class="pr-row"><span class="k">Current total /mo (housing + commute)</span><span class="v">${fmt(curHousing+curCommute)}</span></div>
+    <div class="pr-row"><span class="k">New total /mo (housing + commute)</span><span class="v">${fmt(newHousing+newCommute)}</span></div>
     <div class="pr-highlight">${$('delta-num').textContent}</div>
     <div class="pr-sub">${$('delta-sub').textContent} — ${$('delta-annual').textContent}</div>
-    <div class="pr-note">${$('commute-time-note').textContent}</div>
+    <div class="pr-row" style="margin-top:8px;"><span class="k">Break-even home price at ${$('v-buy-rate').textContent}</span><span class="v">${fmt(computeBreakEvenPrice(parseFloat(buyRateEl.value)||0, breakEvenInputs()))}</span></div>
+    <div class="pr-note">Max home price where the new total would still equal what's paid now — holding down payment %, loan term, and tax/insurance rates at their current settings.</div>
 
-    ${window.__timingAnalysis ? `
-    <h2>Move Timing — Now vs. Wait</h2>
-    <div class="pr-highlight">${window.__timingAnalysis.headline}</div>
-    <div class="pr-sub">${window.__timingAnalysis.sub}</div>
-    <div class="pr-row"><span class="k">Planning horizon</span><span class="v">${window.__timingAnalysis.assumptions.horizon} years</span></div>
-    <div class="pr-row"><span class="k">Current home appreciation</span><span class="v">${window.__timingAnalysis.assumptions.curApp.toFixed(1)}% /yr</span></div>
-    <div class="pr-row"><span class="k">New home appreciation</span><span class="v">${window.__timingAnalysis.assumptions.newApp.toFixed(1)}% /yr</span></div>
-    <div class="pr-row"><span class="k">Current mortgage projection</span><span class="v">${window.__timingAnalysis.assumptions.curMortgageRate.toFixed(2)}%, ${window.__timingAnalysis.assumptions.curMortgageYears} yrs remaining</span></div>
-    <div class="pr-row"><span class="k">Delayed-purchase mortgage rate</span><span class="v">${window.__timingAnalysis.assumptions.futureRate.toFixed(2)}%</span></div>
-    <div class="pr-row"><span class="k">Buyer closing costs</span><span class="v">${window.__timingAnalysis.assumptions.buyerClosingPct.toFixed(1)}%</span></div>
-    <div class="pr-row"><span class="k">Moving costs</span><span class="v">${fmt(window.__timingAnalysis.assumptions.movingCosts)}</span></div>
-    <div class="pr-note">The timing recommendation compares all move dates through the same ending year and includes estimated appreciation, current-mortgage paydown, sale proceeds, new-home financing, transaction costs, housing/commute costs and unused sale cash. It is assumption-driven rather than a prediction of future rates or home prices.</div>
-    ` : ''}
-
-    ${(vehicleData.cur || vehicleData.new) ? `
-    <h2>Vehicle Cost Analysis</h2>
-    <div class="pr-cols">
-      <div>${vehicleReportBlock('cur','Current') || '<div class="pr-note">No vehicle looked up for the current commute.</div>'}</div>
-      <div>${vehicleReportBlock('new','New') || '<div class="pr-note">No vehicle looked up for the new commute.</div>'}</div>
-    </div>
-    ` : ''}
+    <h2>Timing — Move Now vs. Wait</h2>
+    ${(()=>{ const w=parseFloat($('wait-years').value)||0; const t=timingAnalysis(w);
+      return `
+    <div class="pr-row"><span class="k">Appreciation assumption</span><span class="v">${$('v-appreciation').textContent}/yr</span></div>
+    <div class="pr-row"><span class="k">New home price, waiting ${w} yr${w===1?'':'s'}</span><span class="v">${fmt(t.priceLater)} (vs ${fmt(t.priceNow)} now)</span></div>
+    <div class="pr-row"><span class="k">Home equity, waiting ${w} yr${w===1?'':'s'}</span><span class="v">${fmt(t.equityLater)} (vs ${fmt(t.equityNow)} now)</span></div>
+    <div class="pr-row"><span class="k">New payment then (equity as down payment)</span><span class="v">${fmt(t.laterMonthly)}/mo (vs ${fmt(t.moveNowMonthly)}/mo now)</span></div>
+    <div class="pr-highlight">${t.netImpact===0?'No difference':(fmt(Math.abs(t.netImpact))+' '+(t.netImpact>0?'MORE':'LESS'))}</div>
+    <div class="pr-sub">Net cost of waiting ${w} year${w===1?'':'s'} vs. moving now, over the next ${t.H} years — includes paying current costs during the wait, the pricier home net of extra equity, and your current car aging ${w} more year${w===1?'':'s'}.</div>
+    `; })()}
 
     <div class="pr-footer">
-      Estimate only — does not include PMI, new-home closing costs, moving costs, taxes due on a sale, or rate changes. Current-home net sale proceeds use the entered mortgage payoff, selling-cost percentage, and repairs/concessions; confirm the actual payoff quote and closing statement before relying on the result. Property tax and insurance are averaged monthly (escrow-style). Vehicle MPG may use EPA FuelEconomy.gov when available; maintenance, depreciation and lifespan are planning estimates, not live quotes. Consult a lender for an official mortgage quote.
+      Estimate only — does not include PMI, closing costs, moving costs, or rate changes. Property tax and insurance are state-level averages, not specific to this property or county. Vehicle maintenance and depreciation are typical figures for the make/model, not this vehicle's actual history. The timing analysis assumes a flat interest rate and equal appreciation for both homes. Generated entirely offline — no account or server involved.
     </div>
-  </div>
-  `;
-  $('print-report').innerHTML = html;
+  </div>`;
+  $('print-report').innerHTML=html;
 }
+$('print-report-btn').addEventListener('click', ()=>{ buildPrintReport(); window.print(); });
 
-$('print-report-btn').addEventListener('click', ()=>{
-  buildPrintReport();
-  const reportHtml=$('print-report').innerHTML;
-  const w=window.open('','_blank');
-  if(!w){
-    // Popup blocked: the existing print stylesheet still prints only #print-report.
-    window.print();
-    return;
-  }
-  w.document.open();
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mortgage & Relocation Report</title>
-  <style>
-    body{font-family:Arial,sans-serif;color:#1A1A1A;margin:0;background:#fff}.pr-page{max-width:760px;margin:0 auto;padding:28px}.toolbar{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:12px 20px;display:flex;justify-content:flex-end;z-index:2}.toolbar button{padding:10px 16px;border:1px solid #14304D;background:#14304D;color:white;cursor:pointer}.pr-page h1{font-size:24px;margin:0 0 2px}.pr-date{font-size:11px;color:#555;margin-bottom:22px}.pr-page h2{font-size:15px;border-bottom:2px solid #1A1A1A;padding-bottom:6px;margin:26px 0 12px}.pr-row{display:flex;justify-content:space-between;gap:20px;font-size:13px;padding:5px 0;border-bottom:1px solid #E2E2E2}.pr-row .k{color:#444}.pr-row .v{font-family:monospace;font-weight:600;text-align:right}.pr-highlight{font-family:monospace;font-size:26px;font-weight:700;margin:10px 0}.pr-sub{font-size:12px;color:#555;margin-bottom:10px}.pr-note{font-size:11.5px;color:#555;font-style:italic;margin-top:10px;line-height:1.5}.pr-footer{margin-top:30px;padding-top:14px;border-top:1px solid #ccc;font-size:10.5px;color:#777}.pr-cols{display:flex;gap:24px}.pr-cols>div{flex:1}@media(max-width:650px){.pr-cols{display:block}.pr-row{align-items:flex-start}}@media print{.toolbar{display:none}.pr-page{max-width:none;padding:0}}
-  </style></head><body><div class="toolbar"><button onclick="window.print()">Print / Save as PDF</button></div>${reportHtml}</body></html>`);
-  w.document.close();
-  w.focus();
-});
-
-initVehicleDropdowns();
-calc();
+// ---- init ----
+calcBuy();
+calcSell();
 </script>
-
 </body>
 </html>
