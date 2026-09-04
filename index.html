@@ -1172,6 +1172,26 @@ svg text{ font-family:'JetBrains Mono', monospace; }
         </div>
         <div class="rc-note" id="vehicle-replacement-note"></div>
       </div>
+
+      <div class="result-card" id="vehicle-long-term-cost" style="margin-top:14px;">
+        <div class="rc-title">10-YEAR VEHICLE OWNERSHIP</div>
+        <div class="summary-simple-grid">
+          <div class="summary-simple-col">
+            <div class="scenario-head">Current commute <span class="tag">NOW</span></div>
+            <div class="summary-simple-row"><span>Fuel + maintenance</span><span class="v" id="vehicle-longterm-cur-operating">$0</span></div>
+            <div class="summary-simple-row"><span>Replacement purchases</span><span class="v" id="vehicle-longterm-cur-replacements">$0</span></div>
+            <div class="summary-simple-row total"><span>10-year vehicle cash cost</span><span class="v" id="vehicle-longterm-cur-total">$0</span></div>
+          </div>
+          <div class="summary-simple-col">
+            <div class="scenario-head">After moving <span class="tag">MOVE</span></div>
+            <div class="summary-simple-row"><span>Fuel + maintenance</span><span class="v" id="vehicle-longterm-new-operating">$0</span></div>
+            <div class="summary-simple-row"><span>Replacement purchases</span><span class="v" id="vehicle-longterm-new-replacements">$0</span></div>
+            <div class="summary-simple-row total"><span>10-year vehicle cash cost</span><span class="v" id="vehicle-longterm-new-total">$0</span></div>
+          </div>
+        </div>
+        <div class="big-number" id="vehicle-longterm-impact" style="margin-top:12px;">$0 difference</div>
+        <div class="rc-note" id="vehicle-longterm-note"></div>
+      </div>
     </div>
 
     <div class="buy-validation" id="cars-validation" role="alert" aria-live="polite"></div>
@@ -1219,6 +1239,47 @@ svg text{ font-family:'JetBrains Mono', monospace; }
       <div class="rc-row"><span>Commute time / month</span><span class="v" id="summary-time-change">—</span></div>
       <div class="rc-row" id="summary-replacement-row"><span>Vehicle replacement</span><span class="v" id="summary-replacement-change">—</span></div>
       <div class="rc-note" id="summary-cost-explanation"></div>
+    </div>
+
+    <div class="result-card" id="summary-10yr-total-impact" style="margin-top:14px;">
+      <div class="rc-title">10-YEAR TOTAL IMPACT</div>
+      <div class="summary-simple-grid">
+        <div class="summary-simple-col">
+          <div class="scenario-head">Stay <span class="tag">NOW</span></div>
+          <div class="summary-simple-row"><span>Housing cash outflow</span><span class="v" id="summary-10yr-stay-housing">$0</span></div>
+          <div class="summary-simple-row"><span>Vehicle cash cost</span><span class="v" id="summary-10yr-stay-vehicle">$0</span></div>
+          <div class="summary-simple-row total"><span>10-year total</span><span class="v" id="summary-10yr-stay-total">$0</span></div>
+        </div>
+        <div class="summary-simple-col">
+          <div class="scenario-head">Move <span class="tag">MOVE</span></div>
+          <div class="summary-simple-row"><span>Housing cash outflow</span><span class="v" id="summary-10yr-move-housing">$0</span></div>
+          <div class="summary-simple-row"><span>Vehicle cash cost</span><span class="v" id="summary-10yr-move-vehicle">$0</span></div>
+          <div class="summary-simple-row total"><span>10-year total</span><span class="v" id="summary-10yr-move-total">$0</span></div>
+        </div>
+      </div>
+      <div class="big-number" id="summary-10yr-impact" style="margin-top:12px;">$0 difference</div>
+      <div class="big-label" id="summary-10yr-monthly-equivalent"></div>
+      <div class="rc-note" id="summary-10yr-note">
+        This is a 10-year cash-flow comparison. Vehicle depreciation is excluded because replacement purchases are included directly.
+      </div>
+    </div>
+
+    <div class="result-card" id="summary-vehicle-long-term" style="margin-top:14px;">
+      <div class="rc-title">10-YEAR VEHICLE OWNERSHIP</div>
+      <div class="summary-simple-grid">
+        <div class="summary-simple-col">
+          <div class="scenario-head">Stay <span class="tag">NOW</span></div>
+          <div class="summary-simple-row"><span>Replacement purchases</span><span class="v" id="summary-vehicle-stay-replacements">$0</span></div>
+          <div class="summary-simple-row total"><span>Vehicle cash cost</span><span class="v" id="summary-vehicle-stay-total">$0</span></div>
+        </div>
+        <div class="summary-simple-col">
+          <div class="scenario-head">Move <span class="tag">MOVE</span></div>
+          <div class="summary-simple-row"><span>Replacement purchases</span><span class="v" id="summary-vehicle-move-replacements">$0</span></div>
+          <div class="summary-simple-row total"><span>Vehicle cash cost</span><span class="v" id="summary-vehicle-move-total">$0</span></div>
+        </div>
+      </div>
+      <div class="big-number" id="summary-vehicle-longterm-impact" style="margin-top:12px;">$0 difference</div>
+      <div class="rc-note" id="summary-vehicle-longterm-note"></div>
     </div>
 
     <div class="section-label">HOME SALE</div>
@@ -1320,7 +1381,23 @@ svg text{ font-family:'JetBrains Mono', monospace; }
       </div>
     </details>
 
+    <div class="section-label" style="margin-top:24px;">END RESULT</div>
+    <div class="result-card" id="summary-end-result">
+      <div class="rc-title">Overall result</div>
+      <div class="big-number" id="end-result-headline">—</div>
+      <div class="rc-note" id="end-result-sub"></div>
+
+      <div style="margin-top:12px;">
+        <div class="rc-row"><span>Monthly impact</span><span class="v" id="end-result-monthly">—</span></div>
+        <div class="rc-row"><span>10-year total impact</span><span class="v" id="end-result-10yr">—</span></div>
+        <div class="rc-row"><span>Move now vs. wait</span><span class="v" id="end-result-timing">—</span></div>
+      </div>
+
+      <div class="rc-note" id="end-result-driver" style="margin-top:10px;"></div>
+    </div>
+
     <button type="button" class="btn-primary" id="print-report-btn" style="margin-top:24px;">Print / Save Full Analysis</button>
+    <div class="field-hint" id="print-report-status" style="margin-top:7px;"></div>
 
     <div class="nav-row">
       <button type="button" class="btn-back" data-goto="cars">← Back</button>
@@ -2831,6 +2908,11 @@ function carCardHTML(s, slot, d){
           <input type="number" id="${p}-replacement-mileage" value="${slot===1?225000:220000}" step="5000" min="1">
           <div class="field-hint">MoveWise starts with a model-based planning estimate. Change this to the mileage when you would expect to replace the vehicle.</div>
         </div>
+        <div class="field">
+          <label>Planned replacement cost</label>
+          <input type="text" id="${p}-replacement-cost" value="35,000" inputmode="numeric" autocomplete="off">
+          <div class="field-hint">Planning assumption for each replacement. Use the expected net cost after trade-in if applicable.</div>
+        </div>
       </details>
       ${carMileageHTML(s,slot,d)}
     </div>`;
@@ -2874,7 +2956,7 @@ function carsBlockHTML(s, defaults){
         <button type="button" class="mode-btn" data-mode="gas">Fuel only</button>
       </div>
     </div>
-    <div class="cost-mode-help">Full vehicle cost includes fuel, maintenance and mileage-related depreciation. MoveWise also estimates when added mileage could force a vehicle replacement.</div>
+    <div class="cost-mode-help">Monthly full vehicle cost includes fuel, maintenance and mileage-related depreciation. The 10-year ownership view separately uses fuel, maintenance and replacement purchases so vehicle capital cost is not counted twice.</div>
 
     <div class="cost-mode-field" data-scenario="${s}" data-mode="car">
       ${isNew?`<label class="same-vehicles-control"><input type="checkbox" id="new-same-vehicles" checked><span><strong>Use the same vehicle(s)</strong><br><span style="color:var(--line-dim);">Vehicle details stay matched to the current commute. You still enter the new mileage for each car.</span></span></label>`:''}
@@ -3081,7 +3163,7 @@ function applySameVehicleLock(){
   if(checkbox) checkbox.checked=sameVehiclesAfterMove;
   [1,2].forEach(slot=>{
     const p=carPrefix('new',slot);
-    ['make','model','year','odo','replacement-mileage'].forEach(k=>{
+    ['make','model','year','odo','replacement-mileage','replacement-cost'].forEach(k=>{
       const el=$(p+'-'+k);
       if(!el) return;
       if(sameVehiclesAfterMove) el.disabled=true;
@@ -3096,8 +3178,10 @@ function syncMoveOdometerLock(){
     const p=carPrefix('new',slot);
     const odo=$(p+'-odo');
     const replacement=$(p+'-replacement-mileage');
+    const replacementCost=$(p+'-replacement-cost');
     if(odo) odo.disabled=!!sameVehiclesAfterMove;
     if(replacement) replacement.disabled=!!sameVehiclesAfterMove;
+    if(replacementCost) replacementCost.disabled=!!sameVehiclesAfterMove;
   });
 }
 
@@ -3117,8 +3201,10 @@ function syncNewVehicleSpecs(){
     $(np+'-odo').value=$(cp+'-odo').value;
     $(np+'-replacement-mileage').value=$(cp+'-replacement-mileage').value;
     $(np+'-replacement-mileage').dataset.userOverride=$(cp+'-replacement-mileage').dataset.userOverride||'false';
+    $(np+'-replacement-cost').value=$(cp+'-replacement-cost').value;
     $(np+'-odo').disabled=sameVehiclesAfterMove;
     $(np+'-replacement-mileage').disabled=sameVehiclesAfterMove;
+    $(np+'-replacement-cost').disabled=sameVehiclesAfterMove;
     populateMakeSuggestions(np);
     setModelSuggestions(np,[syncedModel],syncedModel);
     loadVehicleModels('new',slot,{silent:true,preferredModel:syncedModel});
@@ -3133,6 +3219,7 @@ function syncNewVehicleSpecs(){
 function refreshDrivingOutputs(){
   renderCommuteImpact();
   renderVehicleReplacementOutlook();
+  renderLongTermVehicleOwnership();
   if(!$('screen-summary').hidden) updateSummary();
 }
 
@@ -3336,6 +3423,12 @@ function getPlanningReplacementMileage(s,slot){
     : modelReplacementMileage(s,slot);
 }
 
+function getPlannedReplacementCost(s,slot){
+  const el=$(carPrefix(s,slot)+'-replacement-cost');
+  const value=parseMoneyInput(el?.value||'');
+  return value>0 ? value : 0;
+}
+
 function setReplacementMileageFromProfile(s,slot,{force=false}={}){
   const el=$(carPrefix(s,slot)+'-replacement-mileage');
   if(!el) return;
@@ -3394,12 +3487,18 @@ function vehicleReplacementScenario(s){
   for(let slot=1;slot<=vehicleCount[s];slot++){
     const p=carPrefix(s,slot);
     const stats=vehicleReplacementStats(s,slot);
+    const replacementCost=getPlannedReplacementCost(s,slot);
     const label=`${$(p+'-year').value} ${$(p+'-make').value || 'vehicle'} ${$(p+'-model').value || ''}`.trim();
-    cars.push({slot,label,...stats});
+    cars.push({
+      slot,label,...stats,
+      replacementCost,
+      replacementPurchases:stats.replacements*replacementCost
+    });
   }
   return {
     cars,
     replacements:cars.reduce((sum,c)=>sum+c.replacements,0),
+    replacementPurchases:cars.reduce((sum,c)=>sum+c.replacementPurchases,0),
     earliest:cars.length?Math.min(...cars.map(c=>c.firstReplacementYears)):Infinity
   };
 }
@@ -3420,7 +3519,7 @@ function renderVehicleReplacementOutlook(){
     const target=$(targetId);
     target.innerHTML=scenario.cars.map(car=>{
       const replacementCount=`${car.replacements} replacement${car.replacements===1?'':'s'} / ${car.horizonYears} yrs`;
-      return `<div style="margin-bottom:10px;">\n        <div class="summary-simple-row"><span>${car.label}</span><span class="v">${replacementTimingText(car.firstReplacementYears)}</span></div>\n        <div class="field-hint" style="margin-top:3px;">${replacementCount} · planning replacement mileage ${Math.round(car.life).toLocaleString()} mi</div>\n      </div>`;
+      return `<div style="margin-bottom:10px;">\n        <div class="summary-simple-row"><span>${car.label}</span><span class="v">${replacementTimingText(car.firstReplacementYears)}</span></div>\n        <div class="field-hint" style="margin-top:3px;">${replacementCount} · ${fmt(car.replacementCost)} each · ${fmt(car.replacementPurchases)} projected purchases</div>\n      </div>`;
     }).join('');
   }
 
@@ -3443,7 +3542,7 @@ function renderVehicleReplacementOutlook(){
   }
 
   $('vehicle-replacement-note').textContent=
-    comparison+' Full vehicle cost already includes mileage-related depreciation, so MoveWise does not add the full purchase price of a replacement vehicle again.';
+    comparison+' Replacement purchase dollars are included in the separate 10-year vehicle ownership view below, where depreciation is removed to avoid double-counting.';
 }
 
 function summaryReplacementText(){
@@ -3451,11 +3550,11 @@ function summaryReplacementText(){
   const move=vehicleReplacementScenario('new');
   if(!cur || !move) return {text:'Not modeled in Fuel only',delta:null};
 
-  const countDelta=move.replacements-cur.replacements;
-  if(countDelta!==0){
+  const dollarDelta=move.replacementPurchases-cur.replacementPurchases;
+  if(cur.replacementPurchases>0 || move.replacementPurchases>0){
     return {
-      text:`Stay ${cur.replacements} · Move ${move.replacements} / ${VEHICLE_REPLACEMENT_HORIZON_YEARS} yrs`,
-      delta:countDelta
+      text:`Stay ${fmt(cur.replacementPurchases)} · Move ${fmt(move.replacementPurchases)} / ${VEHICLE_REPLACEMENT_HORIZON_YEARS} yrs`,
+      delta:dollarDelta
     };
   }
 
@@ -3468,7 +3567,238 @@ function summaryReplacementText(){
       };
     }
   }
-  return {text:'About the same',delta:0};
+  return {text:'No replacement projected',delta:0};
+}
+
+const TOTAL_IMPACT_HORIZON_YEARS=10;
+
+function mortgageCashPaidOverMonths(principal,annualRatePct,termYears,extraMonthly,months){
+  const amort=mortgageAmortization(principal,annualRatePct,termYears,extraMonthly);
+  const horizon=Math.max(0,Math.round(Number(months)||0));
+  return amort.schedule
+    .slice(0,horizon)
+    .reduce((sum,row)=>sum+(Number(row.payment)||0),0);
+}
+
+function currentHousingCashOverYears(years=TOTAL_IMPACT_HORIZON_YEARS){
+  const months=Math.max(0,Math.round(years*12));
+  const balance=Math.max(0,parseFloat(sellBalanceEl.value)||0);
+  const rate=Math.max(0,parseFloat(sellRateEl.value)||0);
+  const yearsRemaining=Math.max(0,parseFloat(sellYearsEl.value)||0);
+  const extra=Math.max(0,parseFloat(sellExtraEl.value)||0);
+
+  const mortgageCash=mortgageCashPaidOverMonths(
+    balance,rate,yearsRemaining,extra,months
+  );
+
+  let recurringMonthly=0;
+  if(sellHousingMode==='details'){
+    recurringMonthly=
+      (parseFloat(sellDetailTaxEl.value)||0)/12
+      +(parseFloat(sellDetailInsEl.value)||0)/12
+      +(parseFloat(sellDetailHoaEl.value)||0);
+  }else{
+    // In total-cost mode, infer the non-mortgage portion from the entered
+    // all-in monthly housing cost and the required P&I calculated from the
+    // current mortgage details.
+    const enteredHousing=Math.max(0,parseFloat(sellHousingEl.value)||0);
+    const requiredPI=balance>0
+      ? mortgageAmortization(balance,rate,yearsRemaining,0).scheduledPayment
+      : 0;
+    recurringMonthly=Math.max(0,enteredHousing-requiredPI);
+  }
+
+  return {
+    mortgageCash,
+    recurringCash:recurringMonthly*months,
+    total:mortgageCash+recurringMonthly*months
+  };
+}
+
+function moveHousingCashOverYears(years=TOTAL_IMPACT_HORIZON_YEARS){
+  const months=Math.max(0,Math.round(years*12));
+  const price=parseMoneyInput(buyPriceEl.value);
+  const down=Math.min(parseMoneyInput(buyDownEl.value),price);
+  const loan=Math.max(0,price-down);
+  const rate=Math.max(0,parseFloat(buyRateEl.value)||0);
+  const term=Math.max(0,parseFloat(buyTermEl.value)||0);
+  const extra=Math.max(0,parseFloat(buyExtraEl.value)||0);
+
+  const mortgageCash=mortgageCashPaidOverMonths(
+    loan,rate,term,extra,months
+  );
+
+  const recurringMonthly=
+    (parseFloat(buyTaxEl.value)||0)/12
+    +(parseFloat(buyInsEl.value)||0)/12
+    +(parseFloat(buyHoaEl.value)||0);
+
+  return {
+    mortgageCash,
+    recurringCash:recurringMonthly*months,
+    total:mortgageCash+recurringMonthly*months
+  };
+}
+
+function tenYearTotalImpact(){
+  const stayHousing=currentHousingCashOverYears(TOTAL_IMPACT_HORIZON_YEARS);
+  const moveHousing=moveHousingCashOverYears(TOTAL_IMPACT_HORIZON_YEARS);
+  const stayVehicle=vehicleLongTermCashScenario('cur',TOTAL_IMPACT_HORIZON_YEARS);
+  const moveVehicle=vehicleLongTermCashScenario('new',TOTAL_IMPACT_HORIZON_YEARS);
+
+  if(!stayVehicle || !moveVehicle) return null;
+
+  const stayTotal=stayHousing.total+stayVehicle.total;
+  const moveTotal=moveHousing.total+moveVehicle.total;
+  const savings=stayTotal-moveTotal;
+
+  return {
+    years:TOTAL_IMPACT_HORIZON_YEARS,
+    stayHousing,
+    moveHousing,
+    stayVehicle,
+    moveVehicle,
+    stayTotal,
+    moveTotal,
+    savings,
+    monthlyEquivalent:savings/(TOTAL_IMPACT_HORIZON_YEARS*12)
+  };
+}
+
+function renderTenYearTotalImpact(){
+  const card=$('summary-10yr-total-impact');
+  if(!card) return;
+
+  const impact=tenYearTotalImpact();
+  if(!impact){
+    card.style.display='none';
+    return;
+  }
+
+  card.style.display='block';
+
+  $('summary-10yr-stay-housing').textContent=fmt(impact.stayHousing.total);
+  $('summary-10yr-stay-vehicle').textContent=fmt(impact.stayVehicle.total);
+  $('summary-10yr-stay-total').textContent=fmt(impact.stayTotal);
+
+  $('summary-10yr-move-housing').textContent=fmt(impact.moveHousing.total);
+  $('summary-10yr-move-vehicle').textContent=fmt(impact.moveVehicle.total);
+  $('summary-10yr-move-total').textContent=fmt(impact.moveTotal);
+
+  const headline=$('summary-10yr-impact');
+  headline.className='big-number';
+  if(Math.abs(impact.savings)<1){
+    headline.textContent='$0 difference over 10 years';
+  }else if(impact.savings>0){
+    headline.textContent=`${fmt(impact.savings)} saved over 10 years`;
+  }else{
+    headline.textContent=`${fmt(Math.abs(impact.savings))} more over 10 years`;
+  }
+
+  const monthly=$('summary-10yr-monthly-equivalent');
+  if(Math.abs(impact.monthlyEquivalent)<0.5){
+    monthly.textContent='About the same on a 10-year monthly-equivalent basis';
+  }else if(impact.monthlyEquivalent>0){
+    monthly.textContent=`Equivalent to about ${fmt(Math.abs(impact.monthlyEquivalent))} / month saved`;
+  }else{
+    monthly.textContent=`Equivalent to about ${fmt(Math.abs(impact.monthlyEquivalent))} / month more`;
+  }
+
+  $('summary-10yr-note').textContent=
+    'Calculated from 10 years of housing cash outflow plus fuel, maintenance, and projected replacement-car purchases. '
+    +'Vehicle depreciation is excluded from this view because replacement purchases are counted directly. '
+    +'Mortgage principal, including extra principal, is included as cash outflow here because it leaves your bank account, but it builds home equity. '
+    +'Sale proceeds, down payment transfers, buyer closing costs, and moving costs are not included in this 10-year total.';
+}
+
+function vehicleOperatingPerMile(s,slot){
+  const car=getCarStats(s,slot);
+  const gas=Math.max(0,parseFloat($(s+'-car-gasprice').value)||0);
+  return (car.mpg>0?gas/car.mpg:0)+car.maint;
+}
+
+function vehicleLongTermCashScenario(s,horizonYears=VEHICLE_REPLACEMENT_HORIZON_YEARS){
+  if(costMode[s]!=='car') return null;
+
+  let operatingCost=0;
+  for(let slot=1;slot<=vehicleCount[s];slot++){
+    const annualMiles=getCarMonthlyMiles(s,slot)*12;
+    operatingCost += annualMiles*horizonYears*vehicleOperatingPerMile(s,slot);
+  }
+
+  const replacement=vehicleReplacementScenario(s);
+  const replacementPurchases=replacement?.replacementPurchases||0;
+
+  return {
+    horizonYears,
+    operatingCost,
+    replacementPurchases,
+    total:operatingCost+replacementPurchases
+  };
+}
+
+function renderLongTermVehicleOwnership(){
+  const cur=vehicleLongTermCashScenario('cur');
+  const move=vehicleLongTermCashScenario('new');
+  const commuteCard=$('vehicle-long-term-cost');
+  const summaryCard=$('summary-vehicle-long-term');
+
+  if(!cur || !move){
+    if(commuteCard) commuteCard.style.display='none';
+    if(summaryCard) summaryCard.style.display='none';
+    return;
+  }
+
+  const savings=cur.total-move.total;
+  const purchaseSavings=cur.replacementPurchases-move.replacementPurchases;
+  const monthlyEquivalent=savings/(VEHICLE_REPLACEMENT_HORIZON_YEARS*12);
+
+  if(commuteCard){
+    commuteCard.style.display='block';
+    $('vehicle-longterm-cur-operating').textContent=fmt(cur.operatingCost);
+    $('vehicle-longterm-cur-replacements').textContent=fmt(cur.replacementPurchases);
+    $('vehicle-longterm-cur-total').textContent=fmt(cur.total);
+    $('vehicle-longterm-new-operating').textContent=fmt(move.operatingCost);
+    $('vehicle-longterm-new-replacements').textContent=fmt(move.replacementPurchases);
+    $('vehicle-longterm-new-total').textContent=fmt(move.total);
+
+    const impact=$('vehicle-longterm-impact');
+    impact.className='big-number';
+    if(Math.abs(savings)<1){
+      impact.textContent='$0 difference';
+    }else if(savings>0){
+      impact.textContent=`${fmt(savings)} saved by moving`;
+    }else{
+      impact.textContent=`${fmt(Math.abs(savings))} more if you move`;
+    }
+
+    $('vehicle-longterm-note').textContent=
+      `Over ${VEHICLE_REPLACEMENT_HORIZON_YEARS} years, replacement purchases account for ${fmt(Math.abs(purchaseSavings))} `
+      + (purchaseSavings>0?'of the savings from moving closer.':purchaseSavings<0?'of the additional cost after moving.':'difference between the scenarios.')
+      + ` This long-term view uses fuel + maintenance + replacement purchases and excludes depreciation to avoid counting vehicle capital cost twice.`;
+  }
+
+  if(summaryCard){
+    summaryCard.style.display='block';
+    $('summary-vehicle-stay-total').textContent=fmt(cur.total);
+    $('summary-vehicle-move-total').textContent=fmt(move.total);
+    $('summary-vehicle-stay-replacements').textContent=fmt(cur.replacementPurchases);
+    $('summary-vehicle-move-replacements').textContent=fmt(move.replacementPurchases);
+
+    const impact=$('summary-vehicle-longterm-impact');
+    impact.className='big-number';
+    if(Math.abs(savings)<1){
+      impact.textContent='$0 difference';
+    }else if(savings>0){
+      impact.textContent=`${fmt(savings)} saved over ${VEHICLE_REPLACEMENT_HORIZON_YEARS} years`;
+    }else{
+      impact.textContent=`${fmt(Math.abs(savings))} more over ${VEHICLE_REPLACEMENT_HORIZON_YEARS} years`;
+    }
+    $('summary-vehicle-longterm-note').textContent=
+      `${savings>=0?'Moving closer reduces':'Moving increases'} the estimated long-term vehicle cash cost by about ${fmt(Math.abs(monthlyEquivalent))} / month on a ${VEHICLE_REPLACEMENT_HORIZON_YEARS}-year equivalent basis. `
+      + `Depreciation is excluded from this long-term total because replacement purchases are included directly.`;
+  }
+  renderTenYearTotalImpact();
 }
 
 function carPerMile(s,slot){
@@ -3625,6 +3955,13 @@ function markVehicleSpecChanged(s){
       renderCarInfo(s); refreshDrivingOutputs();
     });
 
+    const replacementCost=$(p+'-replacement-cost');
+    replacementCost.addEventListener('input',()=>{
+      formatMoneyField(replacementCost);
+      if(s==='cur'&&sameVehiclesAfterMove&&!syncingVehicleSpecs) syncNewVehicleSpecs();
+      renderCarInfo(s); refreshDrivingOutputs();
+    });
+
     ['year','odo','miles','days','minutes','totalmiles','monthly-hours'].forEach(k=>{
       const el=$(p+'-'+k); if(!el) return;
       el.addEventListener('input',()=>{
@@ -3658,12 +3995,13 @@ function validateCars(showErrors=false){
       const gas=$(s+'-car-gasprice');
       checks.push({el:gas,ok:()=>gas.value!==''&&Number(gas.value)>=0,msg:`Enter a gas price for the ${s==='cur'?'current':'after-move'} vehicles.`});
       for(let slot=1;slot<=vehicleCount[s];slot++){
-        const p=carPrefix(s,slot), make=$(p+'-make'), model=$(p+'-model'), year=$(p+'-year'), odo=$(p+'-odo'), replacementMileage=$(p+'-replacement-mileage');
+        const p=carPrefix(s,slot), make=$(p+'-make'), model=$(p+'-model'), year=$(p+'-year'), odo=$(p+'-odo'), replacementMileage=$(p+'-replacement-mileage'), replacementCost=$(p+'-replacement-cost');
         checks.push({el:make,ok:()=>!!make.value,msg:'Choose a vehicle make.'});
         checks.push({el:model,ok:()=>!!model.value,msg:'Choose a vehicle model.'});
     checks.push({el:odo,ok:()=>String(odo.value).trim()!=='' && Number(odo.value)>=0,msg:'Enter a valid odometer reading.'});
         checks.push({el:year,ok:()=>Number(year.value)>=1981&&Number(year.value)<=new Date().getFullYear()+1,msg:'Choose a valid vehicle year.'});
         checks.push({el:replacementMileage,ok:()=>replacementMileage.value===''||Number(replacementMileage.value)>0,msg:'Enter a valid planning replacement mileage.'});
+        checks.push({el:replacementCost,ok:()=>parseMoneyInput(replacementCost.value)>0,msg:'Enter a valid planned replacement cost.'});
         if(carMilesMode[s][slot]==='perday'){
           const miles=$(p+'-miles'),days=$(p+'-days');
           checks.push({el:miles,ok:()=>miles.value!==''&&Number(miles.value)>=0,msg:'Enter one-way miles for each vehicle.'});
@@ -3707,6 +4045,7 @@ renderCarInfo('cur');
 renderCarInfo('new');
 renderCommuteImpact();
 renderVehicleReplacementOutlook();
+renderLongTermVehicleOwnership();
 
 // ---- SUMMARY screen ----
 function setMetricValue(id,text,delta=null,goodWhenNegative=true){
@@ -4126,6 +4465,7 @@ function renderTimingBreakdown(){
 
   renderRateOpportunity(W);
   drawTimingChart(W);
+  renderEndResult();
 }
 
 function summaryCostExplanation(housingDelta,drivingDelta,totalDelta){
@@ -4144,6 +4484,162 @@ function summaryCostExplanation(housingDelta,drivingDelta,totalDelta){
     return `Both housing and driving cost less after the move.`;
   }
   return `The net monthly difference comes from the combination of housing and driving costs shown above.`;
+}
+
+function endResultSignal(value,threshold=0.5){
+  if(value>threshold) return 1;
+  if(value<-threshold) return -1;
+  return 0;
+}
+
+function renderEndResult(){
+  const headline=$('end-result-headline');
+  if(!headline) return;
+
+  const curHousing=window.__sellMonthly||0;
+  const newHousing=window.__buyMonthly||0;
+  const curDriving=monthlyCommuteCost('cur');
+  const newDriving=monthlyCommuteCost('new');
+
+  // Positive monthlySavings means moving saves money.
+  const monthlySavings=(curHousing+curDriving)-(newHousing+newDriving);
+  const monthlySignal=endResultSignal(monthlySavings,0.5);
+
+  const ten=tenYearTotalImpact();
+  const tenSavings=ten?.savings||0; // Positive = moving saves.
+  const tenSignal=ten ? endResultSignal(tenSavings,1) : 0;
+
+  const W=Math.max(0,parseFloat($('wait-years').value)||0);
+  const futureRate=Math.max(0,parseFloat($('future-mortgage-rate').value)||0);
+  const timing=W>0 ? timingAnalysis(W,futureRate) : null;
+  // Positive netImpact means waiting costs more, so moving now is better.
+  const timingAdvantage=timing ? timing.netImpact : 0;
+  const timingSignal=timing ? endResultSignal(timingAdvantage,1) : 0;
+
+  const monthlyEl=$('end-result-monthly');
+  const tenEl=$('end-result-10yr');
+  const timingEl=$('end-result-timing');
+
+  monthlyEl.className='v metric-neutral';
+  tenEl.className='v metric-neutral';
+  timingEl.className='v metric-neutral';
+
+  if(monthlySignal>0){
+    monthlyEl.textContent=`Moving saves ${fmt(monthlySavings)} / month`;
+    monthlyEl.classList.add('metric-good');
+  }else if(monthlySignal<0){
+    monthlyEl.textContent=`Staying saves ${fmt(Math.abs(monthlySavings))} / month`;
+    monthlyEl.classList.add('metric-bad');
+  }else{
+    monthlyEl.textContent='About the same';
+  }
+
+  if(!ten){
+    tenEl.textContent='Not available';
+  }else if(tenSignal>0){
+    tenEl.textContent=`Moving saves ${fmt(tenSavings)} over 10 years`;
+    tenEl.classList.add('metric-good');
+  }else if(tenSignal<0){
+    tenEl.textContent=`Staying saves ${fmt(Math.abs(tenSavings))} over 10 years`;
+    tenEl.classList.add('metric-bad');
+  }else{
+    tenEl.textContent='About the same over 10 years';
+  }
+
+  if(W<=0){
+    timingEl.textContent='No wait period selected';
+  }else if(timingSignal>0){
+    timingEl.textContent=`Moving now saves ${fmt(timingAdvantage)} vs. waiting ${W} year${W===1?'':'s'}`;
+    timingEl.classList.add('metric-good');
+  }else if(timingSignal<0){
+    timingEl.textContent=`Waiting ${W} year${W===1?'':'s'} saves ${fmt(Math.abs(timingAdvantage))}`;
+    timingEl.classList.add('metric-bad');
+  }else{
+    timingEl.textContent='About the same';
+  }
+
+  // Only give a strong overall verdict when the monthly and 10-year views agree
+  // and the timing model does not point the opposite direction.
+  const timingContradictsMove=W>0 && timingSignal<0;
+  const timingContradictsStay=W>0 && timingSignal>0;
+
+  let verdict='mixed';
+  if(monthlySignal>=0 && tenSignal>0 && !timingContradictsMove){
+    verdict='move';
+  }else if(monthlySignal<=0 && tenSignal<0 && !timingContradictsStay){
+    verdict='stay';
+  }else if(monthlySignal>0 && tenSignal>=0 && !timingContradictsMove){
+    verdict='move';
+  }else if(monthlySignal<0 && tenSignal<=0 && !timingContradictsStay){
+    verdict='stay';
+  }
+
+  headline.className='big-number';
+
+  if(verdict==='move'){
+    headline.textContent='Moving now is the lower-cost path';
+    headline.classList.add('good');
+
+    if(W>0 && timingSignal>0){
+      $('end-result-sub').textContent='The monthly comparison, 10-year cash-flow comparison, and timing analysis all favor moving under the assumptions entered.';
+    }else{
+      $('end-result-sub').textContent='The monthly and long-term comparisons favor moving under the assumptions entered.';
+    }
+  }else if(verdict==='stay'){
+    headline.textContent='Staying is the lower-cost path';
+    headline.classList.add('good');
+
+    if(W>0 && timingSignal<0){
+      $('end-result-sub').textContent='The monthly comparison, 10-year cash-flow comparison, and timing analysis favor staying or waiting under the assumptions entered.';
+    }else{
+      $('end-result-sub').textContent='The monthly and long-term comparisons favor staying under the assumptions entered.';
+    }
+  }else{
+    headline.textContent='The result is mixed';
+
+    const pieces=[];
+    if(monthlySignal>0) pieces.push('monthly cost favors moving');
+    else if(monthlySignal<0) pieces.push('monthly cost favors staying');
+
+    if(tenSignal>0) pieces.push('the 10-year total favors moving');
+    else if(tenSignal<0) pieces.push('the 10-year total favors staying');
+
+    if(W>0){
+      if(timingSignal>0) pieces.push('the timing analysis favors moving now');
+      else if(timingSignal<0) pieces.push(`the timing analysis favors waiting ${W} year${W===1?'':'s'}`);
+    }
+
+    $('end-result-sub').textContent=pieces.length
+      ? pieces.join(', ').replace(/^./,c=>c.toUpperCase())+'.'
+      : 'The scenarios are close under the assumptions entered.';
+  }
+
+  const housingDelta=newHousing-curHousing;
+  const drivingDelta=newDriving-curDriving;
+  const replacementCur=vehicleReplacementScenario('cur');
+  const replacementMove=vehicleReplacementScenario('new');
+  const replacementSavings=(replacementCur&&replacementMove)
+    ? replacementCur.replacementPurchases-replacementMove.replacementPurchases
+    : 0;
+
+  const drivers=[];
+  if(Math.abs(housingDelta)>=1){
+    drivers.push(`housing is ${fmt(Math.abs(housingDelta))} / month ${housingDelta>0?'higher':'lower'} after moving`);
+  }
+  if(Math.abs(drivingDelta)>=1){
+    drivers.push(`driving is ${fmt(Math.abs(drivingDelta))} / month ${drivingDelta<0?'lower':'higher'} after moving`);
+  }
+  if(Math.abs(replacementSavings)>=1){
+    drivers.push(
+      replacementSavings>0
+        ? `moving avoids about ${fmt(replacementSavings)} of projected vehicle replacement purchases over 10 years`
+        : `moving adds about ${fmt(Math.abs(replacementSavings))} of projected vehicle replacement purchases over 10 years`
+    );
+  }
+
+  $('end-result-driver').textContent=drivers.length
+    ? 'Main drivers: '+drivers.join('; ')+'.'
+    : 'The entered assumptions produce very little difference between the two scenarios.';
 }
 
 function updateSummary(){
@@ -4217,6 +4713,8 @@ function updateSummary(){
   }
 
   $('summary-cost-explanation').textContent=summaryCostExplanation(housingDelta,drivingDelta,delta);
+  renderLongTermVehicleOwnership();
+  renderTenYearTotalImpact();
   drawCompareChart(curHousing,curCommute,newHousing,newCommute);
 
   const value=parseFloat(sellValueEl.value)||0;
@@ -4248,6 +4746,7 @@ function updateSummary(){
 
   drawBreakEvenChart();
   renderTimingBreakdown();
+  renderEndResult();
 }
 
 $('future-mortgage-rate').addEventListener('input',e=>{
@@ -4284,7 +4783,10 @@ function vehicleReportBlock(s,label){
       <div class="pr-row"><span class="k">Depreciation/mi</span><span class="v">$${car.dep.toFixed(3)}</span></div>
       <div class="pr-row"><span class="k">Fuel/mi</span><span class="v">$${fuelPerMile.toFixed(3)}</span></div>
       <div class="pr-row"><span class="k">Full cost/mi</span><span class="v">$${totalPerMile.toFixed(3)}</span></div>
-      <div class="pr-row"><span class="k">Vehicle cost / month</span><span class="v">${fmt(monthlyCost)}</span></div>`;
+      <div class="pr-row"><span class="k">Vehicle cost / month</span><span class="v">${fmt(monthlyCost)}</span></div>
+      <div class="pr-row"><span class="k">Current odometer</span><span class="v">${Math.round(Number($(p+'-odo').value)||0).toLocaleString()} mi</span></div>
+      <div class="pr-row"><span class="k">Planning replacement mileage</span><span class="v">${Math.round(getPlanningReplacementMileage(s,slot)).toLocaleString()} mi</span></div>
+      <div class="pr-row"><span class="k">Planned replacement cost</span><span class="v">${fmt(getPlannedReplacementCost(s,slot))}</span></div>`;
   }
   return rows;
 }
@@ -4368,6 +4870,33 @@ function buildPrintReport(){
     <div class="pr-row" style="margin-top:8px;"><span class="k">Break-even home price at ${$('v-buy-rate').textContent}</span><span class="v">${fmt(computeBreakEvenPrice(parseFloat(buyRateEl.value)||0, breakEvenInputs()))}</span></div>
     <div class="pr-note">Max home price where the new total would still equal what's paid now — holding down payment %, loan term, and tax/insurance rates at their current settings.</div>
 
+    <h2>10-Year Vehicle Ownership</h2>
+    <div class="pr-row"><span class="k">Stay — vehicle cash cost</span><span class="v">${$('summary-vehicle-stay-total').textContent}</span></div>
+    <div class="pr-row"><span class="k">Move — vehicle cash cost</span><span class="v">${$('summary-vehicle-move-total').textContent}</span></div>
+    <div class="pr-row"><span class="k">Stay — replacement purchases</span><span class="v">${$('summary-vehicle-stay-replacements').textContent}</span></div>
+    <div class="pr-row"><span class="k">Move — replacement purchases</span><span class="v">${$('summary-vehicle-move-replacements').textContent}</span></div>
+    <div class="pr-highlight">${$('summary-vehicle-longterm-impact').textContent}</div>
+    <div class="pr-note">${$('summary-vehicle-longterm-note').textContent}</div>
+
+    <h2>10-Year Total Impact</h2>
+    <div class="pr-row"><span class="k">Stay — housing cash outflow</span><span class="v">${$('summary-10yr-stay-housing').textContent}</span></div>
+    <div class="pr-row"><span class="k">Stay — vehicle cash cost</span><span class="v">${$('summary-10yr-stay-vehicle').textContent}</span></div>
+    <div class="pr-row"><span class="k">Stay — 10-year total</span><span class="v">${$('summary-10yr-stay-total').textContent}</span></div>
+    <div class="pr-row"><span class="k">Move — housing cash outflow</span><span class="v">${$('summary-10yr-move-housing').textContent}</span></div>
+    <div class="pr-row"><span class="k">Move — vehicle cash cost</span><span class="v">${$('summary-10yr-move-vehicle').textContent}</span></div>
+    <div class="pr-row"><span class="k">Move — 10-year total</span><span class="v">${$('summary-10yr-move-total').textContent}</span></div>
+    <div class="pr-highlight">${$('summary-10yr-impact').textContent}</div>
+    <div class="pr-sub">${$('summary-10yr-monthly-equivalent').textContent}</div>
+    <div class="pr-note">${$('summary-10yr-note').textContent}</div>
+
+    <h2>End Result</h2>
+    <div class="pr-highlight">${$('end-result-headline').textContent}</div>
+    <div class="pr-sub">${$('end-result-sub').textContent}</div>
+    <div class="pr-row"><span class="k">Monthly impact</span><span class="v">${$('end-result-monthly').textContent}</span></div>
+    <div class="pr-row"><span class="k">10-year total impact</span><span class="v">${$('end-result-10yr').textContent}</span></div>
+    <div class="pr-row"><span class="k">Move now vs. wait</span><span class="v">${$('end-result-timing').textContent}</span></div>
+    <div class="pr-note">${$('end-result-driver').textContent}</div>
+
     <h2>Timing — Move Now vs. Wait</h2>
     ${(()=>{ const w=parseFloat($('wait-years').value)||0; const futureRate=parseFloat($('future-mortgage-rate').value)||0; const t=timingAnalysis(w,futureRate); const be=timingBreakEvenRate(w);
       const today=parseFloat(buyRateEl.value)||0;
@@ -4396,15 +4925,106 @@ function buildPrintReport(){
   </div>`;
   $('print-report').innerHTML=html;
 }
-$('print-report-btn').addEventListener('click', ()=>{
-  buildPrintReport();
-  mwApplySubtree($('print-report'));
-  window.print();
-});
+function printableDocumentHTML(reportMarkup){
+  const lang=mwCurrentLang==='ja'?'ja':'en';
+  const title=mwCurrentLang==='ja'?'MoveWise レポート':'MoveWise Report';
+  return `<!doctype html>
+<html lang="${lang}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${title}</title>
+<style>
+  @page{ margin:0.55in; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#fff; color:#1A1A1A; }
+  body{ font-family:Arial,'Helvetica Neue',sans-serif; }
+  .pr-page{ width:100%; max-width:7.4in; margin:0 auto; }
+  h1{ font-size:24px; margin:0 0 2px; }
+  .pr-date{ font-family:'Courier New',monospace; font-size:11px; color:#555; margin-bottom:20px; }
+  h2{ font-size:15px; border-bottom:2px solid #1A1A1A; padding-bottom:6px; margin:24px 0 10px; break-after:avoid; }
+  .pr-row{ display:flex; justify-content:space-between; gap:18px; font-size:12.5px; padding:5px 0; border-bottom:1px solid #E2E2E2; break-inside:avoid; }
+  .pr-row .k{ color:#444; min-width:0; }
+  .pr-row .v{ font-family:'Courier New',monospace; font-weight:700; text-align:right; overflow-wrap:anywhere; }
+  .pr-highlight{ font-family:'Courier New',monospace; font-size:24px; font-weight:700; margin:8px 0; break-inside:avoid; }
+  .pr-sub{ font-size:12px; color:#555; margin-bottom:10px; }
+  .pr-note{ font-size:11px; color:#555; font-style:italic; margin-top:8px; line-height:1.45; }
+  .pr-footer{ margin-top:28px; padding-top:12px; border-top:1px solid #ccc; font-size:10px; color:#777; }
+  .pr-cols{ display:flex; gap:22px; align-items:flex-start; }
+  .pr-cols>div{ flex:1 1 0; min-width:0; }
+  .pr-sub-head{ font-weight:700; margin-bottom:5px; }
+  @media print{
+    html,body{ width:auto; }
+    .pr-page{ max-width:none; }
+  }
+</style>
+</head>
+<body>${reportMarkup}</body>
+</html>`;
+}
+
+function printFullAnalysis(){
+  const status=$('print-report-status');
+  if(status) status.textContent='Preparing print view…';
+
+  try{
+    // Recalculate the latest visible results before taking the snapshot.
+    calcBuy();
+    calcSell();
+    refreshDrivingOutputs();
+    updateSummary();
+
+    buildPrintReport();
+    const report=$('print-report');
+    mwApplySubtree(report);
+    const reportMarkup=report.innerHTML;
+    const docHTML=printableDocumentHTML(reportMarkup);
+
+    // Opening the window happens directly inside the click event, which keeps
+    // it compatible with normal popup blockers. The old same-page print CSS is
+    // retained as a fallback if a browser refuses the new window.
+    const printWin=window.open('','_blank');
+    if(!printWin){
+      if(status) status.textContent='Opening your browser print dialog…';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()));
+      return;
+    }
+
+    printWin.document.open();
+    printWin.document.write(docHTML);
+    printWin.document.close();
+
+    let didPrint=false;
+    const triggerPrint=()=>{
+      if(didPrint || printWin.closed) return;
+      didPrint=true;
+      try{
+        printWin.focus();
+        printWin.print();
+        if(status) status.textContent='Print dialog opened.';
+      }catch(err){
+        console.error('MoveWise print error',err);
+        if(status) status.textContent='Could not open the print dialog. Try again or use your browser’s Print command.';
+      }
+    };
+
+    printWin.addEventListener('load',()=>setTimeout(triggerPrint,120),{once:true});
+    // document.write() may finish before the load listener is observed in some browsers.
+    setTimeout(triggerPrint,350);
+    printWin.addEventListener('afterprint',()=>{
+      try{ printWin.close(); }catch(_){}
+    },{once:true});
+  }catch(err){
+    console.error('MoveWise could not prepare the print report',err);
+    if(status) status.textContent='Could not prepare the print report. Refresh the page and try again.';
+  }
+}
+
+$('print-report-btn').addEventListener('click', printFullAnalysis);
 
 
 // ---- English / Japanese interface ----
-const MW_JA = {"MoveWise — Stay vs. Move Calculator": "MoveWise — 住み続けるか引っ越すか比較", "BUY · SELL · COMMUTE · COMPARE": "購入 · 売却 · 通勤 · 比較", "BUY": "購入", "SELL": "売却", "COMMUTE": "通勤", "SUMMARY": "まとめ", "Estimate the monthly cost of the home you're considering.": "検討中の住宅の月額コストを見積もります。", "PROPERTY": "物件", "Property address": "物件住所", "Property address autocomplete": "物件住所の候補検索", "Find address": "住所を検索", "Enter the property address to estimate local taxes and insurance.": "物件住所を入力すると、地域の固定資産税と住宅保険料を見積もれます。", "Can't find it? Enter location manually": "見つからない場合は所在地を手動入力", "Hide manual location": "手動入力を閉じる", "State": "州", "County": "郡", "County-level property-tax detail is available for Mississippi.": "ミシシッピ州では郡別の固定資産税データを利用できます。", "Use this location": "この所在地を使用", "PURCHASE": "購入条件", "Home price": "住宅価格", "Down payment": "頭金", "Down payment %": "頭金比率", "Mortgage amount after down payment": "頭金差引後の借入額", "Interest rate": "金利", "Loan term": "返済期間", "ONGOING COSTS": "継続費用", "Estimated property tax / year": "固定資産税（年額・推定）", "Estimated home insurance / year": "住宅保険（年額・推定）", "MoveWise pre-fills these from the verified location. Edit them if you have actual figures.": "確認した所在地をもとに自動入力します。実際の金額が分かる場合は編集してください。", "HOA / month": "HOA（月額）", "MONTHLY PAYMENT": "月々の支払額", "Estimated monthly housing payment": "推定月額住宅費", "Principal & interest": "元利返済", "Property tax": "固定資産税", "Insurance": "保険", "HOA": "HOA", "LOAN AMOUNT": "借入額", "TOTAL INTEREST PAID": "支払利息総額", "TOTAL PRINCIPAL + INTEREST": "元本＋利息総額", "PAYOFF": "完済まで", "AMORTIZATION": "返済内訳", "Principal": "元本", "Interest": "利息", "Continue to Current Home →": "現在の住宅へ進む →", "Enter what you pay today and estimate the cash you'd receive from selling.": "現在の住宅費と、売却した場合の手取り額を見積もります。", "CURRENT COST": "現在の住宅費", "Total monthly cost": "月額合計", "Build from details": "内訳から計算", "Current monthly housing cost": "現在の月額住宅費", "All-in housing cost: mortgage + property tax + insurance + HOA.": "住宅ローン＋固定資産税＋保険＋HOAを含む合計額。", "Enter the individual costs below to calculate your current monthly housing cost.": "以下の各費用を入力すると、現在の月額住宅費を計算できます。", "Mortgage payment (P&I) / month": "住宅ローン返済（元利・月額）", "Property tax / year": "固定資産税（年額）", "Home insurance / year": "住宅保険（年額）", "Calculated current housing cost:": "現在の住宅費（月額）:", "CURRENT MORTGAGE": "現在の住宅ローン", "Remaining mortgage balance": "住宅ローン残高", "Current interest rate": "現在の金利", "Years remaining": "残存期間", "These fields let MoveWise estimate how much principal you'll pay down if you wait before moving.": "待ってから引っ越す場合の元本返済額を見積もるために使用します。", "HOME SALE": "住宅売却", "Expected sale price": "想定売却価格", "Selling costs": "売却費用", "Agent fees, seller closing costs, etc.": "仲介手数料、売主側の諸費用など。", "Repairs / seller concessions": "修繕費 / 売主負担", "Estimated cash from sale": "売却後の推定手取り額", "Mortgage payoff": "ローン完済額", "Repairs / concessions": "修繕費 / 売主負担", "Net proceeds": "手取り額", "HOME EQUITY BEFORE SELLING COSTS": "売却費用控除前の純資産", "CASH AFTER SALE": "売却後の手取り", "Show home gain ↓": "住宅の利益を見る ↓", "Hide home gain ↑": "住宅の利益を閉じる ↑", "HOME GAIN": "住宅の利益", "Original purchase price": "購入時価格", "Capital improvements": "資本的改良", "Estimated gain on the home": "住宅の推定利益", "Sale price less selling costs, repairs, purchase price and improvements": "売却価格から売却費用、修繕費、購入価格、資本的改良費を差し引いた額", "Mortgage payoff is not subtracted from gain. Paying down debt changes your equity and cash proceeds, not the home's economic gain. This is not a tax calculation.": "ローン完済額は利益計算から差し引きません。ローン返済は純資産と手取り額に影響しますが、住宅自体の経済的利益には含めません。税務計算ではありません。", "← Back": "← 戻る", "Continue to Commute →": "通勤へ進む →", "Compare the driving you do now with the driving you'd do after moving. Each vehicle can have its own commute and mileage.": "現在と引っ越し後の運転を比較します。車両ごとに通勤距離や走行距離を設定できます。", "Current commute": "現在の通勤", "NOW": "現在", "After moving": "引っ越し後", "MOVE": "引っ越し", "COMMUTE IMPACT": "通勤への影響", "Estimated monthly driving change": "月間運転コストの変化（推定）", "Compare current driving cost with after moving.": "現在と引っ越し後の運転コストを比較します。", "CURRENT DRIVING COST": "現在の運転コスト", "AFTER MOVING": "引っ越し後", "MILES / MONTH": "月間走行距離", "COMMUTE TIME / MONTH": "月間通勤時間", "Continue to Summary →": "まとめへ進む →", "VEHICLE COST": "車両コスト", "Full vehicle cost": "車両総コスト", "Fuel only": "燃料費のみ", "Full vehicle cost includes fuel, maintenance and mileage-related depreciation. MoveWise also estimates when added mileage could force a vehicle replacement.": "車両総コストには燃料、整備、走行距離に伴う減価が含まれます。MoveWiseは追加走行によって車両交換が早まる時期も推定します。", "Use the same vehicle(s)": "同じ車両を使用", "Vehicle details stay matched to the current commute. You still enter the new mileage for each car.": "車両情報は現在の通勤と同じままにし、引っ越し後の走行距離だけを車両ごとに入力します。", "VEHICLE 1": "車両 1", "VEHICLE 2": "車両 2", "Remove": "削除", "Year": "年式", "Make": "メーカー", "Model": "車種", "Current odometer (mi)": "現在の走行距離（mi）", "Start typing a make": "メーカー名を入力", "Choose or type a model": "車種を選択または入力", "Start typing to choose a model. If yours isn't listed, enter it manually.": "入力して車種を選択してください。候補にない場合は手動で入力できます。", "DRIVING": "運転", "One-way × days": "片道距離 × 日数", "Total miles / month": "月間総走行距離", "Miles one-way": "片道マイル", "Days / week": "週あたり日数", "Minutes one-way": "片道時間（分）", "optional": "任意", "optional hours": "任意（時間）", "Optional": "任意", "Commute time / month": "月間通勤時間", "+ Add vehicle": "＋ 車両を追加", "Gas price / gal": "ガソリン価格 / gal", "Fuel only uses gas price and MPG. It does not include maintenance or depreciation.": "燃料費のみではガソリン価格とMPGを使用します。メンテナンス費や減価は含みません。", "Vehicle MPG": "車両MPG", "Monthly miles": "月間走行距離", "Fuel / mile": "燃料費 / mile", "Maintenance / mile": "メンテナンス費 / mile", "Depreciation / mile": "減価 / mile", "Full cost / mile": "総コスト / mile", "Estimated cost / month": "推定コスト / 月", "See vehicle assumptions": "車両の前提を見る", "Total vehicle cost": "車両コスト合計", "See what changes if you move — monthly cost, driving, sale proceeds, affordability, and timing.": "引っ越した場合に、月額コスト、運転、売却手取り、購入可能額、タイミングがどう変わるか確認します。", "BOTTOM LINE": "結論", "Estimated monthly cost change": "月額コストの変化（推定）", "Compare moving with staying.": "引っ越す場合と住み続ける場合を比較します。", "Stay": "住み続ける", "Housing": "住宅費", "Driving": "運転コスト", "Total / month": "月額合計", "Move": "引っ越す", "What changes": "変化の内訳", "Miles / month": "月間走行距離", "Equity before selling costs": "売却費用控除前の純資産", "Selling costs + concessions": "売却費用＋売主負担", "Buy-page down payment": "購入ページの頭金", "BREAK-EVEN HOME PRICE": "損益分岐の住宅価格", "At": "条件:", "your current mortgage rate": "現在の住宅ローン金利", "See rate sensitivity": "金利感応度を見る", "Break-even price": "損益分岐価格", "Your target": "目標価格", "MOVE NOW OR WAIT?": "今引っ越すか、待つか？", "Compare moving now with waiting, including home appreciation, mortgage paydown, and a different future mortgage rate.": "住宅価格の上昇、ローン元本の返済、将来の住宅ローン金利を含めて、今引っ越す場合と待つ場合を比較します。", "Years to wait": "待つ年数", "Future mortgage rate": "将来の住宅ローン金利", "Current home appreciation / year": "現在の住宅の価格上昇率 / 年", "Target home appreciation / year": "購入予定住宅の価格上昇率 / 年", "Target home then": "その時点の購入予定住宅価格", "Sale proceeds then": "その時点の売却手取り", "Move now total / month": "今引っ越す場合 / 月", "After waiting / month": "待った後 / 月", "Waiting vs. moving now": "待つ場合 vs 今引っ越す場合", "· rates fall 1%": "· 金利が1%低下", "· today's rate": "· 現在の金利", "· rates rise 1%": "· 金利が1%上昇", "See full rate sensitivity": "金利感応度の詳細を見る", "Net cost of waiting": "待つ場合の純コスト", "$0 break-even": "$0 損益分岐", "See detailed timing calculation": "タイミング計算の詳細を見る", "Print / Save Full Analysis": "詳細分析を印刷 / 保存", "PLANNING ESTIMATES ONLY — does not include PMI, buyer closing costs, or moving costs. Mississippi property-tax estimates use the state assessment formula and current local millage when a verified rate is available. Other locations require a manual property-tax estimate. Insurance, vehicle costs, appreciation, and future rates are planning assumptions, not quotes or forecasts. Address and vehicle lookups may use public data services. No sign-in required.": "計画用の概算です。PMI、購入者側のクロージング費用、引っ越し費用は含みません。税金、保険、車両コスト、価格上昇率、将来金利は前提条件であり、見積書や予測ではありません。住所・車両検索では公開データサービスを使用する場合があります。ログインは不要です。", "Select a state": "州を選択", "Verified address": "確認済み住所", "ADDRESS VERIFIED": "住所確認済み", "ZIP": "ZIPコード", "Tax basis": "税率の基準", "Est. annual property tax": "固定資産税（年額・推定）", "Est. annual insurance": "住宅保険（年額・推定）", "Location verified. Tax and insurance are planning estimates, not an official tax bill or insurance quote. You can edit either amount below.": "所在地を確認しました。税金と保険は計画用の概算であり、正式な納税通知や保険見積ではありません。下の金額は編集できます。", "Mississippi state average": "ミシシッピ州平均", "Select a state first.": "先に州を選択してください。", "Manual location": "手動入力の所在地", "Address lookup timed out.": "住所検索がタイムアウトしました。", "Address lookup could not load.": "住所検索を読み込めませんでした。", "Enter a full U.S. street address first.": "米国の完全な住所を入力してください。", "Finding…": "検索中…", "Checking the address…": "住所を確認中…", "No exact match": "一致する住所が見つかりません", "U.S. Census address lookup": "米国国勢調査局の住所検索", "We could not verify that address. Check the street/city/ZIP, or use “Enter location manually.”": "その住所を確認できませんでした。番地・市区町村・ZIPコードを確認するか、所在地を手動入力してください。", "Start typing a U.S. street address…": "米国の住所を入力してください…", "Start typing and choose the exact address from the suggestions.": "入力を始め、候補から正確な住所を選択してください。", "Verifying address…": "住所を確認中…", "Selected address": "選択した住所", "Google address autocomplete": "Google住所オートコンプリート", "We found the suggestion but could not read its location details. Use the manual fallback below.": "住所候補は見つかりましたが、所在地の詳細を取得できませんでした。下の手動入力を使用してください。", "Google address autocomplete unavailable; using Census lookup fallback.": "Google住所検索を利用できないため、国勢調査局の住所検索を使用します。", "Google Maps JavaScript API failed to load; Census lookup remains available.": "Google Maps APIを読み込めませんでした。国勢調査局の住所検索は引き続き利用できます。", "We found the address, but could not determine a supported U.S. state. Use manual location instead.": "住所は見つかりましたが、対応する米国の州を特定できませんでした。所在地を手動入力してください。", "Enter a home price.": "住宅価格を入力してください。", "Enter a valid down payment.": "有効な頭金を入力してください。", "Enter an interest rate.": "金利を入力してください。", "Enter a loan term.": "返済期間を入力してください。", "Enter the estimated property tax.": "推定固定資産税を入力してください。", "Enter the estimated home insurance.": "推定住宅保険料を入力してください。", "Find the property location using a full address or City + State, or enter it manually.": "完全な住所または「市 + 州」で物件所在地を検索するか、手動入力してください。", "Enter original purchase price": "購入時価格を入力", "Enter your current monthly housing cost.": "現在の月額住宅費を入力してください。", "Enter an expected sale price.": "想定売却価格を入力してください。", "Enter the remaining mortgage balance.": "住宅ローン残高を入力してください。", "Enter the current mortgage rate.": "現在の住宅ローン金利を入力してください。", "Enter the years remaining on the mortgage.": "住宅ローンの残存年数を入力してください。", "Enter a valid selling-cost percentage.": "有効な売却費用率を入力してください。", "Enter repairs/concessions, or 0.": "修繕費・売主負担額を入力してください。ない場合は0です。", "Enter a vehicle make.": "車両メーカーを入力してください。", "Enter a vehicle model.": "車種を入力してください。", "Enter a valid vehicle year.": "有効な年式を入力してください。", "Choose a valid vehicle year.": "有効な年式を選択してください。", "Enter the vehicle odometer.": "車両の走行距離を入力してください。", "Enter one-way miles for each vehicle.": "各車両の片道距離を入力してください。", "Enter days per week for each vehicle.": "各車両の週あたり日数を入力してください。", "Enter total monthly miles for each vehicle.": "各車両の月間総走行距離を入力してください。", "Enter a gas price.": "ガソリン価格を入力してください。", "Enter vehicle MPG.": "車両のMPGを入力してください。", "Enter one-way miles.": "片道距離を入力してください。", "Enter days per week.": "週あたり日数を入力してください。", "Enter total monthly miles.": "月間総走行距離を入力してください。", "No change": "変化なし", "No meaningful annual difference.": "年間では実質的な差はありません。", "Driving cost stays about the same if you move.": "引っ越しても運転コストはほぼ変わりません。", "Moving lowers your estimated driving cost.": "引っ越すと推定運転コストが下がります。", "Moving raises your estimated driving cost.": "引っ越すと推定運転コストが上がります。", "Moving and staying cost about the same each month.": "引っ越す場合と住み続ける場合の月額コストはほぼ同じです。", "Moving lowers your estimated housing + driving cost.": "引っ越すと推定住宅費＋運転コストが下がります。", "Moving raises your estimated housing + driving cost.": "引っ越すと推定住宅費＋運転コストが上がります。", "Not entered": "未入力", "About the same": "ほぼ同じ", "No wait period": "待機期間なし", "There is no waiting period to compare.": "比較する待機期間がありません。", "Set a wait period above 0 years to see rate sensitivity.": "金利感応度を見るには、待つ年数を1年以上に設定してください。", "Set years to wait above 0 to calculate the rate opportunity.": "金利の影響を計算するには、待つ年数を1年以上に設定してください。", "Rates alone do not rescue waiting in this scenario.": "この条件では、金利低下だけでは待つ方が有利にはなりません。", "Waiting remains cheaper across the tested rate range.": "検証した金利範囲では、待つ方が引き続き安くなります。", "WAITING COSTS MORE": "待つ方が高い", "WAITING COSTS LESS": "待つ方が安い", "today": "現在", "MoveWise Report": "MoveWise レポート", "New Home — Mortgage Estimate": "新しい住宅 — 住宅ローン見積", "Current Home / Sale": "現在の住宅 / 売却", "Commute Comparison": "通勤比較", "Bottom Line": "結論", "Timing — Move Now vs. Wait": "タイミング — 今引っ越すか待つか", "Property location": "物件所在地", "Current housing cost / month": "現在の住宅費 / 月", "Current mortgage rate": "現在の住宅ローン金利", "Home equity before selling costs": "売却費用控除前の純資産", "Commute": "通勤", "Cost mode": "コスト計算方式", "Commute cost / month": "通勤コスト / 月", "Current": "現在", "New, near work": "引っ越し後", "Current total / month (housing + commute)": "現在の月額合計（住宅費＋通勤）", "New total / month (housing + commute)": "引っ越し後の月額合計（住宅費＋通勤）", "Current home appreciation": "現在の住宅の価格上昇率", "Target home appreciation": "購入予定住宅の価格上昇率", "Today's new-mortgage rate": "現在の新規住宅ローン金利", "Assumed future mortgage rate": "想定将来住宅ローン金利", "Target home price after waiting": "待った後の購入予定住宅価格", "Current mortgage balance after waiting": "待った後の現在の住宅ローン残高", "Net sale proceeds after waiting": "待った後の売却手取り", "New housing + driving total after waiting": "待った後の住宅費＋運転コスト", "Estimated future-rate break-even": "将来金利の推定損益分岐点", "Planning estimates only — does not include PMI, buyer closing costs, or moving costs. Mississippi property-tax estimates use the state assessment formula and current local millage when a verified rate is available. Other locations require a manual property-tax estimate. Insurance, vehicle costs, appreciation, and future rates are planning assumptions, not quotes or forecasts. Address and vehicle lookups may use public data services. No sign-in required.": "計画用の概算です。PMI、購入者側のクロージング費用、引っ越し費用は含みません。税金、保険、車両コスト、価格上昇率、将来金利は前提条件であり、見積書や予測ではありません。住所・車両検索では公開データサービスを使用する場合があります。ログインは不要です。", "How do you want to locate the home?": "物件の所在地をどの方法で指定しますか？", "Property location method": "物件所在地の指定方法", "Full address": "完全な住所", "City + State": "市 + 州", "Enter street address, city, state, and ZIP when available.": "番地・市・州・ZIPコードを、分かる範囲で入力してください。", "Use this if you don't know the street address. MoveWise will estimate the county from the city.": "番地が分からない場合に使用してください。MoveWiseが市から郡を推定します。", "City": "市", "Enter city": "市を入力", "Find county": "郡を検索", "Choose full address or City + State to estimate local taxes and insurance.": "完全な住所または「市 + 州」を選択して、地域の税金と保険を見積もります。", "Enter a full street address for the most accurate county lookup.": "郡を最も正確に特定するには、完全な住所を入力してください。", "Enter a city and state. The county will be estimated and can be changed manually if needed.": "市と州を入力してください。郡は推定され、必要に応じて手動で変更できます。", "LOCATION ESTIMATED": "所在地（推定）", "Estimated county": "推定郡", "City-level lookup. The county is estimated from the place record and may be wrong for cities that cross county lines. Use the manual location option if you need to change it.": "市レベルの検索です。郡は地点データから推定するため、複数の郡にまたがる市では正確でない場合があります。必要に応じて手動入力で変更してください。", "Enter a city first.": "先に市を入力してください。", "Finding the county…": "郡を検索中…", "We could not determine the county from that city and state. Try the full address or enter the location manually.": "その市と州から郡を特定できませんでした。完全な住所を試すか、所在地を手動入力してください。", "Estimated property-tax rate": "推定固定資産税率", "Enter home price to calculate.": "住宅価格を入力すると計算されます。", "Auto-filled from location": "所在地から自動入力", "Tax data": "税データ", "Loading county tax data…": "郡の税データを読み込み中…", "Fallback planning estimate": "予備の計画用推定値", "Live county data unavailable · using fallback estimate": "郡の最新データを取得できません · 予備の推定値を使用", "Property tax uses the county-average effective rate from Census ACS data when available. It is a planning estimate, not a property-specific tax bill. Insurance is also a planning estimate. You can edit either amount below.": "固定資産税は、利用可能な場合はCensus ACSの郡平均の実効税率を使用します。これは計画用の推定値であり、個別物件の納税額ではありません。保険も計画用の推定値です。下の金額は編集できます。", "City-level lookup. The county is estimated from the place record and may be wrong for cities that cross county lines. Property tax then uses that county’s average ACS rate when available. Use the manual location option if you need to change the county.": "市レベルの検索です。郡は地点データから推定するため、複数の郡にまたがる市では正確でない場合があります。固定資産税は、利用可能な場合、その郡のACS平均税率を使用します。郡を変更する必要がある場合は手動入力を使用してください。", "Assessment ratio": "評価比率", "Current total millage": "現在の合計ミレージ", "Current tax district": "現在の課税地区", "Current local millage required": "現在の地域ミレージが必要です", "Manual": "手動", "Mississippi owner-occupied home": "ミシシッピ州・自己居住住宅", "Manual property-tax estimate": "固定資産税の手動見積もり", "Checking current local millage…": "現在の地域ミレージを確認中…", "Select or enter the current total millage to calculate.": "計算するには、現在の合計ミレージを選択または入力してください。", "Enter the annual estimate below.": "下に年間見積額を入力してください。", "Enter current total mills": "現在の合計ミル数を入力", "Automatic current-year property-tax calculation is currently available for Mississippi only. Enter the annual property-tax estimate below for other states.": "当年の固定資産税の自動計算は現在ミシシッピ州のみ対応しています。他州では下に年間固定資産税の見積額を入力してください。", "Current adopted local millage · FY Oct. 2025–Sept. 2026": "現在採用されている地域ミレージ · 2025年10月–2026年9月", "User-entered current total millage": "ユーザー入力の現在の合計ミレージ", "For Mississippi, MoveWise uses the 10% owner-occupied assessment ratio and current local millage when available.": "ミシシッピ州では、MoveWiseは自己居住住宅の10%評価比率と、利用可能な場合は現在の地域ミレージを使用します。", "Mississippi property tax uses the state assessment formula and current local millage when a verified district rate is available. This is a planning estimate before homestead credit and special parcel-specific adjustments.": "ミシシッピ州の固定資産税は、確認済みの課税地区レートが利用できる場合、州の評価計算式と現在の地域ミレージを使用します。これはホームステッド控除や個別物件の特別調整前の計画用見積もりです。", "Current-year automatic property-tax calculations are currently limited to Mississippi. Enter the annual property-tax estimate manually below.": "当年の固定資産税の自動計算は現在ミシシッピ州に限定されています。下に年間固定資産税の見積額を手動で入力してください。", "Tax calculation details": "税計算の詳細", "Rate period": "適用年度", "FY 2025–26": "2025–26年度", "User entered": "ユーザー入力", "Enter current millage": "現在のミレージを入力", "Checking…": "確認中…", "TAXES, INSURANCE & HOA": "税金・保険・HOA", "Enter your current mortgage details to estimate the balance when you move.": "現在の住宅ローン情報を入力して、引っ越す時点の残高を見積もります。", "Models update from the selected year and make.": "選択した年式とメーカーに合わせて車種が更新されます。", "Other / Not listed": "その他 / 一覧にない", "Choose a make to load models.": "メーカーを選択すると車種を読み込みます。", "Choose a vehicle make.": "車両メーカーを選択してください。", "Choose a vehicle model.": "車種を選択してください。", "Using broad vehicle assumptions for an unlisted make.": "一覧にないメーカーには一般的な車両前提を使用します。", "Live model lookup is unavailable. Showing MoveWise model options instead.": "車種検索を利用できないため、MoveWiseの車種候補を表示しています。", "Live model lookup is unavailable. Choose Other / Not listed.": "車種検索を利用できません。「その他 / 一覧にない」を選択してください。", "Millage source": "ミレージの入力方法", "Use suggested district rate": "推奨地区レートを使用", "Enter millage manually": "ミレージを手動入力", "Enter total mills": "合計ミル数を入力", "Enter the total county + city + school + applicable district millage.": "郡・市・学区・該当地区の合計ミレージを入力してください。", "Flowood — standard": "Flowood — 標準", "Brandon — standard": "Brandon — 標準", "Canton — Canton schools": "Canton — Canton学区", "Canton — Madison County schools": "Canton — Madison County学区", "Canton — Canton schools + parking district": "Canton — Canton学区 + 駐車地区", "Canton — Canton schools + MegaSite Fire": "Canton — Canton学区 + MegaSite消防地区", "Brookhaven — latest verified": "Brookhaven — 最新確認済み", "2024 · latest verified": "2024年 · 最新確認済み", "Manual total millage · owner-occupied home · 10% assessment ratio · before homestead credit.": "手動の合計ミレージ · 自己居住住宅 · 10%評価比率 · ホームステッド控除前。", "Current odometer": "現在の走行距離", "Mileage condition": "走行距離の状態", "low mileage": "低走行距離", "typical mileage": "標準的な走行距離", "moderate-high mileage": "やや多い走行距離", "high mileage": "高走行距離", "very high mileage": "非常に高い走行距離", "Vehicle replacement outlook": "車両交換の見通し", "Vehicle replacement": "車両交換", "Expected replacement": "交換時期の目安", "No replacement from entered driving": "入力した走行では交換不要", "Replacement due now": "現在交換時期", "Beyond 10 years": "10年以上先", "Not modeled in Fuel only": "燃料のみでは未計算", "Replacement planning": "車両交換の計画", "Planning replacement mileage (mi)": "交換予定走行距離（mi）", "Planning replacement mileage": "交換予定走行距離", "MoveWise starts with a model-based planning estimate. Change this to the mileage when you would expect to replace the vehicle.": "MoveWiseは車種に基づく計画用の推定値から始めます。車を交換する予定の走行距離に変更できます。", "Enter a valid planning replacement mileage.": "有効な交換予定走行距離を入力してください。", "Extra principal payment / month": "追加元本返済 / 月", "Optional. Added directly to principal each month and included in the monthly comparison.": "任意。毎月元本に直接充当され、月額比較にも含まれます。", "Extra principal": "追加元本返済", "EXTRA PAYMENT IMPACT": "追加返済の効果", "Payoff without extra": "追加返済なしの完済時期", "Payoff with extra": "追加返済ありの完済時期", "Time saved": "短縮期間", "Total P&I without extra": "追加返済なしの元利総額", "Total P&I with extra": "追加返済ありの元利総額", "Interest saved": "節約できる利息", "Required P&I / month": "必要な元利返済 / 月", "Remaining P&I without extra": "追加返済なしの残存元利総額", "Remaining P&I with extra": "追加返済ありの残存元利総額", "Optional. Added to your current monthly housing cost and used when projecting your future mortgage balance.": "任意。現在の月額住宅費に加算され、将来の住宅ローン残高の予測にも使用されます。", "Paid off": "完済", "Enter a valid extra principal payment, or 0.": "有効な追加元本返済額を入力するか、0を入力してください。", "Extra principal / month": "追加元本返済 / 月", "Time saved from extra payments": "追加返済による短縮期間", "Interest saved from extra payments": "追加返済による利息節約額", "Find the property by": "物件の検索方法", "Compare moving now with waiting, including home appreciation, mortgage paydown, and a different future mortgage rate. Extra principal builds equity and is not treated as a cost here.": "住宅価格の上昇、ローン元本の返済、将来の住宅ローン金利を含めて、今引っ越す場合と待つ場合を比較します。追加元本返済は純資産を増やすため、ここでは費用として扱いません。", "Move now cash payment / month": "今引っ越す場合の現金支払 / 月", "After waiting cash payment / month": "待った後の現金支払 / 月", "New housing + driving cash payment": "新しい住宅費＋運転の現金支払", "Extra principal excluded from timing cost": "タイミング費用から除外する追加元本", "Timing comparison / month": "タイミング比較 / 月"};
+const MW_JA = {"MoveWise — Stay vs. Move Calculator": "MoveWise — 住み続けるか引っ越すか比較", "BUY · SELL · COMMUTE · COMPARE": "購入 · 売却 · 通勤 · 比較", "BUY": "購入", "SELL": "売却", "COMMUTE": "通勤", "SUMMARY": "まとめ", "Estimate the monthly cost of the home you're considering.": "検討中の住宅の月額コストを見積もります。", "PROPERTY": "物件", "Property address": "物件住所", "Property address autocomplete": "物件住所の候補検索", "Find address": "住所を検索", "Enter the property address to estimate local taxes and insurance.": "物件住所を入力すると、地域の固定資産税と住宅保険料を見積もれます。", "Can't find it? Enter location manually": "見つからない場合は所在地を手動入力", "Hide manual location": "手動入力を閉じる", "State": "州", "County": "郡", "County-level property-tax detail is available for Mississippi.": "ミシシッピ州では郡別の固定資産税データを利用できます。", "Use this location": "この所在地を使用", "PURCHASE": "購入条件", "Home price": "住宅価格", "Down payment": "頭金", "Down payment %": "頭金比率", "Mortgage amount after down payment": "頭金差引後の借入額", "Interest rate": "金利", "Loan term": "返済期間", "ONGOING COSTS": "継続費用", "Estimated property tax / year": "固定資産税（年額・推定）", "Estimated home insurance / year": "住宅保険（年額・推定）", "MoveWise pre-fills these from the verified location. Edit them if you have actual figures.": "確認した所在地をもとに自動入力します。実際の金額が分かる場合は編集してください。", "HOA / month": "HOA（月額）", "MONTHLY PAYMENT": "月々の支払額", "Estimated monthly housing payment": "推定月額住宅費", "Principal & interest": "元利返済", "Property tax": "固定資産税", "Insurance": "保険", "HOA": "HOA", "LOAN AMOUNT": "借入額", "TOTAL INTEREST PAID": "支払利息総額", "TOTAL PRINCIPAL + INTEREST": "元本＋利息総額", "PAYOFF": "完済まで", "AMORTIZATION": "返済内訳", "Principal": "元本", "Interest": "利息", "Continue to Current Home →": "現在の住宅へ進む →", "Enter what you pay today and estimate the cash you'd receive from selling.": "現在の住宅費と、売却した場合の手取り額を見積もります。", "CURRENT COST": "現在の住宅費", "Total monthly cost": "月額合計", "Build from details": "内訳から計算", "Current monthly housing cost": "現在の月額住宅費", "All-in housing cost: mortgage + property tax + insurance + HOA.": "住宅ローン＋固定資産税＋保険＋HOAを含む合計額。", "Enter the individual costs below to calculate your current monthly housing cost.": "以下の各費用を入力すると、現在の月額住宅費を計算できます。", "Mortgage payment (P&I) / month": "住宅ローン返済（元利・月額）", "Property tax / year": "固定資産税（年額）", "Home insurance / year": "住宅保険（年額）", "Calculated current housing cost:": "現在の住宅費（月額）:", "CURRENT MORTGAGE": "現在の住宅ローン", "Remaining mortgage balance": "住宅ローン残高", "Current interest rate": "現在の金利", "Years remaining": "残存期間", "These fields let MoveWise estimate how much principal you'll pay down if you wait before moving.": "待ってから引っ越す場合の元本返済額を見積もるために使用します。", "HOME SALE": "住宅売却", "Expected sale price": "想定売却価格", "Selling costs": "売却費用", "Agent fees, seller closing costs, etc.": "仲介手数料、売主側の諸費用など。", "Repairs / seller concessions": "修繕費 / 売主負担", "Estimated cash from sale": "売却後の推定手取り額", "Mortgage payoff": "ローン完済額", "Repairs / concessions": "修繕費 / 売主負担", "Net proceeds": "手取り額", "HOME EQUITY BEFORE SELLING COSTS": "売却費用控除前の純資産", "CASH AFTER SALE": "売却後の手取り", "Show home gain ↓": "住宅の利益を見る ↓", "Hide home gain ↑": "住宅の利益を閉じる ↑", "HOME GAIN": "住宅の利益", "Original purchase price": "購入時価格", "Capital improvements": "資本的改良", "Estimated gain on the home": "住宅の推定利益", "Sale price less selling costs, repairs, purchase price and improvements": "売却価格から売却費用、修繕費、購入価格、資本的改良費を差し引いた額", "Mortgage payoff is not subtracted from gain. Paying down debt changes your equity and cash proceeds, not the home's economic gain. This is not a tax calculation.": "ローン完済額は利益計算から差し引きません。ローン返済は純資産と手取り額に影響しますが、住宅自体の経済的利益には含めません。税務計算ではありません。", "← Back": "← 戻る", "Continue to Commute →": "通勤へ進む →", "Compare the driving you do now with the driving you'd do after moving. Each vehicle can have its own commute and mileage.": "現在と引っ越し後の運転を比較します。車両ごとに通勤距離や走行距離を設定できます。", "Current commute": "現在の通勤", "NOW": "現在", "After moving": "引っ越し後", "MOVE": "引っ越し", "COMMUTE IMPACT": "通勤への影響", "Estimated monthly driving change": "月間運転コストの変化（推定）", "Compare current driving cost with after moving.": "現在と引っ越し後の運転コストを比較します。", "CURRENT DRIVING COST": "現在の運転コスト", "AFTER MOVING": "引っ越し後", "MILES / MONTH": "月間走行距離", "COMMUTE TIME / MONTH": "月間通勤時間", "Continue to Summary →": "まとめへ進む →", "VEHICLE COST": "車両コスト", "Full vehicle cost": "車両総コスト", "Fuel only": "燃料費のみ", "Monthly full vehicle cost includes fuel, maintenance and mileage-related depreciation. The 10-year ownership view separately uses fuel, maintenance and replacement purchases so vehicle capital cost is not counted twice.": "月間の車両総コストには燃料、メンテナンス、走行距離による減価が含まれます。10年間の保有コストでは、車両資本コストの二重計上を避けるため、燃料・メンテナンス・車両交換購入費を別途使用します。", "Use the same vehicle(s)": "同じ車両を使用", "Vehicle details stay matched to the current commute. You still enter the new mileage for each car.": "車両情報は現在の通勤と同じままにし、引っ越し後の走行距離だけを車両ごとに入力します。", "VEHICLE 1": "車両 1", "VEHICLE 2": "車両 2", "Remove": "削除", "Year": "年式", "Make": "メーカー", "Model": "車種", "Current odometer (mi)": "現在の走行距離（mi）", "Start typing a make": "メーカー名を入力", "Choose or type a model": "車種を選択または入力", "Start typing to choose a model. If yours isn't listed, enter it manually.": "入力して車種を選択してください。候補にない場合は手動で入力できます。", "DRIVING": "運転", "One-way × days": "片道距離 × 日数", "Total miles / month": "月間総走行距離", "Miles one-way": "片道マイル", "Days / week": "週あたり日数", "Minutes one-way": "片道時間（分）", "optional": "任意", "optional hours": "任意（時間）", "Optional": "任意", "Commute time / month": "月間通勤時間", "+ Add vehicle": "＋ 車両を追加", "Gas price / gal": "ガソリン価格 / gal", "Fuel only uses gas price and MPG. It does not include maintenance or depreciation.": "燃料費のみではガソリン価格とMPGを使用します。メンテナンス費や減価は含みません。", "Vehicle MPG": "車両MPG", "Monthly miles": "月間走行距離", "Fuel / mile": "燃料費 / mile", "Maintenance / mile": "メンテナンス費 / mile", "Depreciation / mile": "減価 / mile", "Full cost / mile": "総コスト / mile", "Estimated cost / month": "推定コスト / 月", "See vehicle assumptions": "車両の前提を見る", "Total vehicle cost": "車両コスト合計", "See what changes if you move — monthly cost, driving, sale proceeds, affordability, and timing.": "引っ越した場合に、月額コスト、運転、売却手取り、購入可能額、タイミングがどう変わるか確認します。", "BOTTOM LINE": "結論", "Estimated monthly cost change": "月額コストの変化（推定）", "Compare moving with staying.": "引っ越す場合と住み続ける場合を比較します。", "Stay": "住み続ける", "Housing": "住宅費", "Driving": "運転コスト", "Total / month": "月額合計", "Move": "引っ越す", "What changes": "変化の内訳", "Miles / month": "月間走行距離", "Equity before selling costs": "売却費用控除前の純資産", "Selling costs + concessions": "売却費用＋売主負担", "Buy-page down payment": "購入ページの頭金", "BREAK-EVEN HOME PRICE": "損益分岐の住宅価格", "At": "条件:", "your current mortgage rate": "現在の住宅ローン金利", "See rate sensitivity": "金利感応度を見る", "Break-even price": "損益分岐価格", "Your target": "目標価格", "MOVE NOW OR WAIT?": "今引っ越すか、待つか？", "Compare moving now with waiting, including home appreciation, mortgage paydown, and a different future mortgage rate.": "住宅価格の上昇、ローン元本の返済、将来の住宅ローン金利を含めて、今引っ越す場合と待つ場合を比較します。", "Years to wait": "待つ年数", "Future mortgage rate": "将来の住宅ローン金利", "Current home appreciation / year": "現在の住宅の価格上昇率 / 年", "Target home appreciation / year": "購入予定住宅の価格上昇率 / 年", "Target home then": "その時点の購入予定住宅価格", "Sale proceeds then": "その時点の売却手取り", "Move now total / month": "今引っ越す場合 / 月", "After waiting / month": "待った後 / 月", "Waiting vs. moving now": "待つ場合 vs 今引っ越す場合", "· rates fall 1%": "· 金利が1%低下", "· today's rate": "· 現在の金利", "· rates rise 1%": "· 金利が1%上昇", "See full rate sensitivity": "金利感応度の詳細を見る", "Net cost of waiting": "待つ場合の純コスト", "$0 break-even": "$0 損益分岐", "See detailed timing calculation": "タイミング計算の詳細を見る", "Print / Save Full Analysis": "詳細分析を印刷 / 保存", "PLANNING ESTIMATES ONLY — does not include PMI, buyer closing costs, or moving costs. Mississippi property-tax estimates use the state assessment formula and current local millage when a verified rate is available. Other locations require a manual property-tax estimate. Insurance, vehicle costs, appreciation, and future rates are planning assumptions, not quotes or forecasts. Address and vehicle lookups may use public data services. No sign-in required.": "計画用の概算です。PMI、購入者側のクロージング費用、引っ越し費用は含みません。税金、保険、車両コスト、価格上昇率、将来金利は前提条件であり、見積書や予測ではありません。住所・車両検索では公開データサービスを使用する場合があります。ログインは不要です。", "Select a state": "州を選択", "Verified address": "確認済み住所", "ADDRESS VERIFIED": "住所確認済み", "ZIP": "ZIPコード", "Tax basis": "税率の基準", "Est. annual property tax": "固定資産税（年額・推定）", "Est. annual insurance": "住宅保険（年額・推定）", "Location verified. Tax and insurance are planning estimates, not an official tax bill or insurance quote. You can edit either amount below.": "所在地を確認しました。税金と保険は計画用の概算であり、正式な納税通知や保険見積ではありません。下の金額は編集できます。", "Mississippi state average": "ミシシッピ州平均", "Select a state first.": "先に州を選択してください。", "Manual location": "手動入力の所在地", "Address lookup timed out.": "住所検索がタイムアウトしました。", "Address lookup could not load.": "住所検索を読み込めませんでした。", "Enter a full U.S. street address first.": "米国の完全な住所を入力してください。", "Finding…": "検索中…", "Checking the address…": "住所を確認中…", "No exact match": "一致する住所が見つかりません", "U.S. Census address lookup": "米国国勢調査局の住所検索", "We could not verify that address. Check the street/city/ZIP, or use “Enter location manually.”": "その住所を確認できませんでした。番地・市区町村・ZIPコードを確認するか、所在地を手動入力してください。", "Start typing a U.S. street address…": "米国の住所を入力してください…", "Start typing and choose the exact address from the suggestions.": "入力を始め、候補から正確な住所を選択してください。", "Verifying address…": "住所を確認中…", "Selected address": "選択した住所", "Google address autocomplete": "Google住所オートコンプリート", "We found the suggestion but could not read its location details. Use the manual fallback below.": "住所候補は見つかりましたが、所在地の詳細を取得できませんでした。下の手動入力を使用してください。", "Google address autocomplete unavailable; using Census lookup fallback.": "Google住所検索を利用できないため、国勢調査局の住所検索を使用します。", "Google Maps JavaScript API failed to load; Census lookup remains available.": "Google Maps APIを読み込めませんでした。国勢調査局の住所検索は引き続き利用できます。", "We found the address, but could not determine a supported U.S. state. Use manual location instead.": "住所は見つかりましたが、対応する米国の州を特定できませんでした。所在地を手動入力してください。", "Enter a home price.": "住宅価格を入力してください。", "Enter a valid down payment.": "有効な頭金を入力してください。", "Enter an interest rate.": "金利を入力してください。", "Enter a loan term.": "返済期間を入力してください。", "Enter the estimated property tax.": "推定固定資産税を入力してください。", "Enter the estimated home insurance.": "推定住宅保険料を入力してください。", "Find the property location using a full address or City + State, or enter it manually.": "完全な住所または「市 + 州」で物件所在地を検索するか、手動入力してください。", "Enter original purchase price": "購入時価格を入力", "Enter your current monthly housing cost.": "現在の月額住宅費を入力してください。", "Enter an expected sale price.": "想定売却価格を入力してください。", "Enter the remaining mortgage balance.": "住宅ローン残高を入力してください。", "Enter the current mortgage rate.": "現在の住宅ローン金利を入力してください。", "Enter the years remaining on the mortgage.": "住宅ローンの残存年数を入力してください。", "Enter a valid selling-cost percentage.": "有効な売却費用率を入力してください。", "Enter repairs/concessions, or 0.": "修繕費・売主負担額を入力してください。ない場合は0です。", "Enter a vehicle make.": "車両メーカーを入力してください。", "Enter a vehicle model.": "車種を入力してください。", "Enter a valid vehicle year.": "有効な年式を入力してください。", "Choose a valid vehicle year.": "有効な年式を選択してください。", "Enter the vehicle odometer.": "車両の走行距離を入力してください。", "Enter one-way miles for each vehicle.": "各車両の片道距離を入力してください。", "Enter days per week for each vehicle.": "各車両の週あたり日数を入力してください。", "Enter total monthly miles for each vehicle.": "各車両の月間総走行距離を入力してください。", "Enter a gas price.": "ガソリン価格を入力してください。", "Enter vehicle MPG.": "車両のMPGを入力してください。", "Enter one-way miles.": "片道距離を入力してください。", "Enter days per week.": "週あたり日数を入力してください。", "Enter total monthly miles.": "月間総走行距離を入力してください。", "No change": "変化なし", "No meaningful annual difference.": "年間では実質的な差はありません。", "Driving cost stays about the same if you move.": "引っ越しても運転コストはほぼ変わりません。", "Moving lowers your estimated driving cost.": "引っ越すと推定運転コストが下がります。", "Moving raises your estimated driving cost.": "引っ越すと推定運転コストが上がります。", "Moving and staying cost about the same each month.": "引っ越す場合と住み続ける場合の月額コストはほぼ同じです。", "Moving lowers your estimated housing + driving cost.": "引っ越すと推定住宅費＋運転コストが下がります。", "Moving raises your estimated housing + driving cost.": "引っ越すと推定住宅費＋運転コストが上がります。", "Not entered": "未入力", "About the same": "ほぼ同じ", "No wait period": "待機期間なし", "There is no waiting period to compare.": "比較する待機期間がありません。", "Set a wait period above 0 years to see rate sensitivity.": "金利感応度を見るには、待つ年数を1年以上に設定してください。", "Set years to wait above 0 to calculate the rate opportunity.": "金利の影響を計算するには、待つ年数を1年以上に設定してください。", "Rates alone do not rescue waiting in this scenario.": "この条件では、金利低下だけでは待つ方が有利にはなりません。", "Waiting remains cheaper across the tested rate range.": "検証した金利範囲では、待つ方が引き続き安くなります。", "WAITING COSTS MORE": "待つ方が高い", "WAITING COSTS LESS": "待つ方が安い", "today": "現在", "MoveWise Report": "MoveWise レポート", "New Home — Mortgage Estimate": "新しい住宅 — 住宅ローン見積", "Current Home / Sale": "現在の住宅 / 売却", "Commute Comparison": "通勤比較", "Bottom Line": "結論", "Timing — Move Now vs. Wait": "タイミング — 今引っ越すか待つか", "Property location": "物件所在地", "Current housing cost / month": "現在の住宅費 / 月", "Current mortgage rate": "現在の住宅ローン金利", "Home equity before selling costs": "売却費用控除前の純資産", "Commute": "通勤", "Cost mode": "コスト計算方式", "Commute cost / month": "通勤コスト / 月", "Current": "現在", "New, near work": "引っ越し後", "Current total / month (housing + commute)": "現在の月額合計（住宅費＋通勤）", "New total / month (housing + commute)": "引っ越し後の月額合計（住宅費＋通勤）", "Current home appreciation": "現在の住宅の価格上昇率", "Target home appreciation": "購入予定住宅の価格上昇率", "Today's new-mortgage rate": "現在の新規住宅ローン金利", "Assumed future mortgage rate": "想定将来住宅ローン金利", "Target home price after waiting": "待った後の購入予定住宅価格", "Current mortgage balance after waiting": "待った後の現在の住宅ローン残高", "Net sale proceeds after waiting": "待った後の売却手取り", "New housing + driving total after waiting": "待った後の住宅費＋運転コスト", "Estimated future-rate break-even": "将来金利の推定損益分岐点", "Planning estimates only — does not include PMI, buyer closing costs, or moving costs. Mississippi property-tax estimates use the state assessment formula and current local millage when a verified rate is available. Other locations require a manual property-tax estimate. Insurance, vehicle costs, appreciation, and future rates are planning assumptions, not quotes or forecasts. Address and vehicle lookups may use public data services. No sign-in required.": "計画用の概算です。PMI、購入者側のクロージング費用、引っ越し費用は含みません。税金、保険、車両コスト、価格上昇率、将来金利は前提条件であり、見積書や予測ではありません。住所・車両検索では公開データサービスを使用する場合があります。ログインは不要です。", "How do you want to locate the home?": "物件の所在地をどの方法で指定しますか？", "Property location method": "物件所在地の指定方法", "Full address": "完全な住所", "City + State": "市 + 州", "Enter street address, city, state, and ZIP when available.": "番地・市・州・ZIPコードを、分かる範囲で入力してください。", "Use this if you don't know the street address. MoveWise will estimate the county from the city.": "番地が分からない場合に使用してください。MoveWiseが市から郡を推定します。", "City": "市", "Enter city": "市を入力", "Find county": "郡を検索", "Choose full address or City + State to estimate local taxes and insurance.": "完全な住所または「市 + 州」を選択して、地域の税金と保険を見積もります。", "Enter a full street address for the most accurate county lookup.": "郡を最も正確に特定するには、完全な住所を入力してください。", "Enter a city and state. The county will be estimated and can be changed manually if needed.": "市と州を入力してください。郡は推定され、必要に応じて手動で変更できます。", "LOCATION ESTIMATED": "所在地（推定）", "Estimated county": "推定郡", "City-level lookup. The county is estimated from the place record and may be wrong for cities that cross county lines. Use the manual location option if you need to change it.": "市レベルの検索です。郡は地点データから推定するため、複数の郡にまたがる市では正確でない場合があります。必要に応じて手動入力で変更してください。", "Enter a city first.": "先に市を入力してください。", "Finding the county…": "郡を検索中…", "We could not determine the county from that city and state. Try the full address or enter the location manually.": "その市と州から郡を特定できませんでした。完全な住所を試すか、所在地を手動入力してください。", "Estimated property-tax rate": "推定固定資産税率", "Enter home price to calculate.": "住宅価格を入力すると計算されます。", "Auto-filled from location": "所在地から自動入力", "Tax data": "税データ", "Loading county tax data…": "郡の税データを読み込み中…", "Fallback planning estimate": "予備の計画用推定値", "Live county data unavailable · using fallback estimate": "郡の最新データを取得できません · 予備の推定値を使用", "Property tax uses the county-average effective rate from Census ACS data when available. It is a planning estimate, not a property-specific tax bill. Insurance is also a planning estimate. You can edit either amount below.": "固定資産税は、利用可能な場合はCensus ACSの郡平均の実効税率を使用します。これは計画用の推定値であり、個別物件の納税額ではありません。保険も計画用の推定値です。下の金額は編集できます。", "City-level lookup. The county is estimated from the place record and may be wrong for cities that cross county lines. Property tax then uses that county’s average ACS rate when available. Use the manual location option if you need to change the county.": "市レベルの検索です。郡は地点データから推定するため、複数の郡にまたがる市では正確でない場合があります。固定資産税は、利用可能な場合、その郡のACS平均税率を使用します。郡を変更する必要がある場合は手動入力を使用してください。", "Assessment ratio": "評価比率", "Current total millage": "現在の合計ミレージ", "Current tax district": "現在の課税地区", "Current local millage required": "現在の地域ミレージが必要です", "Manual": "手動", "Mississippi owner-occupied home": "ミシシッピ州・自己居住住宅", "Manual property-tax estimate": "固定資産税の手動見積もり", "Checking current local millage…": "現在の地域ミレージを確認中…", "Select or enter the current total millage to calculate.": "計算するには、現在の合計ミレージを選択または入力してください。", "Enter the annual estimate below.": "下に年間見積額を入力してください。", "Enter current total mills": "現在の合計ミル数を入力", "Automatic current-year property-tax calculation is currently available for Mississippi only. Enter the annual property-tax estimate below for other states.": "当年の固定資産税の自動計算は現在ミシシッピ州のみ対応しています。他州では下に年間固定資産税の見積額を入力してください。", "Current adopted local millage · FY Oct. 2025–Sept. 2026": "現在採用されている地域ミレージ · 2025年10月–2026年9月", "User-entered current total millage": "ユーザー入力の現在の合計ミレージ", "For Mississippi, MoveWise uses the 10% owner-occupied assessment ratio and current local millage when available.": "ミシシッピ州では、MoveWiseは自己居住住宅の10%評価比率と、利用可能な場合は現在の地域ミレージを使用します。", "Mississippi property tax uses the state assessment formula and current local millage when a verified district rate is available. This is a planning estimate before homestead credit and special parcel-specific adjustments.": "ミシシッピ州の固定資産税は、確認済みの課税地区レートが利用できる場合、州の評価計算式と現在の地域ミレージを使用します。これはホームステッド控除や個別物件の特別調整前の計画用見積もりです。", "Current-year automatic property-tax calculations are currently limited to Mississippi. Enter the annual property-tax estimate manually below.": "当年の固定資産税の自動計算は現在ミシシッピ州に限定されています。下に年間固定資産税の見積額を手動で入力してください。", "Tax calculation details": "税計算の詳細", "Rate period": "適用年度", "FY 2025–26": "2025–26年度", "User entered": "ユーザー入力", "Enter current millage": "現在のミレージを入力", "Checking…": "確認中…", "TAXES, INSURANCE & HOA": "税金・保険・HOA", "Enter your current mortgage details to estimate the balance when you move.": "現在の住宅ローン情報を入力して、引っ越す時点の残高を見積もります。", "Models update from the selected year and make.": "選択した年式とメーカーに合わせて車種が更新されます。", "Other / Not listed": "その他 / 一覧にない", "Choose a make to load models.": "メーカーを選択すると車種を読み込みます。", "Choose a vehicle make.": "車両メーカーを選択してください。", "Choose a vehicle model.": "車種を選択してください。", "Using broad vehicle assumptions for an unlisted make.": "一覧にないメーカーには一般的な車両前提を使用します。", "Live model lookup is unavailable. Showing MoveWise model options instead.": "車種検索を利用できないため、MoveWiseの車種候補を表示しています。", "Live model lookup is unavailable. Choose Other / Not listed.": "車種検索を利用できません。「その他 / 一覧にない」を選択してください。", "Millage source": "ミレージの入力方法", "Use suggested district rate": "推奨地区レートを使用", "Enter millage manually": "ミレージを手動入力", "Enter total mills": "合計ミル数を入力", "Enter the total county + city + school + applicable district millage.": "郡・市・学区・該当地区の合計ミレージを入力してください。", "Flowood — standard": "Flowood — 標準", "Brandon — standard": "Brandon — 標準", "Canton — Canton schools": "Canton — Canton学区", "Canton — Madison County schools": "Canton — Madison County学区", "Canton — Canton schools + parking district": "Canton — Canton学区 + 駐車地区", "Canton — Canton schools + MegaSite Fire": "Canton — Canton学区 + MegaSite消防地区", "Brookhaven — latest verified": "Brookhaven — 最新確認済み", "2024 · latest verified": "2024年 · 最新確認済み", "Manual total millage · owner-occupied home · 10% assessment ratio · before homestead credit.": "手動の合計ミレージ · 自己居住住宅 · 10%評価比率 · ホームステッド控除前。", "Current odometer": "現在の走行距離", "Mileage condition": "走行距離の状態", "low mileage": "低走行距離", "typical mileage": "標準的な走行距離", "moderate-high mileage": "やや多い走行距離", "high mileage": "高走行距離", "very high mileage": "非常に高い走行距離", "Vehicle replacement outlook": "車両交換の見通し", "Vehicle replacement": "車両交換", "Expected replacement": "交換時期の目安", "No replacement from entered driving": "入力した走行では交換不要", "Replacement due now": "現在交換時期", "Beyond 10 years": "10年以上先", "Not modeled in Fuel only": "燃料のみでは未計算", "Replacement planning": "車両交換の計画", "Planning replacement mileage (mi)": "交換予定走行距離（mi）", "Planning replacement mileage": "交換予定走行距離", "MoveWise starts with a model-based planning estimate. Change this to the mileage when you would expect to replace the vehicle.": "MoveWiseは車種に基づく計画用の推定値から始めます。車を交換する予定の走行距離に変更できます。", "Enter a valid planning replacement mileage.": "有効な交換予定走行距離を入力してください。", "Extra principal payment / month": "追加元本返済 / 月", "Optional. Added directly to principal each month and included in the monthly comparison.": "任意。毎月元本に直接充当され、月額比較にも含まれます。", "Extra principal": "追加元本返済", "EXTRA PAYMENT IMPACT": "追加返済の効果", "Payoff without extra": "追加返済なしの完済時期", "Payoff with extra": "追加返済ありの完済時期", "Time saved": "短縮期間", "Total P&I without extra": "追加返済なしの元利総額", "Total P&I with extra": "追加返済ありの元利総額", "Interest saved": "節約できる利息", "Required P&I / month": "必要な元利返済 / 月", "Remaining P&I without extra": "追加返済なしの残存元利総額", "Remaining P&I with extra": "追加返済ありの残存元利総額", "Optional. Added to your current monthly housing cost and used when projecting your future mortgage balance.": "任意。現在の月額住宅費に加算され、将来の住宅ローン残高の予測にも使用されます。", "Paid off": "完済", "Enter a valid extra principal payment, or 0.": "有効な追加元本返済額を入力するか、0を入力してください。", "Extra principal / month": "追加元本返済 / 月", "Time saved from extra payments": "追加返済による短縮期間", "Interest saved from extra payments": "追加返済による利息節約額", "Find the property by": "物件の検索方法", "Compare moving now with waiting, including home appreciation, mortgage paydown, and a different future mortgage rate. Extra principal builds equity and is not treated as a cost here.": "住宅価格の上昇、ローン元本の返済、将来の住宅ローン金利を含めて、今引っ越す場合と待つ場合を比較します。追加元本返済は純資産を増やすため、ここでは費用として扱いません。", "Move now cash payment / month": "今引っ越す場合の現金支払 / 月", "After waiting cash payment / month": "待った後の現金支払 / 月", "New housing + driving cash payment": "新しい住宅費＋運転の現金支払", "Extra principal excluded from timing cost": "タイミング費用から除外する追加元本", "Timing comparison / month": "タイミング比較 / 月", "Planned replacement cost": "交換予定コスト", "Planning assumption for each replacement. Use the expected net cost after trade-in if applicable.": "各交換時の計画用コストです。下取りがある場合は下取り後の実質コストを入力してください。", "Enter a valid planned replacement cost.": "有効な交換予定コストを入力してください。", "10-YEAR VEHICLE OWNERSHIP": "10年間の車両保有コスト", "Fuel + maintenance": "燃料＋メンテナンス", "Replacement purchases": "車両交換購入費", "10-year vehicle cash cost": "10年間の車両現金コスト", "Vehicle cash cost": "車両現金コスト", "No replacement projected": "交換予定なし", "10-year vehicle cash cost — stay": "10年間の車両現金コスト — 住み続ける", "10-year vehicle cash cost — move": "10年間の車両現金コスト — 引っ越す", "10-year vehicle ownership impact": "10年間の車両保有コスト差", "10-YEAR TOTAL IMPACT": "10年間の総合影響", "Housing cash outflow": "住宅の現金支出", "10-year total": "10年間合計", "10-year total — stay": "10年間合計 — 住み続ける", "10-year total — move": "10年間合計 — 引っ越す", "10-year total impact": "10年間の総合影響", "10-year monthly equivalent": "10年間の月額換算", "This is a 10-year cash-flow comparison. Vehicle depreciation is excluded because replacement purchases are included directly.": "これは10年間のキャッシュフロー比較です。車両交換購入費を直接含めるため、車両の減価は除外しています。", "END RESULT": "最終結果", "Overall result": "総合結果", "Monthly impact": "月額への影響", "Move now vs. wait": "今引っ越す vs. 待つ", "Moving now is the lower-cost path": "今引っ越す方が低コストです", "Staying is the lower-cost path": "住み続ける方が低コストです", "The result is mixed": "結果は一様ではありません", "Not available": "利用不可", "No wait period selected": "待機期間が選択されていません", "Main drivers": "主な要因", "Preparing print view…": "印刷画面を準備中…", "Opening your browser print dialog…": "ブラウザの印刷画面を開いています…", "Print dialog opened.": "印刷画面を開きました。", "Could not open the print dialog. Try again or use your browser’s Print command.": "印刷画面を開けませんでした。もう一度試すか、ブラウザの印刷機能を使用してください。", "Could not prepare the print report. Refresh the page and try again.": "印刷レポートを準備できませんでした。ページを更新してもう一度お試しください。"};
 const MW_STATE_JA = {"Alabama": "アラバマ州", "Alaska": "アラスカ州", "Arizona": "アリゾナ州", "Arkansas": "アーカンソー州", "California": "カリフォルニア州", "Colorado": "コロラド州", "Connecticut": "コネチカット州", "Delaware": "デラウェア州", "District of Columbia": "ワシントンD.C.", "Florida": "フロリダ州", "Georgia": "ジョージア州", "Hawaii": "ハワイ州", "Idaho": "アイダホ州", "Illinois": "イリノイ州", "Indiana": "インディアナ州", "Iowa": "アイオワ州", "Kansas": "カンザス州", "Kentucky": "ケンタッキー州", "Louisiana": "ルイジアナ州", "Maine": "メイン州", "Maryland": "メリーランド州", "Massachusetts": "マサチューセッツ州", "Michigan": "ミシガン州", "Minnesota": "ミネソタ州", "Mississippi": "ミシシッピ州", "Missouri": "ミズーリ州", "Montana": "モンタナ州", "Nebraska": "ネブラスカ州", "Nevada": "ネバダ州", "New Hampshire": "ニューハンプシャー州", "New Jersey": "ニュージャージー州", "New Mexico": "ニューメキシコ州", "New York": "ニューヨーク州", "North Carolina": "ノースカロライナ州", "North Dakota": "ノースダコタ州", "Ohio": "オハイオ州", "Oklahoma": "オクラホマ州", "Oregon": "オレゴン州", "Pennsylvania": "ペンシルベニア州", "Rhode Island": "ロードアイランド州", "South Carolina": "サウスカロライナ州", "South Dakota": "サウスダコタ州", "Tennessee": "テネシー州", "Texas": "テキサス州", "Utah": "ユタ州", "Vermont": "バーモント州", "Virginia": "バージニア州", "Washington": "ワシントン州", "West Virginia": "ウェストバージニア州", "Wisconsin": "ウィスコンシン州", "Wyoming": "ワイオミング州"};
 let mwCurrentLang = 'en';
 const mwOriginalText = new WeakMap();
