@@ -4,6 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MoveWise — Stay vs. Move Calculator</title>
+<meta name="description" content="Compare the full cost of staying in your home against moving: mortgage, taxes, insurance, sale proceeds and the commute. See what changes month to month, over ten years, and how long a move takes to pay for itself.">
+<meta name="theme-color" content="#0F2C4A">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F2C4A'/%3E%3Cpath d='M16 5.5 4.5 15.2h3.1V26h6.2v-6.4h4.4V26h6.2V15.2h3.1z' fill='%23B45309'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F2C4A'/%3E%3Cpath d='M16 5.5 4.5 15.2h3.1V26h6.2v-6.4h4.4V26h6.2V15.2h3.1z' fill='%23B45309'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://christianhuffman07-collab.github.io/MoveWise/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MoveWise">
+<meta property="og:title" content="MoveWise — Stay vs. Move Calculator">
+<meta property="og:description" content="Compare the full cost of staying in your home against moving: mortgage, taxes, insurance, sale proceeds and the commute.">
+<meta property="og:url" content="https://christianhuffman07-collab.github.io/MoveWise/">
+<meta property="og:image" content="https://christianhuffman07-collab.github.io/MoveWise/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="MoveWise — stay vs. move housing calculator">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MoveWise — Stay vs. Move Calculator">
+<meta name="twitter:description" content="Compare the full cost of staying in your home against moving: mortgage, taxes, insurance, sale proceeds and the commute.">
+<meta name="twitter:image" content="https://christianhuffman07-collab.github.io/MoveWise/preview.png">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
@@ -17,10 +36,18 @@
   --line-faint:#B9CADA;
   --accent:#B45309;
   --accent-dim:rgba(180,83,9,0.12);
+  /* --accent on --accent-dim lands at 4.26:1, just under the 4.5:1 AA floor,
+     and every element that pairs them is small text. This is the same amber a
+     shade deeper, used only for that pairing. */
+  --accent-on-dim:#A34D07;
   --grid:rgba(15,44,74,0.05);
   --grid-strong:rgba(15,44,74,0.09);
   --danger:#B3261E;
   --good:#1E7A46;
+  /* Every display figure in the app uses this one size. The phrase and
+     qualifier sizes are derived from it, so nothing drifts out of step. */
+  --display:clamp(24px,3.2vw,34px);
+  --display-phrase:calc(var(--display) * 0.72);
 }
 
 *{box-sizing:border-box;}
@@ -92,7 +119,7 @@ body{
 .language-option:hover{ color:var(--accent); }
 .language-option.active{
   background:var(--accent-dim);
-  color:var(--accent);
+  color:var(--accent-on-dim);
 }
 .language-option:focus-visible{
   outline:2px solid var(--accent);
@@ -248,7 +275,7 @@ html[data-lang="ja"] .step-btn{ letter-spacing:.06em; }
   border-left:1px solid var(--line-faint);
 }
 .location-method-btn.active{
-  color:var(--accent);
+  color:var(--accent-on-dim);
   background:var(--accent-dim);
 }
 .location-method-btn:focus-visible{
@@ -304,13 +331,28 @@ gmp-place-autocomplete{ display:block; width:100%; color:var(--line); }
   padding:9px 6px; cursor:pointer;
 }
 .seg-toggle .mode-btn + .mode-btn{ border-left:1px solid var(--line-faint); }
-.seg-toggle .mode-btn.active{ background:var(--accent-dim); color:var(--accent); }
+.seg-toggle .mode-btn.active{ background:var(--accent-dim); color:var(--accent-on-dim); }
 .seg-toggle .mode-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
 
 .big-number{
   font-family:'JetBrains Mono', monospace;
-  font-size:clamp(28px,5vw,40px);
-  font-weight:700; color:var(--accent); line-height:1; margin:2px 0 4px;
+  font-size:var(--display);
+  font-weight:700; color:var(--accent); line-height:1.12; letter-spacing:-0.015em;
+  margin:2px 0 4px;
+}
+/* Monospace suits a figure and fights a sentence: every glyph the same width
+   gives prose no word-shape to read by. Keep the amount in mono and hand the
+   trailing words back to the body face at a calmer weight and size. */
+.big-number .qual{
+  font-family:'Inter', sans-serif;
+  font-size:0.5em; font-weight:500; letter-spacing:0;
+  color:var(--line-dim);
+}
+/* Headlines that are entirely words get no mono and no display size at all. */
+.big-number.is-phrase{
+  font-family:'Inter', sans-serif;
+  font-size:var(--display-phrase);
+  font-weight:600; letter-spacing:-0.01em; line-height:1.3;
 }
 .big-number .cents{ font-size:0.5em; color:var(--line-dim); }
 .big-label{ font-size:12px; color:var(--line-dim); margin-bottom:16px; }
@@ -349,6 +391,12 @@ svg text{ font-family:'JetBrains Mono', monospace; }
 .result-card .rc-title{ font-weight:600; color:var(--line); margin-bottom:6px; font-family:'Space Grotesk', sans-serif; }
 .rc-row{ display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid rgba(15,44,74,0.07); color:var(--line-dim); }
 .rc-row .v{ font-family:'JetBrains Mono', monospace; color:var(--line); font-weight:600; }
+/* This row is a ten-year total sitting in a per-month list, so it gets a rule
+   above it and its horizon spelled out rather than tucked on the end. */
+.rc-row.rc-row-otherunit{ border-top:1px dashed var(--line-faint); margin-top:8px; padding-top:9px; align-items:flex-start; }
+.rc-row.rc-row-otherunit .v{ text-align:right; }
+.rc-row .row-sub{ display:block; font-family:'Inter', sans-serif; font-weight:400;
+  font-size:11px; color:var(--line-dim); margin-top:2px; }
 .rc-note{ color:var(--line-dim); font-size:11.5px; margin-top:8px; line-height:1.5; font-style:italic; }
 .location-tax-details{
   margin-top:10px;
@@ -372,7 +420,7 @@ svg text{ font-family:'JetBrains Mono', monospace; }
 
 
 .btn-primary{
-  background:var(--accent-dim); border:1px solid var(--accent); color:var(--accent);
+  background:var(--accent-dim); border:1px solid var(--accent); color:var(--accent-on-dim);
   font-family:'JetBrains Mono', monospace; font-size:12.5px; letter-spacing:0.05em;
   padding:11px; cursor:pointer; width:100%;
 }
@@ -384,7 +432,7 @@ svg text{ font-family:'JetBrains Mono', monospace; }
   color:var(--accent); font-family:'JetBrains Mono', monospace; font-size:12px;
   letter-spacing:0.03em; padding:9px; cursor:pointer; margin:2px 0 16px;
 }
-.add-vehicle-btn:hover{ background:var(--accent-dim); border-color:var(--accent); }
+.add-vehicle-btn:hover{ background:var(--accent-dim); border-color:var(--accent); color:var(--accent-on-dim); }
 .remove-link{
   display:block; background:none; border:none; color:var(--line-dim);
   font-family:'JetBrains Mono', monospace; font-size:10.5px; text-decoration:underline;
@@ -425,7 +473,7 @@ svg text{ font-family:'JetBrains Mono', monospace; }
 .car-slot-label:first-child{ margin-top:0; }
 
 .delta-banner{ display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:10px; margin-bottom:16px; }
-.delta-banner .delta-num{ font-family:'JetBrains Mono', monospace; font-size:clamp(26px,4vw,38px); font-weight:700; }
+.delta-banner .delta-num{ font-family:'JetBrains Mono', monospace; font-size:var(--display); font-weight:700; }
 .delta-banner .delta-num.more{ color:var(--danger); }
 .delta-banner .delta-num.less{ color:var(--good); }
 .delta-banner .delta-sub{ font-size:12px; color:var(--line-dim); }
@@ -441,7 +489,6 @@ svg text{ font-family:'JetBrains Mono', monospace; }
   margin-top:4px;
 }
 .commute-impact .delta-banner .delta-num{
-  font-size:clamp(24px,3.2vw,34px);
   line-height:1.08;
   margin-bottom:6px;
 }
@@ -500,7 +547,6 @@ svg text{ font-family:'JetBrains Mono', monospace; }
 }
 .summary-main-delta > div:last-child{ margin-top:4px; }
 .summary-main-delta .delta-num{
-  font-size:clamp(24px,3.2vw,34px);
   line-height:1.08;
   margin:5px 0 6px;
 }
@@ -720,7 +766,7 @@ svg text{ font-family:'JetBrains Mono', monospace; }
 .sell-mode-panel{ margin-bottom:18px; }
 #sell-housing-details{ display:none; margin-top:14px; padding:14px; border:1px dashed var(--line-faint); background:rgba(15,44,74,0.025); }
 .sale-breakdown{ margin-top:14px; }
-.sale-breakdown .big-number{ color:var(--good); font-size:clamp(26px,4vw,36px); }
+.sale-breakdown .big-number{ color:var(--good); }
 .sale-breakdown .row.total{ border-top:1px solid var(--line-faint); margin-top:5px; padding-top:10px; font-weight:600; }
 .sale-breakdown .row.total .v{ color:var(--good); font-weight:700; }
 .sell-gain-toggle{ margin-top:14px; }
@@ -780,11 +826,17 @@ svg text{ font-family:'JetBrains Mono', monospace; }
 #print-report .pr-cols > div{ flex:1; }
 #print-report .pr-sub-head{ font-weight:600; color:#1A1A1A; margin-bottom:6px; }
 
+/* Fallback for a plain Ctrl+P on the app itself; the Print button opens its own
+   window with the stylesheet in printableDocumentHTML(). Hiding the app with
+   visibility left its full height in the flow, which printed as blank pages
+   after the report, so take it out of the flow instead. */
 @media print{
-  body *{ visibility:hidden; }
-  #print-report, #print-report *{ visibility:visible; }
-  #print-report{ display:block; position:absolute; left:0; top:0; width:100%; background:#fff; }
-  body{ background:#fff; padding:0; }
+  .sheet{ display:none !important; }
+  #print-report{ display:block; position:static; width:100%; background:#fff; }
+  body{ background:#fff; padding:0; margin:0; }
+  #print-report h2{ break-after:avoid; page-break-after:avoid; }
+  #print-report .pr-row,
+  #print-report .pr-highlight{ break-inside:avoid; page-break-inside:avoid; }
 }
 </style>
 </head>
@@ -875,13 +927,13 @@ svg text{ font-family:'JetBrains Mono', monospace; }
           <label>Home price <span class="val" id="v-buy-price">—</span></label>
           <input type="text" id="buy-price" value="" inputmode="decimal" autocomplete="off" placeholder="Enter home price">
           <div class="field-hint">Dollar amounts accept commas and cents. Location lookup is optional when you enter tax and insurance yourself.</div>
-          <input type="range" id="buy-price-r" value="50000" min="50000" max="2000000" step="1000" disabled>
+          <input type="range" id="buy-price-r" value="50000" min="50000" max="2000000" step="1000" disabled aria-label="Home price slider">
         </div>
 
         <div class="two-col">
           <div class="field">
             <label>Down payment <span class="val" id="v-buy-down">—</span></label>
-            <input type="text" id="buy-down" value="" inputmode="decimal" autocomplete="off" placeholder="Calculated from down payment %">
+            <input type="text" id="buy-down" value="" inputmode="decimal" autocomplete="off" placeholder="From %">
           </div>
           <div class="field">
             <label>Down payment % <span class="val" id="v-buy-downpct">20%</span></label>
@@ -904,31 +956,31 @@ svg text{ font-family:'JetBrains Mono', monospace; }
         </div>
         <div class="field">
           <label>Extra principal payment / month <span class="val" id="v-buy-extra">$0</span></label>
-          <input type="number" id="buy-extra" value="0" step="25" min="0">
+          <input type="text" id="buy-extra" value="0" inputmode="decimal" autocomplete="off">
           <div class="field-hint">Optional. Added directly to principal each month and included in the monthly comparison.</div>
         </div>
         <div class="section-label">TAXES, INSURANCE & HOA</div>
         <div class="two-col">
           <div class="field">
             <label>Estimated property tax / year <span class="val" id="v-buy-tax">—</span></label>
-            <input type="number" id="buy-tax" value="" step="100" min="0" placeholder="Auto-filled from location">
+            <input type="text" id="buy-tax" value="" inputmode="decimal" autocomplete="off" placeholder="Auto-filled">
           </div>
           <div class="field">
             <label>Estimated home insurance / year <span class="val" id="v-buy-ins">—</span></label>
-            <input type="number" id="buy-ins" value="" step="50" min="0" placeholder="Auto-filled from location">
+            <input type="text" id="buy-ins" value="" inputmode="decimal" autocomplete="off" placeholder="Auto-filled">
           </div>
         </div>
-        <div class="field-hint housing-estimate-hint">MoveWise pre-fills these from the verified location. Edit them if you have actual figures.</div>
+        <div class="field-hint housing-estimate-hint">MoveWise fills in what it can from the verified location — insurance everywhere, property tax where county rates are available. Edit either if you have actual figures.</div>
         <div class="field">
           <label>HOA / month <span class="val" id="v-buy-hoa">$0</span></label>
-          <input type="number" id="buy-hoa" value="0" step="10" min="0">
+          <input type="text" id="buy-hoa" value="0" inputmode="decimal" autocomplete="off">
         </div>
         <details class="summary-details" style="margin-top:14px;">
           <summary>Buyer closing and moving costs</summary>
           <div class="summary-details-body">
             <div class="field"><label for="buy-closingpct">Buyer closing costs / purchase price (%)</label><input type="number" id="buy-closingpct" value="0" min="0" max="20" step="0.1"></div>
-            <div class="field"><label for="buy-closing-fixed">Other buyer closing costs ($)</label><input type="number" id="buy-closing-fixed" value="0" min="0" step="100"></div>
-            <div class="field"><label for="buy-moving">Moving costs ($)</label><input type="number" id="buy-moving" value="0" min="0" step="100"></div>
+            <div class="field"><label for="buy-closing-fixed">Other buyer closing costs ($)</label><input type="text" id="buy-closing-fixed" value="0" inputmode="decimal" autocomplete="off"></div>
+            <div class="field"><label for="buy-moving">Moving costs ($)</label><input type="text" id="buy-moving" value="0" inputmode="decimal" autocomplete="off"></div>
             <div class="field-hint">Use either a percentage, a dollar estimate, or both for separate costs. Avoid counting the same expense twice. Enter 0 only for costs you intend to exclude. These costs enter the long-term and timing comparisons, not the monthly mortgage payment.</div>
           </div>
         </details>
@@ -999,7 +1051,7 @@ svg text{ font-family:'JetBrains Mono', monospace; }
         <div id="sell-housing-total-wrap">
           <div class="field">
             <label>Current monthly housing cost <span class="val" id="v-sell-housing">$2,200</span></label>
-            <input type="number" id="sell-housing" value="2200" step="25" min="0">
+            <input type="text" id="sell-housing" value="2,200" inputmode="decimal" autocomplete="off" placeholder="Enter monthly housing cost">
             <div class="field-hint">All-in housing cost: mortgage + property tax + insurance + HOA.</div>
           </div>
         </div>
@@ -1008,21 +1060,21 @@ svg text{ font-family:'JetBrains Mono', monospace; }
           <div class="field-hint" style="margin-bottom:12px;">Enter actual P&amp;I, property tax, insurance and HOA. P&amp;I determines the mortgage payoff schedule; enter 0 if the mortgage is paid off.</div>
           <div class="field">
             <label>Mortgage payment (P&amp;I) / month <span class="val" id="v-sell-detail-mortgage">$2,200</span></label>
-            <input type="number" id="sell-detail-mortgage" value="2200" step="0.01" min="0">
+            <input type="text" id="sell-detail-mortgage" value="2,200" inputmode="decimal" autocomplete="off">
           </div>
           <div class="two-col">
             <div class="field">
               <label>Property tax / year <span class="val" id="v-sell-detail-tax">$0</span></label>
-              <input type="number" id="sell-detail-tax" value="0" step="100" min="0">
+              <input type="text" id="sell-detail-tax" value="0" inputmode="decimal" autocomplete="off">
             </div>
             <div class="field">
               <label>Home insurance / year <span class="val" id="v-sell-detail-ins">$0</span></label>
-              <input type="number" id="sell-detail-ins" value="0" step="50" min="0">
+              <input type="text" id="sell-detail-ins" value="0" inputmode="decimal" autocomplete="off">
             </div>
           </div>
           <div class="field">
             <label>HOA / month <span class="val" id="v-sell-detail-hoa">$0</span></label>
-            <input type="number" id="sell-detail-hoa" value="0" step="10" min="0">
+            <input type="text" id="sell-detail-hoa" value="0" inputmode="decimal" autocomplete="off">
           </div>
           <div class="readonly-field">Calculated current housing cost: <strong id="sell-detail-total">$2,200 / month</strong></div>
         </div>
@@ -1030,7 +1082,7 @@ svg text{ font-family:'JetBrains Mono', monospace; }
         <div class="section-label">CURRENT MORTGAGE</div>
         <div class="field">
           <label>Remaining mortgage balance <span class="val" id="v-sell-balance">$180,000</span></label>
-          <input type="number" id="sell-balance" value="180000" step="1000" min="0">
+          <input type="text" id="sell-balance" value="180,000" inputmode="decimal" autocomplete="off">
         </div>
         <div class="two-col">
           <div class="field">
@@ -1044,7 +1096,7 @@ svg text{ font-family:'JetBrains Mono', monospace; }
         </div>
         <div class="field">
           <label>Extra principal payment / month <span class="val" id="v-sell-extra">$0</span></label>
-          <input type="number" id="sell-extra" value="0" step="25" min="0">
+          <input type="text" id="sell-extra" value="0" inputmode="decimal" autocomplete="off">
           <div class="field-hint">Optional. Added to your current monthly housing cost and used when projecting your future mortgage balance.</div>
         </div>
         <div class="field-hint">In Total cost mode, balance, rate and remaining term determine P&amp;I. In Detailed mode, your entered P&amp;I determines payoff and years remaining is calculated automatically. Enter extra principal separately.</div>
@@ -1066,7 +1118,7 @@ svg text{ font-family:'JetBrains Mono', monospace; }
 
         <div class="field">
           <label>Expected sale price <span class="val" id="v-sell-value">$320,000</span></label>
-          <input type="number" id="sell-value" value="320000" step="1000" min="0">
+          <input type="text" id="sell-value" value="320,000" inputmode="decimal" autocomplete="off">
         </div>
 
         <div class="two-col">
@@ -1077,7 +1129,7 @@ svg text{ font-family:'JetBrains Mono', monospace; }
           </div>
           <div class="field">
             <label>Repairs / seller concessions <span class="val" id="v-sell-repairs">$0</span></label>
-            <input type="number" id="sell-repairs" value="0" step="500" min="0">
+            <input type="text" id="sell-repairs" value="0" inputmode="decimal" autocomplete="off">
           </div>
         </div>
 
@@ -1111,11 +1163,11 @@ svg text{ font-family:'JetBrains Mono', monospace; }
           <div class="two-col">
             <div class="field">
               <label>Original purchase price</label>
-              <input type="number" id="sell-purchase-price" value="0" step="1000" min="0" placeholder="Enter mileage">
+              <input type="text" id="sell-purchase-price" value="0" inputmode="decimal" autocomplete="off" placeholder="What you originally paid">
             </div>
             <div class="field">
               <label>Capital improvements</label>
-              <input type="number" id="sell-improvements" value="0" step="500" min="0" placeholder="Enter mileage">
+              <input type="text" id="sell-improvements" value="0" inputmode="decimal" autocomplete="off" placeholder="Money spent improving it">
             </div>
           </div>
           <div class="result-card">
@@ -1168,6 +1220,7 @@ svg text{ font-family:'JetBrains Mono', monospace; }
         <div class="stat"><div class="k">COMMUTE TIME / MONTH</div><div class="v" id="impact-time-change">—</div></div>
       </div>
       <div class="commute-note" id="commute-impact-note"></div>
+      <div class="commute-note" id="commute-mode-warning" style="color:var(--danger);" hidden></div>
 
       <div class="result-card" id="vehicle-replacement-outlook" style="margin-top:14px;">
         <div class="rc-title">Vehicle replacement outlook</div>
@@ -1189,13 +1242,13 @@ svg text{ font-family:'JetBrains Mono', monospace; }
         <div class="summary-simple-grid">
           <div class="summary-simple-col">
             <div class="scenario-head">Current commute <span class="tag">NOW</span></div>
-            <div class="summary-simple-row"><span>Fuel + maintenance</span><span class="v" id="vehicle-longterm-cur-operating">$0</span></div>
+            <div class="summary-simple-row"><span id="vehicle-longterm-cur-operating-label">Fuel + maintenance</span><span class="v" id="vehicle-longterm-cur-operating">$0</span></div>
             <div class="summary-simple-row"><span>Replacement purchases</span><span class="v" id="vehicle-longterm-cur-replacements">$0</span></div>
             <div class="summary-simple-row total"><span>10-year vehicle cash cost</span><span class="v" id="vehicle-longterm-cur-total">$0</span></div>
           </div>
           <div class="summary-simple-col">
             <div class="scenario-head">After moving <span class="tag">MOVE</span></div>
-            <div class="summary-simple-row"><span>Fuel + maintenance</span><span class="v" id="vehicle-longterm-new-operating">$0</span></div>
+            <div class="summary-simple-row"><span id="vehicle-longterm-new-operating-label">Fuel + maintenance</span><span class="v" id="vehicle-longterm-new-operating">$0</span></div>
             <div class="summary-simple-row"><span>Replacement purchases</span><span class="v" id="vehicle-longterm-new-replacements">$0</span></div>
             <div class="summary-simple-row total"><span>10-year vehicle cash cost</span><span class="v" id="vehicle-longterm-new-total">$0</span></div>
           </div>
@@ -1249,7 +1302,7 @@ svg text{ font-family:'JetBrains Mono', monospace; }
       <div class="rc-row"><span>Driving</span><span class="v" id="summary-driving-change">—</span></div>
       <div class="rc-row"><span>Miles / month</span><span class="v" id="summary-mile-change">—</span></div>
       <div class="rc-row"><span>Commute time / month</span><span class="v" id="summary-time-change">—</span></div>
-      <div class="rc-row" id="summary-replacement-row"><span>Vehicle replacement</span><span class="v" id="summary-replacement-change">—</span></div>
+      <div class="rc-row rc-row-otherunit" id="summary-replacement-row"><span>Vehicle purchases<span class="row-sub" id="summary-replacement-caption">over the next 10 years, not per month</span></span><span class="v" id="summary-replacement-change">—</span></div>
       <div class="rc-note" id="summary-cost-explanation"></div>
     </div>
 
@@ -1353,11 +1406,15 @@ svg text{ font-family:'JetBrains Mono', monospace; }
     <div class="result-card" style="margin-top:12px;">
       <div class="rc-title" id="timing-decision-eyebrow">Wait 3 years, then move</div>
       <div class="big-number" id="timing-decision-amount">$0</div>
+      <div class="rc-row" style="margin-top:10px;"><span>Of that, spendable cash</span><span class="v" id="timing-split-cash">—</span></div>
+      <div class="rc-row" id="timing-split-depreciation-row" hidden><span>Of that, vehicle wear <span class="row-sub">a cost, but not money you pay out</span></span><span class="v" id="timing-split-depreciation">—</span></div>
+      <div class="rc-row"><span id="timing-split-equity-label">Of that, home equity you would not have yet</span><span class="v" id="timing-split-equity">—</span></div>
+      <div class="big-label" id="timing-split-warning" style="margin-top:8px;"></div>
       <div class="rc-note" id="timing-decision-sub"></div>
       <div class="rc-row"><span>Target home then</span><span class="v" id="timing-target-price">$0</span></div>
       <div class="rc-row"><span>Sale proceeds then</span><span class="v" id="timing-sale-proceeds">$0</span></div>
-      <div class="rc-row"><span>Move now cash payment / month</span><span class="v" id="timing-payment-now">$0</span></div>
-      <div class="rc-row"><span>After waiting cash payment / month</span><span class="v" id="timing-payment-later">$0</span></div>
+      <div class="rc-row"><span>Move now housing + driving / month</span><span class="v" id="timing-payment-now">$0</span></div>
+      <div class="rc-row"><span>After waiting housing + driving / month</span><span class="v" id="timing-payment-later">$0</span></div>
     </div>
 
     <details class="summary-details" style="margin-top:10px;">
@@ -1369,7 +1426,7 @@ svg text{ font-family:'JetBrains Mono', monospace; }
           </thead>
           <tbody>
             <tr><td class="rate"><span id="rate-down-rate">—</span> · rates fall 1%</td><td class="impact" id="rate-down-impact">—</td></tr>
-            <tr><td class="rate"><span id="rate-flat-rate">—</span> · today's rate</td><td class="impact" id="rate-flat-impact">—</td></tr>
+            <tr><td class="rate"><span id="rate-flat-rate">—</span> · the rate you entered</td><td class="impact" id="rate-flat-impact">—</td></tr>
             <tr><td class="rate"><span id="rate-up-rate">—</span> · rates rise 1%</td><td class="impact" id="rate-up-impact">—</td></tr>
           </tbody>
         </table>
@@ -1393,8 +1450,25 @@ svg text{ font-family:'JetBrains Mono', monospace; }
       <div class="summary-details-body">
         <div id="timing-breakdown" class="result-card" style="margin-top:0;"></div>
         <div id="timing-chart-wrap" style="margin-top:12px;"></div>
+        <div class="rc-note" id="timing-chart-note">Each point is scored over its own window — that wait plus ten years — so the points answer "what does this much delay cost?" one at a time. They are not measured to a common end date, so read the curve against the wait you are actually considering rather than hunting for its lowest point.</div>
       </div>
     </details>
+
+    <div class="section-label" style="margin-top:24px;">HOW SOLID IS THIS?</div>
+    <div class="result-card" id="summary-confidence">
+      <div class="rc-title">HOW LONG UNTIL MOVING PAYS OFF</div>
+      <div class="big-number" id="summary-breakeven-year">—</div>
+      <div class="big-label" id="summary-breakeven-year-sub"></div>
+      <div class="rc-note" id="summary-breakeven-year-note"></div>
+
+      <div class="rc-title" style="margin-top:20px;">WHAT'S DRIVING THE ANSWER</div>
+      <div id="summary-drivers"></div>
+      <div class="rc-note" id="summary-drivers-note"></div>
+
+      <div class="rc-title" style="margin-top:20px;">HOW WRONG COULD THIS BE</div>
+      <div class="big-label" id="summary-range"></div>
+      <div class="rc-note" id="summary-range-note"></div>
+    </div>
 
     <div class="section-label" style="margin-top:24px;">END RESULT</div>
     <div class="result-card" id="summary-end-result">
@@ -1552,10 +1626,10 @@ const CAR_DATA = {
     "E-Class":{mpg:26,maint:0.12,dep:0.29,life:180000,note:"Luxury midsize sedan."},
     "GLC":{mpg:24,maint:0.115,dep:0.28,life:175000,note:"Luxury compact SUV."},
     "GLE":{mpg:21,maint:0.13,dep:0.30,life:175000,note:"Luxury midsize SUV."} },
-  "Tesla":{ "Model 3":{mpg:132,maint:0.04,dep:0.20,life:200000,note:"EV — 'MPG' here is gas-equivalent; real electricity cost is often lower."},
-    "Model Y":{mpg:122,maint:0.045,dep:0.21,life:200000,note:"EV — 'MPG' here is gas-equivalent; real electricity cost is often lower."},
-    "Model S":{mpg:110,maint:0.05,dep:0.26,life:200000,note:"EV — 'MPG' here is gas-equivalent; real electricity cost is often lower."},
-    "Model X":{mpg:100,maint:0.055,dep:0.27,life:200000,note:"EV — 'MPG' here is gas-equivalent; real electricity cost is often lower."} },
+  "Tesla":{ "Model 3":{mpg:132,mpge:true,maint:0.04,dep:0.20,life:200000,note:"EV — 'MPG' here is gas-equivalent; real electricity cost is often lower."},
+    "Model Y":{mpg:122,mpge:true,maint:0.045,dep:0.21,life:200000,note:"EV — 'MPG' here is gas-equivalent; real electricity cost is often lower."},
+    "Model S":{mpg:110,mpge:true,maint:0.05,dep:0.26,life:200000,note:"EV — 'MPG' here is gas-equivalent; real electricity cost is often lower."},
+    "Model X":{mpg:100,mpge:true,maint:0.055,dep:0.27,life:200000,note:"EV — 'MPG' here is gas-equivalent; real electricity cost is often lower."} },
   "Volkswagen":{ "Jetta":{mpg:33,maint:0.065,dep:0.19,life:200000,note:"Compact sedan."},
     "Tiguan":{mpg:26,maint:0.075,dep:0.20,life:190000,note:"Compact SUV."},
     "Atlas":{mpg:22,maint:0.085,dep:0.21,life:190000,note:"3-row midsize SUV."},
@@ -1572,7 +1646,10 @@ const SCREENS = ['buy','sell','cars','summary'];
 function goToScreen(name){
   SCREENS.forEach(s=>{
     $('screen-'+s).hidden = (s!==name);
-    document.querySelector(`.step-btn[data-screen="${s}"]`).classList.toggle('active', s===name);
+    const step=document.querySelector(`.step-btn[data-screen="${s}"]`);
+    step.classList.toggle('active', s===name);
+    if(s===name) step.setAttribute('aria-current','step');
+    else step.removeAttribute('aria-current');
   });
   window.scrollTo({top:0, behavior:'instant'});
   if(name==='summary') updateSummary();
@@ -1660,18 +1737,30 @@ function setMoneyInputValue(el,value){
   el.value=formatMoneyNumber(value);
 }
 
-function formatMoneyField(el){
+function formatMoneyField(el,invalidMessage='Enter a nonnegative dollar amount, such as 400,000 or 400,000.00.'){
   const raw=String(el.value);
-  if(raw==='') return;
-  const n=parseMoneyInput(raw);
-  if(!Number.isFinite(n)){ el.setCustomValidity?.('Enter a nonnegative dollar amount, such as 400,000 or 400,000.00.'); return; }
+  if(raw===''){ el.setCustomValidity?.(''); return; }
+  // Split the decimal part off first so cents and a trailing '.' survive editing,
+  // and never strip punctuation in a way that turns dollars and cents into a
+  // 100-times-larger amount.
+  const dot=raw.indexOf('.');
+  const wholeRaw = dot===-1 ? raw : raw.slice(0,dot);
+  const decimal  = dot===-1 ? ''  : raw.slice(dot);
+  // Commas are only digit separators, so drop them and regroup from scratch.
+  // Regrouping unconditionally is what stops a half-typed value from sticking:
+  // the old code re-parsed against a strict thousands pattern and bailed out
+  // whenever the in-progress text failed it, so typing 400000 stalled at
+  // "4,0000" after the fifth keystroke and could never recover.
+  const digits = wholeRaw.replace(/^\$\s*/,'').replace(/,/g,'').trim();
+  if(!/^\d*$/.test(digits) || !/^(?:\.\d{0,2})?$/.test(decimal)){
+    el.setCustomValidity?.(invalidMessage);
+    return;
+  }
   el.setCustomValidity?.('');
-  // Preserve cents and a trailing decimal while editing; never strip punctuation
-  // and accidentally turn dollars and cents into a 100-times-larger amount.
   const caret=el.selectionStart??raw.length;
   const oldTail=raw.length-caret;
-  const decimal=raw.includes('.')?'.'+raw.split('.')[1]:'';
-  const whole=Math.trunc(n).toLocaleString('en-US');
+  const trimmed=digits.replace(/^0+(?=\d)/,'');
+  const whole=trimmed===''?(decimal?'0':''):trimmed.replace(/\B(?=(\d{3})+(?!\d))/g,',');
   el.value=whole+decimal;
   try{const p=Math.max(0,el.value.length-oldTail);el.setSelectionRange(p,p);}catch(_){}
 }
@@ -1871,11 +1960,13 @@ function refreshResolvedLocationCosts({updateInputs=true}={}){
     autofillingTaxIns=true;
     // Only auto-fill tax when MoveWise actually has a current Mississippi millage.
     if(resolvedStateCode==='MS' && currentMsMillage!=null){
-      buyTaxEl.value=tax==null?'':tax;
+      setMoneyInputValue(buyTaxEl,tax==null?'':tax);
+      buyTaxEl.dataset.locationEstimate='true';
     }else if(resolvedStateCode==='MS'){
       buyTaxEl.value='';
+      delete buyTaxEl.dataset.locationEstimate;
     }
-    if(ins!=null) buyInsEl.value=ins;
+    if(ins!=null) setMoneyInputValue(buyInsEl,ins);
     autofillingTaxIns=false;
   }
 
@@ -1977,6 +2068,7 @@ function attachMississippiTaxControls(county,city=''){
 
   const modeSelect=document.createElement('select');
   modeSelect.id='buy-ms-millage-mode';
+  modeLabel.htmlFor=modeSelect.id;
 
   if(districts.length){
     const suggested=document.createElement('option');
@@ -2004,6 +2096,7 @@ function attachMississippiTaxControls(county,city=''){
 
     const districtSelect=document.createElement('select');
     districtSelect.id='buy-ms-tax-district';
+    districtLabel.htmlFor=districtSelect.id;
 
     districts.forEach((d,i)=>{
       const opt=document.createElement('option');
@@ -2104,7 +2197,9 @@ function attachMississippiTaxControls(county,city=''){
   }
 }
 
-buyTaxEl.addEventListener('input', ()=>{ if(!autofillingTaxIns) locationLookupActive=false; });
+buyTaxEl.addEventListener('input', ()=>{
+  if(!autofillingTaxIns){locationLookupActive=false;delete buyTaxEl.dataset.locationEstimate;}
+});
 buyInsEl.addEventListener('input', ()=>{ if(!autofillingTaxIns) locationLookupActive=false; });
 
 function normalizeCounty(name=''){
@@ -2120,6 +2215,11 @@ function applyResolvedLocation({formattedAddress,stateCode,countyName='',city=''
 
   const county=normalizeCounty(countyName);
   const price=parseMoneyInput(buyPriceEl.value);
+  // A value calculated for the previous location cannot price this location.
+  // Clear only an automatic tax estimate; preserve a user's manual amount.
+  if(buyTaxEl.dataset.locationEstimate==='true'){
+    buyTaxEl.value='';delete buyTaxEl.dataset.locationEstimate;
+  }
   resolvedStateCode=stateCode;
   resolvedCountyName=county;
   resolvedCityName=normalizeCity(city);
@@ -2147,7 +2247,7 @@ function applyResolvedLocation({formattedAddress,stateCode,countyName='',city=''
 
   const resultEl=$('buy-loc-result');
   resultEl.style.display='block';
-  const locationTag=locationType==='city'?'LOCATION ESTIMATED':'ADDRESS VERIFIED';
+  const locationTag=locationType==='manual'?'MANUAL LOCATION':locationType==='city'?'LOCATION ESTIMATED':'ADDRESS VERIFIED';
   const countyLabel=locationType==='city'?'Estimated county':'County';
 
   let locationNote='';
@@ -2161,7 +2261,7 @@ function applyResolvedLocation({formattedAddress,stateCode,countyName='',city=''
 
   resultEl.innerHTML=`
     <div class="rc-tag">${locationTag}</div>
-    <div class="rc-title">${formattedAddress}</div>
+    <div class="rc-title">${mwEscape(formattedAddress)}</div>
 
     <div class="rc-row"><span>Est. annual property tax</span><span class="v" id="buy-loc-est-tax">—</span></div>
     <div class="field-hint" id="buy-loc-tax-prompt" style="margin:-2px 0 8px;text-align:right;">${stateCode==='MS'?'Select or enter the current total millage to calculate.':'Enter the annual estimate below.'}</div>
@@ -2172,9 +2272,9 @@ function applyResolvedLocation({formattedAddress,stateCode,countyName='',city=''
     <details class="location-tax-details">
       <summary>Tax calculation details</summary>
       <div class="location-tax-details-body">
-        ${county?`<div class="rc-row"><span>${countyLabel}</span><span class="v">${county} County</span></div>`:''}
-        ${resolvedCityName?`<div class="rc-row"><span>City</span><span class="v">${resolvedCityName}</span></div>`:''}
-        ${zip?`<div class="rc-row"><span>ZIP</span><span class="v">${zip}</span></div>`:''}
+        ${county?`<div class="rc-row"><span>${countyLabel}</span><span class="v">${mwEscape(county)} County</span></div>`:''}
+        ${resolvedCityName?`<div class="rc-row"><span>City</span><span class="v">${mwEscape(resolvedCityName)}</span></div>`:''}
+        ${zip?`<div class="rc-row"><span>ZIP</span><span class="v">${mwEscape(zip)}</span></div>`:''}
         <div class="rc-row"><span>Tax basis</span><span class="v" id="buy-loc-tax-basis">${stateCode==='MS'?'Mississippi owner-occupied home':'Manual property-tax estimate'}</span></div>
         ${stateCode==='MS'?`<div class="rc-row"><span>Assessment ratio</span><span class="v">10%</span></div>`:''}
         ${stateCode==='MS'?`<div class="rc-row"><span>Current total millage</span><span class="v" id="buy-loc-millage-value">—</span></div>`:''}
@@ -2200,7 +2300,7 @@ function manualLocationEstimate(){
   const stateData=STATE_TAX_DATA[code];
   const county=code==='MS'?countySel.value:'';
   const label=county?`${county} County, ${code}`:stateData.name;
-  applyResolvedLocation({formattedAddress:label,stateCode:code,countyName:county,provider:'Manual location'});
+  applyResolvedLocation({formattedAddress:label,stateCode:code,countyName:county,provider:'Manual location',locationType:'manual'});
 }
 $('buy-manual-estimate-btn').addEventListener('click', manualLocationEstimate);
 
@@ -2306,7 +2406,7 @@ async function lookupCityAndState(){
       return admin1===stateName.toLowerCase();
     });
 
-    const matches=stateMatches.length?stateMatches:results;
+    const matches=stateMatches;
     const exactName=matches.filter(r=>(r.name||'').toLowerCase()===city.toLowerCase());
     const chosen=(exactName[0]||matches[0]);
 
@@ -2402,7 +2502,7 @@ function mortgageAmortization(principal,annualRatePct,termYears,extraMonthly=0){
   if(MW_LOAN_CACHE.has(key)) return MW_LOAN_CACHE.get(key);
   let result;
   if(principal===0||term<=0) result={scheduledPayment:0,monthlyWithExtra:0,totalInterest:0,totalPaid:0,months:0,schedule:[],valid:principal===0};
-  else result=mwAmortizePayment(principal,rate,principal*loanFactor(rate,term),extra);
+  else result=mwAmortizePayment(principal,rate,principal*loanFactor(rate,term),extra,Math.round(term*12));
   if(MW_LOAN_CACHE.size>256) MW_LOAN_CACHE.clear();
   MW_LOAN_CACHE.set(key,result);
   return result;
@@ -2435,7 +2535,7 @@ function calcBuy(){
   const hoa=mwPositive('buy-hoa');
 
   const loan=Math.max(price-down,0);
-  const extra=Math.max(0,parseFloat(buyExtraEl.value)||0);
+  const extra=Math.max(0,mwElNumber(buyExtraEl));
 
   const baseAmort=mortgageAmortization(loan,rate,term,0);
   const extraAmort=mortgageAmortization(loan,rate,term,extra);
@@ -2518,7 +2618,7 @@ function drawAmortChart(schedule, M, n){
     gridLines += `<text x="${gx}" y="${H-8}" fill="var(--line-dim)" font-size="10" text-anchor="middle">Y${yr}</text>`;
   }
 
-  wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
+  wrap.innerHTML = `<svg role="img" aria-label="Principal and interest split over the life of the loan" viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
     <rect x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" fill="none" stroke="var(--line-faint)" stroke-width="1"/>
     ${gridLines}
     <path d="${principalPath}" fill="var(--accent)" fill-opacity="0.5" stroke="var(--accent)" stroke-width="1.2"/>
@@ -2599,11 +2699,18 @@ function projectedMortgageBalance(principal, annualRatePct, yearsRemaining, year
 }
 
 function currentHousingFromDetails(){
-  const mortgage=parseFloat(sellDetailMortgageEl.value)||0;
-  const tax=parseFloat(sellDetailTaxEl.value)||0;
-  const ins=parseFloat(sellDetailInsEl.value)||0;
-  const hoa=parseFloat(sellDetailHoaEl.value)||0;
-  return mortgage + tax/12 + ins/12 + hoa;
+  const mortgage=mwElNumber(sellDetailMortgageEl);
+  const tax=mwElNumber(sellDetailTaxEl);
+  const ins=mwElNumber(sellDetailInsEl);
+  const hoa=mwElNumber(sellDetailHoaEl);
+  // You cannot pay more than you still owe. Near payoff the entered scheduled
+  // payment overstates the month's actual outlay — a $2,000 payment against a
+  // $1,000 balance costs $1,000 plus that month's interest, then nothing. The
+  // amortization already caps each payment this way; the monthly comparison did
+  // not, so the stay side read high for anyone close to paying their house off.
+  const balance=mwPositive('sell-balance');
+  const due=balance>0?Math.min(mortgage,balance+balance*mwPositive('sell-rate')/1200):0;
+  return due + tax/12 + ins/12 + hoa;
 }
 
 function setSellHousingMode(mode){
@@ -2625,7 +2732,7 @@ document.querySelectorAll('#sell-housing-mode .mode-btn').forEach(btn=>{
 
 function calcSell(){
   const housing=sellHousingMode==='details'?currentHousingFromDetails():mwPositive('sell-housing');
-  if(sellHousingMode==='details') sellHousingEl.value=housing.toFixed(2);
+  if(sellHousingMode==='details') sellHousingEl.value=housing.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
   const balance=mwPositive('sell-balance'),rate=mwPositive('sell-rate'),extra=mwPositive('sell-extra');
   const base=currentMortgageAmortization(0),amort=currentMortgageAmortization(extra);
   if(sellHousingMode==='details'&&base.valid) sellYearsEl.value=(base.months/12).toFixed(6);
@@ -2660,6 +2767,12 @@ function calcSell(){
   sellValueEl, sellBalanceEl, sellRateEl, sellYearsEl, sellExtraEl, sellCostpctEl, sellRepairsEl,
   sellPurchasePriceEl, sellImprovementsEl
 ].forEach(el=>el.addEventListener('input', calcSell));
+// Dollar-amount fields render thousands separators as you type. The readers
+// (mwNumber / mwFieldCheck) strip separators, so the maths is unaffected.
+['sell-housing','buy-extra','buy-tax','buy-ins','buy-hoa','buy-closing-fixed','buy-moving',
+ 'sell-detail-mortgage','sell-detail-tax','sell-detail-ins','sell-detail-hoa','sell-balance',
+ 'sell-extra','sell-value','sell-repairs','sell-purchase-price','sell-improvements']
+  .forEach(id=>{ const el=$(id); if(el) el.addEventListener('input', ()=>formatMoneyField(el)); });
 
 $('sell-gain-toggle').addEventListener('click', ()=>{
   const box=$('sell-gain-details');
@@ -2706,13 +2819,13 @@ function carMileageHTML(s, slot, d){
           <input type="number" id="${p}-days" value="${d.days}" step="1" min="0" max="7"></div>
       </div>
       <div class="field"><label>Minutes one-way <span class="val">optional</span></label>
-        <input type="number" id="${p}-minutes" value="" step="1" min="0" placeholder="Enter mileage"></div>
+        <input type="number" id="${p}-minutes" value="" step="1" min="0" placeholder="Minutes each way"></div>
     </div>
     <div class="car-miles-mode-field" data-scenario="${s}" data-slot="${slot}" data-mmode="total" style="display:none;">
       <div class="field"><label>Total miles / month <span class="val" id="v-${p}-totalmiles">${d.totalmiles}</span></label>
-        <input type="number" id="${p}-totalmiles" value="${d.totalmiles}" step="10" min="0"></div>
+        <input type="text" id="${p}-totalmiles" value="${mwGroupNumber(d.totalmiles)}" inputmode="numeric" autocomplete="off"></div>
       <div class="field"><label>Commute time / month <span class="val">optional hours</span></label>
-        <input type="number" id="${p}-monthly-hours" value="" step="0.5" min="0" placeholder="Enter mileage"></div>
+        <input type="number" id="${p}-monthly-hours" value="" step="0.5" min="0" placeholder="Hours per month"></div>
     </div>`;
 }
 
@@ -2764,19 +2877,19 @@ function carCardHTML(s, slot, d){
       </div>
       <div class="field">
         <label>Current odometer (mi)</label>
-        <input type="number" id="${p}-odo" value="${slot===1?60000:80000}" step="1000" min="0">
+        <input type="text" id="${p}-odo" value="${mwGroupNumber(slot===1?60000:80000)}" inputmode="numeric" autocomplete="off">
       </div>
       <details class="vehicle-assumptions" style="margin-bottom:12px;">
         <summary>Fuel type and actual consumption</summary>
         <div class="field" style="margin-top:8px;"><label for="${p}-powertrain">Fuel type</label><select id="${p}-powertrain"><option value="auto">Use vehicle profile</option><option value="gas">Gasoline / hybrid</option><option value="electric">Electric</option></select></div>
-        <div class="field"><label for="${p}-efficiency" id="${p}-efficiency-label">Actual MPG (optional)</label><input type="number" id="${p}-efficiency" value="" min="0.001" step="any" placeholder="Leave blank for profile estimate"></div>
-        <div class="field-hint">Enter actual MPG for gasoline and hybrids, or kWh per mile for an EV. Select Electric for an EV outside the Tesla profiles. Plug-in hybrids require an effective cost estimate; a single gasoline or electric mode cannot model both energy sources together.</div>
+        <div class="field"><label for="${p}-efficiency" id="${p}-efficiency-label">Actual MPG (optional)</label><input type="number" id="${p}-efficiency" value="" min="0.001" step="any" placeholder="Blank uses profile"></div>
+        <div class="field-hint">Enter actual MPG for gasoline and hybrids, or kWh per mile for an EV. Select Electric for an EV outside the Tesla profiles; without a figure here that uses a generic 0.30 kWh per mile, so enter your own if you know it. Plug-in hybrids require an effective cost estimate; a single gasoline or electric mode cannot model both energy sources together.</div>
       </details>
       <details class="vehicle-assumptions" style="margin-bottom:12px;">
         <summary>Replacement planning</summary>
         <div class="field" style="margin-top:8px;">
           <label>Planning replacement mileage (mi)</label>
-          <input type="number" id="${p}-replacement-mileage" value="${slot===1?225000:220000}" step="5000" min="1">
+          <input type="text" id="${p}-replacement-mileage" value="${mwGroupNumber(slot===1?225000:220000)}" inputmode="numeric" autocomplete="off">
           <div class="field-hint">MoveWise starts with a model-based planning estimate. Change this to the mileage when you would expect to replace the vehicle.</div>
         </div>
         <div class="field">
@@ -2804,11 +2917,11 @@ function fuelOnlyHTML(s,d){
           <div class="field"><label>Miles one-way <span class="val" id="v-${s}-fuel-miles">${d.miles}</span></label><input type="number" id="${s}-fuel-miles" value="${d.miles}" step="1" min="0"></div>
           <div class="field"><label>Days / week <span class="val" id="v-${s}-fuel-days">${d.days}</span></label><input type="number" id="${s}-fuel-days" value="${d.days}" step="1" min="0" max="7"></div>
         </div>
-        <div class="field"><label>Minutes one-way <span class="val">optional</span></label><input type="number" id="${s}-fuel-minutes" value="" step="1" min="0" placeholder="Enter mileage"></div>
+        <div class="field"><label>Minutes one-way <span class="val">optional</span></label><input type="number" id="${s}-fuel-minutes" value="" step="1" min="0" placeholder="Minutes each way"></div>
       </div>
       <div class="fuel-miles-mode-field" data-scenario="${s}" data-mmode="total" style="display:none;">
-        <div class="field"><label>Total miles / month <span class="val" id="v-${s}-fuel-totalmiles">${d.totalmiles}</span></label><input type="number" id="${s}-fuel-totalmiles" value="${d.totalmiles}" step="10" min="0"></div>
-        <div class="field"><label>Commute time / month <span class="val">optional hours</span></label><input type="number" id="${s}-fuel-monthly-hours" value="" step="0.5" min="0" placeholder="Enter mileage"></div>
+        <div class="field"><label>Total miles / month <span class="val" id="v-${s}-fuel-totalmiles">${d.totalmiles}</span></label><input type="text" id="${s}-fuel-totalmiles" value="${mwGroupNumber(d.totalmiles)}" inputmode="numeric" autocomplete="off"></div>
+        <div class="field"><label>Commute time / month <span class="val">optional hours</span></label><input type="number" id="${s}-fuel-monthly-hours" value="" step="0.5" min="0" placeholder="Hours per month"></div>
       </div>
       <div class="two-col">
         <div class="field"><label>Gas price / gal <span class="val" id="v-${s}-gasprice">$3.50</span></label><input type="number" id="${s}-gasprice" value="3.50" step="0.05" min="0"></div>
@@ -2916,6 +3029,10 @@ async function loadVehicleModels(s,slot,{silent=false,preferredModel=''}={}){
   const make=$(p+'-make').value;
   const modelSelect=$(p+'-model');
   const preferred=preferredModel || modelSelect.value || '';
+  const requestVersion=String((Number(modelSelect.dataset.lookupVersion)||0)+1);
+  modelSelect.dataset.lookupVersion=requestVersion;
+  const isCurrent=()=>modelSelect.dataset.lookupVersion===requestVersion
+    && $(p+'-make').value===make && parseInt($(p+'-year').value,10)===year;
 
   if(!make){
     setModelSuggestions(p,[VEHICLE_OTHER_OPTION],VEHICLE_OTHER_OPTION);
@@ -2967,6 +3084,7 @@ async function loadVehicleModels(s,slot,{silent=false,preferredModel=''}={}){
     )].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
 
     vehicleModelCache.set(cacheKey,models);
+    if(!isCurrent()) return models;
 
     // If the live service returns nothing, use any MoveWise profile models for
     // that make before falling back to Other / Not listed.
@@ -2987,6 +3105,7 @@ async function loadVehicleModels(s,slot,{silent=false,preferredModel=''}={}){
     return available;
   }catch(err){
     const fallbackModels=Object.keys(CAR_DATA[make]||{});
+    if(!isCurrent()) return fallbackModels;
     setModelSuggestions(
       p,
       fallbackModels.length?fallbackModels:[VEHICLE_OTHER_OPTION],
@@ -3110,6 +3229,7 @@ function showCostMode(s){
 document.querySelectorAll('.cost-mode-toggle').forEach(toggle=>{
   const s=toggle.dataset.scenario;
   toggle.querySelectorAll('.mode-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    mwCarryDrivingAcrossCostModes(s,btn.dataset.mode);
     costMode[s]=btn.dataset.mode;
     showCostMode(s);
   }));
@@ -3118,6 +3238,7 @@ document.querySelectorAll('.cost-mode-toggle').forEach(toggle=>{
 document.querySelectorAll('.car-miles-mode-toggle').forEach(toggle=>{
   const s=toggle.dataset.scenario, slot=Number(toggle.dataset.slot);
   toggle.querySelectorAll('.mode-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    if(mwCarryCarMilesAcrossModes(s,slot,btn.dataset.mmode)===false) return;
     carMilesMode[s][slot]=btn.dataset.mmode;
     toggle.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b===btn));
     document.querySelectorAll(`.car-miles-mode-field[data-scenario="${s}"][data-slot="${slot}"]`).forEach(f=>f.style.display=f.dataset.mmode===carMilesMode[s][slot]?'':'none');
@@ -3128,6 +3249,7 @@ document.querySelectorAll('.car-miles-mode-toggle').forEach(toggle=>{
 document.querySelectorAll('.fuel-miles-mode-toggle').forEach(toggle=>{
   const s=toggle.dataset.scenario;
   toggle.querySelectorAll('.mode-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    if(mwCarryFuelMilesAcrossModes(s,btn.dataset.mmode)===false) return;
     fuelMilesMode[s]=btn.dataset.mmode;
     toggle.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b===btn));
     document.querySelectorAll(`.fuel-miles-mode-field[data-scenario="${s}"]`).forEach(f=>f.style.display=f.dataset.mmode===fuelMilesMode[s]?'':'none');
@@ -3162,15 +3284,110 @@ $('new-same-vehicles').addEventListener('change',e=>{
   refreshDrivingOutputs();
 });
 
+// Keep the two mileage entry modes numerically equivalent. Switching the toggle
+// must not change the answer: carry the figures across instead of leaving whatever
+// value the other set of fields happened to be seeded with.
+function mwSetFieldAndLabel(id,val){
+  const el=$(id); if(!el) return;
+  el.value=val;
+  const lab=$('v-'+id); if(lab) lab.textContent=val;
+}
+function mwCarryCarMilesAcrossModes(s,slot,nextMode){
+  if(carMilesMode[s][slot]===nextMode) return true;
+  const p=carPrefix(s,slot);
+  const days=Math.max(0,parseFloat($(p+'-days').value)||0);
+  const total=Math.max(0,mwElNumber($(p+'-totalmiles')));
+  const hours=Math.max(0,mwElNumber($(p+'-monthly-hours')));
+  if(!mwCanConvertMileage(document.querySelector(`.car-miles-mode-toggle[data-scenario="${s}"][data-slot="${slot}"]`),nextMode,days,total,hours)) return false;
+  if(nextMode==='total'){
+    const miles=Math.max(0,parseFloat($(p+'-miles').value)||0);
+    const mins=Math.max(0,parseFloat($(p+'-minutes').value)||0);
+    mwSetFieldAndLabel(p+'-totalmiles',mwGroupNumber(miles*2*days*4.33));
+    mwSetFieldAndLabel(p+'-monthly-hours',mins>0?Number((mins*2*days*4.33/60).toFixed(6)):0);
+  }else if(days>0){
+    mwSetFieldAndLabel(p+'-miles',Number((total/(2*days*4.33)).toFixed(6)));
+    mwSetFieldAndLabel(p+'-minutes',hours>0?Number((hours*60/(2*days*4.33)).toFixed(6)):0);
+  }else{
+    mwSetFieldAndLabel(p+'-miles',0);mwSetFieldAndLabel(p+'-minutes',0);
+  }
+  return true;
+}
+function mwCarryFuelMilesAcrossModes(s,nextMode){
+  if(fuelMilesMode[s]===nextMode) return true;
+  const days=Math.max(0,parseFloat($(s+'-fuel-days').value)||0);
+  const total=Math.max(0,mwElNumber($(s+'-fuel-totalmiles')));
+  const hours=Math.max(0,mwElNumber($(s+'-fuel-monthly-hours')));
+  if(!mwCanConvertMileage(document.querySelector(`.fuel-miles-mode-toggle[data-scenario="${s}"]`),nextMode,days,total,hours)) return false;
+  if(nextMode==='total'){
+    const miles=Math.max(0,parseFloat($(s+'-fuel-miles').value)||0);
+    const mins=Math.max(0,parseFloat($(s+'-fuel-minutes').value)||0);
+    mwSetFieldAndLabel(s+'-fuel-totalmiles',mwGroupNumber(miles*2*days*4.33));
+    mwSetFieldAndLabel(s+'-fuel-monthly-hours',mins>0?Number((mins*2*days*4.33/60).toFixed(6)):0);
+  }else if(days>0){
+    mwSetFieldAndLabel(s+'-fuel-miles',Number((total/(2*days*4.33)).toFixed(6)));
+    mwSetFieldAndLabel(s+'-fuel-minutes',hours>0?Number((hours*60/(2*days*4.33)).toFixed(6)):0);
+  }else{
+    mwSetFieldAndLabel(s+'-fuel-miles',0);mwSetFieldAndLabel(s+'-fuel-minutes',0);
+  }
+  return true;
+}
+
+function mwCanConvertMileage(toggle,nextMode,days,miles,hours){
+  let note=toggle.parentElement.querySelector('.mileage-mode-note');
+  const blocked=nextMode==='perday'&&!(days>0)&&(miles>0||hours>0);
+  if(blocked&&!note){
+    note=document.createElement('div');note.className='field-hint mileage-mode-note';
+    note.setAttribute('role','status');toggle.after(note);
+  }
+  if(note){
+    note.textContent=blocked?'With zero driving days per week, keep Total miles or clear the monthly miles and hours to enter a new commute. Your totals have been kept.':'';
+    note.hidden=!blocked;
+  }
+  return !blocked;
+}
+
+function mwSetMileageMode(s,mode,slot=null){
+  const car=slot!=null,kind=car?'car':'fuel';
+  const scope=`[data-scenario="${s}"]`+(car?`[data-slot="${slot}"]`:'');
+  if(car) carMilesMode[s][slot]=mode;else fuelMilesMode[s]=mode;
+  document.querySelectorAll(`.${kind}-miles-mode-toggle${scope} .mode-btn`).forEach(b=>b.classList.toggle('active',b.dataset.mmode===mode));
+  document.querySelectorAll(`.${kind}-miles-mode-field${scope}`).forEach(f=>f.style.display=f.dataset.mmode===mode?'':'none');
+}
+
+function mwCarryDrivingAcrossCostModes(s,nextMode){
+  if(costMode[s]===nextMode) return;
+  const miles=getMonthlyMiles(s),hours=getMonthlyCommuteHours(s),hasHours=hasTimeData(s);
+  if(nextMode==='gas'){
+    mwSetFieldAndLabel(s+'-fuel-totalmiles',mwGroupNumber(miles));
+    mwSetFieldAndLabel(s+'-fuel-monthly-hours',hasHours?Number(hours.toFixed(6)):'');
+    mwSetMileageMode(s,'total');
+  }else{
+    const slots=Array.from({length:vehicleCount[s]},(_,i)=>i+1);
+    const oldMiles=slots.map(slot=>getCarMonthlyMiles(s,slot)),oldHours=slots.map(slot=>getCarMonthlyHours(s,slot));
+    const sumMiles=oldMiles.reduce((n,v)=>n+v,0),sumHours=oldHours.reduce((n,v)=>n+v,0);
+    let assignedMiles=0,assignedHours=0;
+    slots.forEach((slot,i)=>{
+      const mileShare=sumMiles>0?oldMiles[i]/sumMiles:1/slots.length;
+      const hourShare=sumHours>0?oldHours[i]/sumHours:mileShare;
+      const slotMiles=i===slots.length-1?miles-assignedMiles:Math.round(miles*mileShare*100)/100;
+      const slotHours=i===slots.length-1?hours-assignedHours:hours*hourShare;
+      const p=carPrefix(s,slot);
+      mwSetFieldAndLabel(p+'-totalmiles',mwGroupNumber(slotMiles));
+      mwSetFieldAndLabel(p+'-monthly-hours',hasHours?Number(slotHours.toFixed(6)):'');
+      assignedMiles+=slotMiles;assignedHours+=slotHours;mwSetMileageMode(s,'total',slot);
+    });
+  }
+}
+
 function getCarMonthlyMiles(s,slot){
   const p=carPrefix(s,slot);
-  if(carMilesMode[s][slot]==='total') return Math.max(0,parseFloat($(p+'-totalmiles').value)||0);
+  if(carMilesMode[s][slot]==='total') return Math.max(0,mwElNumber($(p+'-totalmiles')));
   const miles=Math.max(0,parseFloat($(p+'-miles').value)||0);
   const days=Math.max(0,parseFloat($(p+'-days').value)||0);
   return miles*2*days*4.33;
 }
 function getFuelMonthlyMiles(s){
-  if(fuelMilesMode[s]==='total') return Math.max(0,parseFloat($(s+'-fuel-totalmiles').value)||0);
+  if(fuelMilesMode[s]==='total') return Math.max(0,mwElNumber($(s+'-fuel-totalmiles')));
   const miles=Math.max(0,parseFloat($(s+'-fuel-miles').value)||0);
   const days=Math.max(0,parseFloat($(s+'-fuel-days').value)||0);
   return miles*2*days*4.33;
@@ -3225,7 +3442,7 @@ function ageAdjustByAge(base, age){
 }
 
 function odometerAdjust(base, odometer){
-  const odo=Math.max(0,Number(odometer)||0);
+  const odo=Math.max(0,Number(mwStripSeparators(odometer))||0);
   const life=Math.max(1,Number(base.life)||200000);
   const lifePct=odo/life;
 
@@ -3291,7 +3508,7 @@ function modelReplacementMileage(s,slot){
 
 function getPlanningReplacementMileage(s,slot){
   const el=$(carPrefix(s,slot)+'-replacement-mileage');
-  const entered=Number(el?.value);
+  const entered=mwElNumber(el,NaN);
   return Number.isFinite(entered) && entered>0
     ? entered
     : modelReplacementMileage(s,slot);
@@ -3307,7 +3524,7 @@ function setReplacementMileageFromProfile(s,slot,{force=false}={}){
   const el=$(carPrefix(s,slot)+'-replacement-mileage');
   if(!el) return;
   if(!force && el.dataset.userOverride==='true') return;
-  el.value=Math.round(modelReplacementMileage(s,slot));
+  el.value=mwGroupNumber(Math.round(modelReplacementMileage(s,slot)));
   el.dataset.userOverride='false';
 }
 function getCarStats(s,slot){
@@ -3323,7 +3540,7 @@ const VEHICLE_REPLACEMENT_HORIZON_YEARS=10;
 function vehicleReplacementStats(s,slot,horizonYears=VEHICLE_REPLACEMENT_HORIZON_YEARS){
   const p=carPrefix(s,slot);
   const life=getPlanningReplacementMileage(s,slot);
-  const odo=Math.max(0,Number($(p+'-odo').value)||0);
+  const odo=Math.max(0,mwElNumber($(p+'-odo')));
   const annualMiles=Math.max(0,getCarMonthlyMiles(s,slot)*12);
   const remainingMiles=Math.max(life-odo,0);
 
@@ -3407,9 +3624,16 @@ function renderVehicleReplacementOutlook(){
   }else if(countDelta>0){
     comparison=`Moving is projected to add ${countDelta} vehicle replacement${countDelta===1?'':'s'} over the next ${VEHICLE_REPLACEMENT_HORIZON_YEARS} years.`;
   }else if(Number.isFinite(cur.earliest)&&Number.isFinite(move.earliest)){
+    const H=VEHICLE_REPLACEMENT_HORIZON_YEARS;
     const delay=move.earliest-cur.earliest;
-    if(delay>0.25) comparison=`Moving delays the earliest expected replacement by about ${delay.toFixed(1)} years.`;
-    else if(delay<-0.25) comparison=`Moving brings the earliest expected replacement forward by about ${Math.abs(delay).toFixed(1)} years.`;
+    const beyondCur=cur.earliest>H, beyondMove=move.earliest>H;
+    if(beyondCur&&beyondMove) comparison=`Neither scenario reaches a vehicle replacement within ${H} years.`;
+    else if(delay>0.25) comparison=beyondMove
+      ? `Moving pushes the earliest expected replacement beyond ${H} years.`
+      : `Moving delays the earliest expected replacement by about ${delay.toFixed(1)} years.`;
+    else if(delay<-0.25) comparison=beyondCur
+      ? `Moving pulls the earliest expected replacement into the next ${H} years.`
+      : `Moving brings the earliest expected replacement forward by about ${Math.abs(delay).toFixed(1)} years.`;
     else comparison='Replacement timing is similar in both scenarios.';
   }else{
     comparison='No meaningful replacement difference is projected from the entered driving.';
@@ -3427,17 +3651,23 @@ function summaryReplacementText(){
   const dollarDelta=move.replacementPurchases-cur.replacementPurchases;
   if(cur.replacementPurchases>0 || move.replacementPurchases>0){
     return {
-      text:`Stay ${fmt(cur.replacementPurchases)} · Move ${fmt(move.replacementPurchases)} / ${VEHICLE_REPLACEMENT_HORIZON_YEARS} yrs`,
-      delta:dollarDelta
+      text:`Stay ${fmt(cur.replacementPurchases)} · Move ${fmt(move.replacementPurchases)}`,
+      delta:dollarDelta, dollars:true
     };
   }
 
   if(Number.isFinite(cur.earliest)&&Number.isFinite(move.earliest)){
+    const H=VEHICLE_REPLACEMENT_HORIZON_YEARS;
     const timingDelta=move.earliest-cur.earliest;
+    const beyondCur=cur.earliest>H, beyondMove=move.earliest>H;
+    if(beyondCur&&beyondMove) return {text:`None within ${H} yrs either way`,delta:0};
     if(Math.abs(timingDelta)>=0.25){
+      const capped=beyondMove||beyondCur;
       return {
-        text:`${Math.abs(timingDelta).toFixed(1)} yrs ${timingDelta>0?'later':'sooner'} if you move`,
-        delta:-timingDelta
+        text:capped
+          ? (timingDelta>0?`Pushed beyond ${H} yrs if you move`:`Pulled within ${H} yrs if you move`)
+          : `${Math.abs(timingDelta).toFixed(1)} yrs ${timingDelta>0?'later':'sooner'} if you move`,
+        delta:-timingDelta, timing:true
       };
     }
   }
@@ -3468,29 +3698,92 @@ function moveHousingCashOverYears(years=TOTAL_IMPACT_HORIZON_YEARS){
   const recurringCash=(mwPositive('buy-tax')/12+mwPositive('buy-ins')/12+mwPositive('buy-hoa'))*months;
   return {mortgageCash:slice.cash,recurringCash,total:slice.cash+recurringCash,balance:slice.balance,interest:slice.interest};
 }
-function tenYearTotalImpact(){
-  const stayPath=mwHousePath(Infinity,10),movePath=mwHousePath(0,10);
-  const stayVehicle=vehicleLongTermCashScenario('cur',10),moveVehicle=vehicleLongTermCashScenario('new',10);
-  const stayHousing={...currentHousingCashOverYears(10),upfrontCash:0,total:stayPath.cash};
-  const moveHousing={...moveHousingCashOverYears(10),upfrontCash:movePath.upfrontCash,total:movePath.cash};
+function totalImpactOverYears(Y,opts={}){
+  const stayPath=mwHousePath(Infinity,Y,null,opts),movePath=mwHousePath(0,Y,null,opts);
+  const stayVehicle=vehicleLongTermCashScenario('cur',Y),moveVehicle=vehicleLongTermCashScenario('new',Y);
+  const stayHousing={...currentHousingCashOverYears(Y),upfrontCash:0,total:stayPath.cash};
+  const moveHousing={...moveHousingCashOverYears(Y),upfrontCash:movePath.upfrontCash,total:movePath.cash};
   const stayTotal=stayPath.cash+stayVehicle.total,moveTotal=movePath.cash+moveVehicle.total;
   const savings=stayTotal-moveTotal;
   // Economic vehicle costs use mileage depreciation, not replacement purchases.
   // Keeping both views prevents a purchase just beyond the horizon from being
   // mistaken for a permanent economic saving.
-  const stayCost=stayPath.economicCost+monthlyCommuteCost('cur')*120;
-  const moveCost=movePath.economicCost+monthlyCommuteCost('new')*120;
-  return {years:10,stayHousing,moveHousing,stayVehicle,moveVehicle,stayTotal,moveTotal,savings,monthlyEquivalent:savings/120,
+  const stayCost=stayPath.economicCost+monthlyCommuteCost('cur')*Y*12;
+  const moveCost=movePath.economicCost+monthlyCommuteCost('new')*Y*12;
+  return {years:Y,stayHousing,moveHousing,stayVehicle,moveVehicle,stayTotal,moveTotal,savings,
+    monthlyEquivalent:Y>0?savings/(Y*12):0,
     stayPath,movePath,stayCost,moveCost,economicSavings:stayCost-moveCost};
+}
+function tenYearTotalImpact(){ return totalImpactOverYears(TOTAL_IMPACT_HORIZON_YEARS); }
+
+// ---- Is this a good decision? break-even, drivers, and how wrong it could be ----
+const MW_DECISION_MAX_YEARS=30;
+// A move is not simply "ahead" or "behind": transaction costs make the early
+// years bad, and an old mortgage clearing can hand the advantage back to
+// staying later. Report the first crossing AND any reversal after it.
+function moveBreakEven(field){
+  const pts=[];
+  for(let Y=1;Y<=MW_DECISION_MAX_YEARS;Y++) pts.push({Y,v:totalImpactOverYears(Y)[field]});
+  // A single first crossing is not a break-even: planned vehicle purchases land in
+  // one year and step the cash line up, and a finishing mortgage steps it back down.
+  // Report the year after which moving stays ahead for the rest of the scan.
+  let sustained=null;
+  for(let i=0;i<pts.length;i++){
+    if(pts.slice(i).every(q=>q.v>0)){ sustained=pts[i].Y; break; }
+  }
+  const everAhead=pts.some(p=>p.v>0);
+  const jumps=pts.some((p,i)=>i>0&&Math.abs(p.v-pts[i-1].v)>Math.max(5000,Math.abs(pts[i-1].v)*0.5));
+  let best=pts[0]; for(const p of pts) if(p.v>best.v) best=p;
+  return {sustained,everAhead,jumps,bestYear:best.Y,bestValue:best.v,points:pts};
+}
+// This card sits under the break-even headline and above the sensitivity band,
+// and both of those are built on economicSavings (modeled ownership cost). It
+// used to decompose t.savings — the CASH total — instead, so its rows could sum
+// to the opposite sign of the answer they claimed to explain: a headline reading
+// "moving comes out ahead by $1,004" over rows summing to $21,742 favouring
+// staying. Decompose the same measure the answer uses.
+//   economicSavings = stayCost - moveCost
+//   stayCost = (stayPath.cash - stayPath.equityChange) + commuteCur*Y*12
+//   moveCost = (movePath.cash - movePath.equityChange) + commuteNew*Y*12
+// so the move-minus-stay contributions below sum to exactly -economicSavings.
+function decisionDrivers(Y){
+  const t=totalImpactOverYears(Y);
+  const rows=[
+    {key:'Housing payments and costs',delta:t.movePath.cash-t.stayPath.cash},
+    {key:'Home equity built',delta:t.stayPath.equityChange-t.movePath.equityChange},
+    {key:'Driving',delta:(monthlyCommuteCost('new')-monthlyCommuteCost('cur'))*Y*12}
+  ];
+  rows.sort((a,b)=>Math.abs(b.delta)-Math.abs(a.delta));
+  const gross=rows.reduce((s,r)=>s+Math.abs(r.delta),0);
+  return {rows,gross,net:-t.economicSavings,years:Y};
+}
+// The appreciation gap between the two homes is unknowable and moves the answer
+// more than most inputs, so report the headline across a plus/minus one point band.
+// Appreciation never touches the cash total (no sale happens inside the window),
+// so the band is measured on modeled ownership cost, which does include equity.
+function decisionRange(Y){
+  const gCur=mwNumber('current-home-appreciation')/100,gNew=mwNumber('target-home-appreciation')/100;
+  const at=g=>totalImpactOverYears(Y,{gCur,gNew:g}).economicSavings;
+  const a=at(gNew-0.01),base=at(gNew),c=at(gNew+0.01);
+  const lo=Math.min(a,c),hi=Math.max(a,c);
+  return {lo,base,hi,flips:(lo>0)!==(hi>0),
+    ratePct:gNew*100,rateLo:(gNew-0.01)*100,rateHi:(gNew+0.01)*100};
 }
 function renderTenYearTotalImpact(){
   const card=$('summary-10yr-total-impact');if(!card)return;
+  if(!mwCheckForSummary()){mwClearSummaryFigures();return;}
   const t=tenYearTotalImpact();card.style.display='block';
   const values={'summary-10yr-stay-housing':t.stayHousing.total,'summary-10yr-stay-vehicle':t.stayVehicle.total,'summary-10yr-stay-total':t.stayTotal,
     'summary-10yr-move-housing':t.moveHousing.total,'summary-10yr-move-vehicle':t.moveVehicle.total,'summary-10yr-move-total':t.moveTotal,
     'summary-10yr-stay-equity':t.stayPath.endEquity,'summary-10yr-move-equity':t.movePath.endEquity};
   for(const [id,n] of Object.entries(values)) if($(id))$(id).textContent=fmt(n);
-  $('summary-10yr-impact').textContent=Math.abs(t.savings)<1?'About the same net cash used':`${fmt(Math.abs(t.savings))} ${t.savings>0?'less':'more'} net cash used by moving`;
+  $('summary-10yr-impact').innerHTML=Math.abs(t.savings)<1?'<span class="qual">About the same net cash used</span>'
+    :`${mwEscape(fmt(Math.abs(t.savings)))} <span class="qual">${t.savings>0?'less':'more'} net cash used by moving</span>`;
+  // The other signed headline on this sheet (timing-decision-amount) is coloured
+  // by sign; this one was left plain, so two figures answering the same kind of
+  // question looked like different kinds of figure. The wording carries the
+  // meaning either way, so colour is reinforcement, not the only signal.
+  $('summary-10yr-impact').className='big-number '+(t.savings>1?'good':t.savings< -1?'bad':'');
   $('summary-10yr-monthly-equivalent').textContent=`Ten-year average cash difference: ${fmt(Math.abs(t.monthlyEquivalent))} / month ${t.savings>=0?'less':'more'}`;
   if($('summary-10yr-economic')) $('summary-10yr-economic').textContent=Math.abs(t.economicSavings)<1?'About the same modeled ownership cost':`${fmt(Math.abs(t.economicSavings))} lower modeled ownership cost by ${t.economicSavings>0?'moving':'staying'}`;
   $('summary-10yr-note').textContent='Net cash includes actual mortgage payments, recurring housing costs, the entered down payment, net sale proceeds, buyer closing costs, moving costs, and vehicle cash costs. A negative housing amount means cash is released. The ownership-cost comparison adjusts for home-equity changes and uses mileage depreciation instead of replacement purchases. Tax, insurance, and vehicle unit costs stay constant after purchase; no investment return, income-tax effects, or sale of the final home is assumed.';
@@ -3513,9 +3806,22 @@ function renderLongTermVehicleOwnership(){
   const values={'vehicle-longterm-cur-operating':cur.operatingCost,'vehicle-longterm-cur-replacements':cur.replacementPurchases,'vehicle-longterm-cur-total':cur.total,
     'vehicle-longterm-new-operating':move.operatingCost,'vehicle-longterm-new-replacements':move.replacementPurchases,'vehicle-longterm-new-total':move.total,
     'summary-vehicle-stay-total':cur.total,'summary-vehicle-move-total':move.total,'summary-vehicle-stay-replacements':cur.replacementPurchases,'summary-vehicle-move-replacements':move.replacementPurchases};
-  for(const [id,n]of Object.entries(values))if($(id))$(id).textContent=fmt(n);
-  const impact=`${fmt(Math.abs(savings))} ${savings>=0?'less':'more'} vehicle cash over 10 years if you move`;
-  for(const id of ['vehicle-longterm-impact','summary-vehicle-longterm-impact'])if($(id))$(id).textContent=impact;
+  const readyCur=mwDrivingEstimateReady('cur'),readyNew=mwDrivingEstimateReady('new');
+  for(const [id,n]of Object.entries(values))if($(id)){
+    // A side with no usable MPG costs an unknown amount, not $0.
+    const side=/(^|-)cur|stay/.test(id)?readyCur:readyNew;
+    $(id).textContent=side?fmt(n):'—';
+  }
+  // Fuel-only mode puts fuel and nothing else in this row, so say so rather than
+  // promising maintenance the figure does not contain.
+  for(const [id,scen] of [['vehicle-longterm-cur-operating-label',cur],['vehicle-longterm-new-operating-label',move]]){
+    const el=$(id); if(el) el.textContent=scen.fuelOnly?'Fuel':'Fuel + maintenance';
+  }
+  // Same guard as the monthly card: an un-costed side must not become a saving.
+  const impact=mwBothDrivingEstimatesReady()
+    ? `${mwEscape(fmt(Math.abs(savings)))} <span class="qual">${savings>=0?'less':'more'} vehicle cash over 10 years if you move</span>`
+    : '<span class="qual">Enter MPG for both vehicles to compare</span>';
+  for(const id of ['vehicle-longterm-impact','summary-vehicle-longterm-impact'])if($(id))$(id).innerHTML=impact;
   const note=(cur.fuelOnly||move.fuelOnly?'Fuel-only scenarios omit maintenance and replacement purchases. ':'')+'Full-vehicle cash costs include fuel, maintenance, and planned net replacement purchases. Unit operating costs remain at the entered estimates. A purchase just after year 10 is outside this cash window; this does not mean that purchase is avoided forever. The ownership-cost comparison uses mileage depreciation instead of purchase timing.';
   for(const id of ['vehicle-longterm-note','summary-vehicle-longterm-note'])if($(id))$(id).textContent=note;
   renderTenYearTotalImpact();
@@ -3535,11 +3841,36 @@ function blendedPerMile(s){
 function monthlyCommuteCost(s){
   if(costMode[s]==='gas'){
     const gas=Math.max(0,parseFloat($(s+'-gasprice').value)||0);
-    const mpg=Math.max(.01,parseFloat($(s+'-mpg').value)||0);
+    // Clamping a blank field to 0.01 MPG produced six-figure monthly costs on
+    // screen. Returning 0 instead is just as wrong in the other direction: every
+    // caller renders it as a real $0, so one blank field became a confident
+    // "Save $135 / month". mwDrivingEstimateReady() below lets the callers say
+    // "no estimate" instead of printing either number.
+    const mpg=parseFloat($(s+'-mpg').value)||0;
+    if(!(mpg>0)) return 0;
     return getFuelMonthlyMiles(s)*(gas/mpg);
   }
   let total=0;
   for(let slot=1;slot<=vehicleCount[s];slot++) total+=getCarMonthlyMiles(s,slot)*carPerMile(s,slot);
+  return total;
+}
+// True only when both sides have what they need to be costed. In Fuel-only mode
+// a blank or zero MPG makes that side unknown, not free.
+function mwDrivingEstimateReady(s){
+  if(costMode[s]!=='gas') return true;
+  return (parseFloat($(s+'-mpg').value)||0)>0;
+}
+function mwBothDrivingEstimatesReady(){
+  return mwDrivingEstimateReady('cur')&&mwDrivingEstimateReady('new');
+}
+
+// The same driving estimate with mileage depreciation left out — the part that
+// actually leaves your bank account each month. Full-vehicle mode adds wear to
+// the per-mile figure, which belongs in an ownership cost but is not cash.
+function monthlyCommuteOperatingCost(s){
+  if(costMode[s]==='gas') return monthlyCommuteCost(s);
+  let total=0;
+  for(let slot=1;slot<=vehicleCount[s];slot++) total+=getCarMonthlyMiles(s,slot)*vehicleOperatingPerMile(s,slot);
   return total;
 }
 
@@ -3571,6 +3902,29 @@ function renderCommuteImpact(){
   deltaEl.className='delta-num '+(delta>0?'more':delta<0?'less':'');
   kickerEl.textContent='Estimated monthly driving change';
 
+  // A side with no usable MPG is unknown, not free — say so rather than costing
+  // it at zero and announcing the resulting "saving".
+  if(!mwBothDrivingEstimatesReady()){
+    const missing=!mwDrivingEstimateReady('cur')?'current':'after-move';
+    deltaEl.className='delta-num';
+    deltaEl.textContent='No estimate yet';
+    subEl.textContent=`Enter MPG for the ${missing} vehicle to compare driving costs.`;
+    annualEl.textContent='';
+    $('impact-cur-cost').textContent=mwDrivingEstimateReady('cur')?fmt(curCost)+' / month':'—';
+    $('impact-new-cost').textContent=mwDrivingEstimateReady('new')?fmt(newCost)+' / month':'—';
+    $('impact-mile-change').textContent=bigSignedMetric(mileDelta,'mi / month','fewer','more');
+    // Miles and minutes do not depend on MPG, so keep reporting them.
+    const cT=hasTimeData('cur'),nT=hasTimeData('new');
+    $('impact-time-change').textContent=(cT&&nT)
+      ? bigSignedMetric(getMonthlyCommuteHours('new')-getMonthlyCommuteHours('cur'),'hours / month','saved','more')
+      : '—';
+    const parts=[`Now: ${Math.round(curMiles).toLocaleString()} mi / month`,`after move: ${Math.round(newMiles).toLocaleString()} mi / month`];
+    if(cT&&nT) parts.push(`time: ${getMonthlyCommuteHours('cur').toFixed(1)} → ${getMonthlyCommuteHours('new').toFixed(1)} hours / month`);
+    $('commute-impact-note').textContent=parts.join(' · ');
+    const w=$('commute-mode-warning'); if(w){w.textContent='';w.hidden=true;}
+    return;
+  }
+
   if(Math.abs(delta)<0.5){
     deltaEl.textContent='$0 / month';
     subEl.textContent='Driving cost stays about the same if you move.';
@@ -3599,10 +3953,23 @@ function renderCommuteImpact(){
   if(curHasTime&&newHasTime) noteParts.push(`time: ${getMonthlyCommuteHours('cur').toFixed(1)} → ${getMonthlyCommuteHours('new').toFixed(1)} hours / month`);
   else noteParts.push('add commute time if you want the time-saved comparison');
   $('commute-impact-note').textContent=noteParts.join(' · ');
+
+  // Fuel-only counts fuel; Full vehicle cost adds maintenance and mileage wear.
+  // Setting the two sides differently compares unlike things and manufactures a
+  // difference out of the cost basis alone, so say so instead of reporting it
+  // as a clean saving.
+  const warnEl=$('commute-mode-warning');
+  if(warnEl){
+    const mismatch=costMode.cur!==costMode.new;
+    warnEl.textContent=mismatch
+      ? 'The two sides are set to different cost bases — one is fuel only, the other includes maintenance and mileage wear. Match them before reading the difference.'
+      : '';
+    warnEl.hidden=!mismatch;
+  }
 }
 function bigSignedMetric(delta,unit,goodWord,badWord){
   if(Math.abs(delta)<.01) return `0 ${unit}`;
-  return `${Math.abs(delta).toFixed(unit.startsWith('hrs')?1:0)} ${unit} ${delta<0?goodWord:badWord}`;
+  return `${Math.abs(delta).toFixed(/^h(rs|ours?)\b/.test(unit)?1:0)} ${unit} ${delta<0?goodWord:badWord}`;
 }
 
 function markVehicleSpecChanged(s){
@@ -3637,6 +4004,7 @@ function markVehicleSpecChanged(s){
     }
     const replacementMileage=$(p+'-replacement-mileage');
     replacementMileage.addEventListener('input',()=>{
+      formatMoneyField(replacementMileage,'Enter a whole number of miles, such as 225,000.');
       replacementMileage.dataset.userOverride='true';
       if(s==='cur'&&sameVehiclesAfterMove&&!syncingVehicleSpecs) syncNewVehicleSpecs();
       renderCarInfo(s); refreshDrivingOutputs();
@@ -3652,6 +4020,7 @@ function markVehicleSpecChanged(s){
     ['year','odo','miles','days','minutes','totalmiles','monthly-hours'].forEach(k=>{
       const el=$(p+'-'+k); if(!el) return;
       el.addEventListener('input',()=>{
+        if(k==='odo'||k==='totalmiles') formatMoneyField(el,'Enter a whole number of miles, such as 60,000.');
         const v=$('v-'+p+'-'+k); if(v) v.textContent=el.value;
         if(k==='year'||k==='odo') markVehicleSpecChanged(s); else { renderCarInfo(s); refreshDrivingOutputs(); }
       });
@@ -3669,6 +4038,7 @@ function markVehicleSpecChanged(s){
     const el=$(s+'-'+k); if(!el) return;
     el.addEventListener('input',()=>{
       const v=$('v-'+s+'-'+k);
+      if(k==='fuel-totalmiles') formatMoneyField(el,'Enter a whole number of miles, such as 1,200.');
       if(v) v.textContent=k.includes('gasprice')?'$'+(parseFloat(el.value)||0).toFixed(2):el.value;
       renderCarInfo(s); refreshDrivingOutputs();
     });
@@ -3688,7 +4058,7 @@ function validateCars(showErrors=false){
         const p=carPrefix(s,slot);
         checks.push({id:p+'-make',ok:!!$(p+'-make').value,message:'Choose a vehicle make.'},{id:p+'-model',ok:!!$(p+'-model').value,message:'Choose a vehicle model.'},
           mwFieldCheck(p+'-year',1981,new Date().getFullYear()+1,'Vehicle year'),mwFieldCheck(p+'-odo',0,1e7,'Odometer'),
-          mwFieldCheck(p+'-replacement-mileage',1,1e7,'Replacement mileage'),mwFieldCheck(p+'-replacement-cost',0,1e8,'Net replacement cost',false,true));
+          mwFieldCheck(p+'-replacement-mileage',1,1e7,'Replacement mileage'),mwFieldCheck(p+'-replacement-cost',0,1e8,'Planned replacement cost',false,true));
         const energy=mwVehicleEnergy(s,slot);
         checks.push(mwFieldCheck(p+'-efficiency',energy.electric?.001:.1,energy.electric?10:1000,energy.electric?'kWh per mile':'MPG',true));
         if(carMilesMode[s][slot]==='total') checks.push(mwFieldCheck(p+'-totalmiles',0,1e6,'Monthly miles'),mwFieldCheck(p+'-monthly-hours',0,744,'Monthly hours',true));
@@ -3742,7 +4112,7 @@ function drawCompareChart(curHousing, curCommute, newHousing, newCommute){
       <rect x="${padL+hw}" y="${y}" width="${cw}" height="${barH}" fill="var(--accent)" fill-opacity="0.85"/>
       <text x="${padL+hw+cw+8}" y="${y+barH/2+4}" fill="var(--line)" font-size="12" font-family="JetBrains Mono, monospace" font-weight="600">${fmt(total)}</text>`;
   }
-  wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
+  wrap.innerHTML = `<svg role="img" aria-label="Monthly housing and driving costs for staying and moving" viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
     ${bar(padT,'STAY',curHousing,curCommute)}
     ${bar(padT+barH+gap,'MOVE',newHousing,newCommute)}
   </svg>`;
@@ -3776,7 +4146,40 @@ function computeBreakEvenPrice(ratePct,inputs){
   for(let i=0;i<70;i++){const mid=(lo+hi)/2;if(monthly(mid)>numer)hi=mid;else lo=mid;}
   return (lo+hi)/2;
 }
+// ---- shared chart furniture ----
+// Every chart reserved a left gutter and then drew nothing in it. These helpers
+// give all of them the same gridlines, tick values and axis labels, so the charts
+// read alike and stay alike instead of each inventing its own axes.
+function mwNiceTicks(min,max,target=6){
+  const span=max-min;
+  if(!(span>0)||!Number.isFinite(span)) return [min];
+  const raw=span/target,mag=Math.pow(10,Math.floor(Math.log10(raw))),norm=raw/mag;
+  const step=(norm<1.5?1:norm<3?2:norm<7?5:10)*mag;
+  const out=[];
+  for(let v=Math.ceil(min/step-1e-9)*step;v<=max+step*1e-9;v+=step) out.push(Math.abs(v)<step*1e-9?0:v);
+  return out;
+}
+function mwAxisMoney(n){
+  const a=Math.abs(n),sign=n<0?'−':'';
+  if(a>=1000) return sign+'$'+Math.round(a/1000).toLocaleString('en-US')+'k';
+  return sign+'$'+Math.round(a);
+}
+function mwChartGrid(ticks,y,padL,plotW,label=mwAxisMoney){
+  return ticks.map(t=>
+    `<line x1="${padL}" y1="${y(t).toFixed(1)}" x2="${padL+plotW}" y2="${y(t).toFixed(1)}" stroke="var(--line-faint)" stroke-width="1" opacity="0.5"/>`+
+    `<text x="${padL-8}" y="${(y(t)+3.5).toFixed(1)}" fill="var(--line-dim)" font-size="10" text-anchor="end">${mwEscape(label(t))}</text>`
+  ).join('');
+}
+function mwChartXTicks(values,x,H,label){
+  return values.map(v=>
+    `<text x="${x(v).toFixed(1)}" y="${H-10}" fill="var(--line-dim)" font-size="10" text-anchor="middle">${mwEscape(label(v))}</text>`
+  ).join('');
+}
+
 function drawBreakEvenChart(){
+  if(!mwCheckForSummary()){
+    $('breakeven-chart-wrap').innerHTML='';$('summary-breakeven-price').textContent='—';$('breakeven-caption').textContent='';return;
+  }
   const inputs=breakEvenInputs(),rate=mwPositive('buy-rate'),price=mwMoney('buy-price');
   const result=computeBreakEvenPrice(rate,inputs),wrap=$('breakeven-chart-wrap');
   $('breakeven-rate-label').textContent=rate.toFixed(2)+'%';
@@ -3785,15 +4188,28 @@ function drawBreakEvenChart(){
     `Target: ${fmt(price)}; ${fmt(Math.abs(price-result))} ${price<=result?'below':'above'} monthly break-even. This holds the entered down-payment percentage and tax/insurance ratios fixed, includes planned extra principal, and excludes upfront costs. Full vehicle mode includes mileage depreciation.`;
   if(!Number.isFinite(result)){wrap.innerHTML='';return;}
   const lo=Math.max(0,rate-3),hi=Math.min(20,Math.max(lo+2,rate+3));
-  const pts=Array.from({length:31},(_,i)=>{const r=lo+(hi-lo)*i/30;return {r,p:computeBreakEvenPrice(r,inputs)};});
-  const max=Math.max(price,...pts.map(p=>Number.isFinite(p.p)?p.p:0),1)*1.12;
-  const x=r=>70+(r-lo)/(hi-lo)*760,y=p=>210-180*p/max;
-  const line=pts.filter(p=>Number.isFinite(p.p)).map((p,i)=>`${i?'L':'M'}${x(p.r)} ${y(p.p)}`).join(' ');
-  wrap.innerHTML=`<svg viewBox="0 0 900 250" width="100%" role="img" aria-label="Monthly break-even home price at different mortgage rates">
-    <path d="M70 25V210H830" stroke="var(--line-dim)" fill="none"/><path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2"/>
-    <path d="M70 ${y(price)}H830" stroke="var(--line)" stroke-dasharray="5 4"/><circle cx="${x(rate)}" cy="${y(result)}" r="4" fill="var(--accent)"/>
-    <text x="70" y="235" fill="var(--line-dim)">${lo.toFixed(1)}%</text><text x="800" y="235" fill="var(--line-dim)">${hi.toFixed(1)}%</text>
-    <text x="70" y="18" fill="var(--line-dim)">${mwEscape(fmt(max))} maximum chart value</text></svg>`;
+  const pts=Array.from({length:61},(_,i)=>{const r=lo+(hi-lo)*i/60;return {r,p:computeBreakEvenPrice(r,inputs)};});
+  const dataMax=Math.max(price,...pts.map(p=>Number.isFinite(p.p)?p.p:0),1);
+  const ticks=mwNiceTicks(0,dataMax*1.08,7),yMax=Math.max(ticks[ticks.length-1],dataMax);
+  const Wpx=wrap.clientWidth>0?wrap.clientWidth:900,H=245;
+  const padL=66,padR=20,padT=22,padB=34;
+  const plotW=Wpx-padL-padR,plotH=H-padT-padB;
+  const x=r=>padL+(r-lo)/(hi-lo)*plotW, y=v=>padT+plotH*(1-v/yMax);
+  const line=pts.filter(p=>Number.isFinite(p.p)).map((p,i)=>`${i?'L':'M'}${x(p.r).toFixed(1)} ${y(p.p).toFixed(1)}`).join(' ');
+  const xStep=(hi-lo)>6?2:1;
+  const xVals=[]; for(let r=Math.ceil(lo/xStep)*xStep;r<=hi;r+=xStep) xVals.push(r);
+  const mx=x(rate),my=y(result);
+  const anchor=mx>padL+plotW-70?'end':'start';
+  wrap.innerHTML=`<svg role="img" aria-label="Monthly break-even home price by mortgage rate" viewBox="0 0 ${Wpx} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Monthly break-even home price at different mortgage rates">
+    <rect x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" fill="none" stroke="var(--line-faint)"/>
+    ${mwChartGrid(ticks,y,padL,plotW)}
+    ${mwChartXTicks(xVals,x,H,v=>v+'%')}
+    <line x1="${padL}" y1="${y(price).toFixed(1)}" x2="${padL+plotW}" y2="${y(price).toFixed(1)}" stroke="var(--line)" stroke-width="1" stroke-dasharray="5 4"/>
+    <path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2"/>
+    <line x1="${mx.toFixed(1)}" y1="${padT}" x2="${mx.toFixed(1)}" y2="${padT+plotH}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3" opacity=".6"/>
+    <circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="4.5" fill="var(--accent)"/>
+    <text x="${(anchor==='end'?mx-8:mx+8).toFixed(1)}" y="${(my-9).toFixed(1)}" fill="var(--accent)" font-size="11" font-weight="600" text-anchor="${anchor}">${mwEscape(fmt(result))}</text>
+  </svg>`;
 }
 // ---- timing: move now vs wait ----
 // Move now uses today's Buy-page mortgage rate.
@@ -3807,6 +4223,15 @@ function timingAnalysis(W,futureRateOverride=null){
   const cashDifference=later.cash-now.cash+vehicleDifference;
   const equityDifference=later.endEquity-now.endEquity;
   const netImpact=cashDifference-equityDifference;
+  // cashDifference is the right input to netImpact — mileage depreciation is a
+  // real ownership cost. It is not money you hand over, though, so the split
+  // shown under the headline reports it on its own line instead of folding it
+  // into "spendable cash", which is what it used to do.
+  const driveNowOperating=monthlyCommuteOperatingCost('new')*H*12;
+  const driveLaterOperating=monthlyCommuteOperatingCost('cur')*W*12+monthlyCommuteOperatingCost('new')*120;
+  const vehicleOperatingDifference=driveLaterOperating-driveNowOperating;
+  const depreciationDifference=vehicleDifference-vehicleOperatingDifference;
+  const spendableCashDifference=cashDifference-depreciationDifference;
   const nowPrefix=mwHousePath(0,W);
   const waitPeriodDifference=later.oldCash-nowPrefix.postMoveCash+(monthlyCommuteCost('cur')-monthlyCommuteCost('new'))*W*12;
   const upfrontDifference=later.upfrontCash-now.upfrontCash;
@@ -3821,7 +4246,8 @@ function timingAnalysis(W,futureRateOverride=null){
     moveNowCashMonthly:now.newMonthly+monthlyCommuteCost('new'),laterCashMonthly:later.newMonthly+monthlyCommuteCost('new'),
     moveNowExtraPrincipal:mwPositive('buy-extra'),laterExtraPrincipal:mwPositive('buy-extra'),
     curTotal:(window.__sellMonthly||0)+monthlyCommuteCost('cur'),waitPeriodDifference,postMoveDifference,upfrontDifference,
-    equityDifference,cashDifference,vehicleDifference,netImpact,now,later};
+    equityDifference,cashDifference,vehicleDifference,netImpact,
+    vehicleOperatingDifference,depreciationDifference,spendableCashDifference,now,later};
 }
 function timingBreakEvenRate(W){
   if(Math.round(Number(W)*12)<=0) return {rate:null,kind:'zero'};
@@ -3842,6 +4268,7 @@ function timingImpactText(impact){
 function drawTimingChart(selectedW){
   const wrap=$('timing-chart-wrap');
   if(!wrap) return;
+  if(!mwCheckForSummary()){wrap.innerHTML='';return;}
 
   const futureRate=parseFloat($('future-mortgage-rate').value)||0;
   const maxW=15,pts=[];
@@ -3858,28 +4285,31 @@ function drawTimingChart(selectedW){
   let path=`M ${x(0)} ${y(pts[0].impact)} `;
   pts.forEach(p=>path+=`L ${x(p.w)} ${y(p.impact)} `);
 
-  let xGrid='';
-  for(let w=0;w<=maxW;w+=3){
-    xGrid+=`<text x="${x(w)}" y="${H-9}" fill="var(--line-dim)" font-size="10" text-anchor="middle">${w}y</text>`;
-  }
+  const xVals=[]; for(let w=0;w<=maxW;w+=3) xVals.push(w);
+  const xGrid=mwChartXTicks(xVals,x,H,w=>w+'y');
+  const yTicks=mwNiceTicks(-maxAbs,maxAbs,6);
+  const narrow=plotW<360;
   const selected=timingAnalysis(selectedW,futureRate);
   const selColor=selected.netImpact>0?'var(--danger)':selected.netImpact<0?'var(--good)':'var(--line)';
 
-  wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
+  wrap.innerHTML=`<svg role="img" aria-label="Cost of waiting compared with moving now, year by year" viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
     <rect x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" fill="none" stroke="var(--line-faint)"/>
     <rect x="${padL}" y="${padT}" width="${plotW}" height="${Math.max(0,zeroY-padT)}" fill="var(--danger)" opacity=".025"/>
     <rect x="${padL}" y="${zeroY}" width="${plotW}" height="${Math.max(0,padT+plotH-zeroY)}" fill="var(--good)" opacity=".025"/>
+    ${mwChartGrid(yTicks,y,padL,plotW)}
     ${xGrid}
-    <text class="chart-zone-label" x="${padL+6}" y="${padT+12}" fill="var(--danger)">WAITING COSTS MORE</text>
-    <text class="chart-zone-label" x="${padL+6}" y="${padT+plotH-7}" fill="var(--good)">WAITING COSTS LESS</text>
+    ${narrow?'':`<text class="chart-zone-label" x="${padL+6}" y="${padT+12}" fill="var(--danger)">WAITING COSTS MORE</text>
+    <text class="chart-zone-label" x="${padL+6}" y="${padT+plotH-7}" fill="var(--good)">WAITING COSTS LESS</text>`}
     <line x1="${padL}" y1="${zeroY}" x2="${padL+plotW}" y2="${zeroY}" stroke="var(--line)" stroke-width="1"/>
     <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2"/>
     <line x1="${x(selectedW)}" y1="${padT}" x2="${x(selectedW)}" y2="${padT+plotH}" stroke="${selColor}" stroke-width="1" stroke-dasharray="3 3"/>
     <circle cx="${x(selectedW)}" cy="${y(selected.netImpact)}" r="4.5" fill="${selColor}"/>
+    <text x="${x(selectedW)>padL+plotW-70?x(selectedW)-8:x(selectedW)+8}" y="${y(selected.netImpact)-9}" fill="${selColor}" font-size="11" font-weight="600" text-anchor="${x(selectedW)>padL+plotW-70?'end':'start'}">${mwEscape(fmt(Math.abs(selected.netImpact)))}</text>
   </svg>`;
 }
 
 function drawRateSensitivityChart(W){
+  if(!mwCheckForSummary()){$('rate-sensitivity-chart-wrap').innerHTML='';return;}
   const wrap=$('rate-sensitivity-chart-wrap');
   if(!wrap) return;
   if(Number(W)<=0){
@@ -3909,38 +4339,47 @@ function drawRateSensitivityChart(W){
   let path=`M ${x(pts[0].r)} ${y(pts[0].impact)} `;
   pts.forEach(p=>path+=`L ${x(p.r)} ${y(p.impact)} `);
 
-  let ticks='';
   const tickStep=(rateMax-rateMin)>6?2:1;
-  for(let r=Math.ceil(rateMin/tickStep)*tickStep;r<=rateMax;r+=tickStep){
-    ticks+=`<text x="${x(r)}" y="${H-10}" fill="var(--line-dim)" font-size="10" text-anchor="middle">${r.toFixed(0)}%</text>`;
-  }
+  const xVals=[]; for(let r=Math.ceil(rateMin/tickStep)*tickStep;r<=rateMax;r+=tickStep) xVals.push(r);
+  const ticks=mwChartXTicks(xVals,x,H,r=>r.toFixed(0)+'%');
+  const yTicks=mwNiceTicks(-maxAbs,maxAbs,6);
 
   const assumedImpact=timingAnalysis(W,assumed).netImpact;
   const assumedColor=assumedImpact>0?'var(--danger)':assumedImpact<0?'var(--good)':'var(--line)';
+  // On a phone the zone captions and the break-even caption land on the same line
+  // and overlap, so narrow renders keep the data and drop the decoration.
+  const narrow=plotW<360;
   const beMarker=be.rate!=null && be.rate>=rateMin && be.rate<=rateMax
-    ? `<line x1="${x(be.rate)}" y1="${padT}" x2="${x(be.rate)}" y2="${padT+plotH}" stroke="var(--good)" stroke-width="1" stroke-dasharray="4 3"/>
-       <text x="${x(be.rate)}" y="${padT+12}" fill="var(--good)" font-size="9.5" text-anchor="middle">break-even ${be.rate.toFixed(2)}%</text>`
+    ? `<line x1="${x(be.rate)}" y1="${padT}" x2="${x(be.rate)}" y2="${padT+plotH}" stroke="var(--good)" stroke-width="1" stroke-dasharray="4 3"/>`
+      +(narrow?'':`<text x="${x(be.rate)}" y="${padT+12}" fill="var(--good)" font-size="9.5" text-anchor="middle">break-even ${be.rate.toFixed(2)}%</text>`)
     : '';
 
-  wrap.innerHTML=`<svg viewBox="0 0 ${Wpx} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
+  wrap.innerHTML=`<svg role="img" aria-label="Modeled ownership cost of waiting across future mortgage rates" viewBox="0 0 ${Wpx} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg">
     <rect x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" fill="none" stroke="var(--line-faint)"/>
     <rect x="${padL}" y="${padT}" width="${plotW}" height="${Math.max(0,zeroY-padT)}" fill="var(--danger)" opacity=".025"/>
     <rect x="${padL}" y="${zeroY}" width="${plotW}" height="${Math.max(0,padT+plotH-zeroY)}" fill="var(--good)" opacity=".025"/>
+    ${mwChartGrid(yTicks,y,padL,plotW)}
     ${ticks}
-    <text class="chart-zone-label" x="${padL+6}" y="${padT+13}" fill="var(--danger)">WAITING COSTS MORE</text>
-    <text class="chart-zone-label" x="${padL+6}" y="${padT+plotH-7}" fill="var(--good)">WAITING COSTS LESS</text>
+    ${narrow?'':`<text class="chart-zone-label" x="${padL+6}" y="${padT+13}" fill="var(--danger)">WAITING COSTS MORE</text>
+    <text class="chart-zone-label" x="${padL+6}" y="${padT+plotH-7}" fill="var(--good)">WAITING COSTS LESS</text>`}
     <line x1="${padL}" y1="${zeroY}" x2="${padL+plotW}" y2="${zeroY}" stroke="var(--line)" stroke-width="1"/>
     <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2"/>
     <line x1="${x(today)}" y1="${padT}" x2="${x(today)}" y2="${padT+plotH}" stroke="var(--line-dim)" stroke-width="1" stroke-dasharray="2 3"/>
-    <text x="${x(today)}" y="${H-22}" fill="var(--line-dim)" font-size="9.5" text-anchor="middle">today</text>
+    ${narrow?'':`<text x="${x(today)}" y="${H-22}" fill="var(--line-dim)" font-size="9.5" text-anchor="middle">today</text>`}
     ${beMarker}
     <circle cx="${x(assumed)}" cy="${y(assumedImpact)}" r="4.7" fill="${assumedColor}"/>
+    <text x="${x(assumed)>padL+plotW-70?x(assumed)-8:x(assumed)+8}" y="${y(assumedImpact)-9}" fill="${assumedColor}" font-size="11" font-weight="600" text-anchor="${x(assumed)>padL+plotW-70?'end':'start'}">${mwEscape(fmt(Math.abs(assumedImpact)))}</text>
   </svg>`;
 }
 
 function renderRateOpportunity(W){
   if(!validateTiming(false))return;
-  const today=mwPositive('buy-rate'),rates=[Math.max(0,today-1),today,Math.min(20,today+1)];
+  // Anchor the band on the rate this comparison actually runs on. timingAnalysis
+  // uses future-mortgage-rate whenever there is a wait, so reading buy-rate here
+  // made the middle row disagree with the headline directly above it the moment
+  // someone edited the future rate — same question, two answers on one screen.
+  const anchor=mwPositive('future-mortgage-rate');
+  const rates=[Math.max(0,anchor-1),anchor,Math.min(20,anchor+1)];
   for(let i=0;i<3;i++){
     const id=['down','flat','up'][i],t=timingAnalysis(W,rates[i]);
     $('rate-'+id+'-rate').textContent=rates[i].toFixed(2)+'%';
@@ -3954,7 +4393,7 @@ function renderRateOpportunity(W){
   drawRateSensitivityChart(W);
 }
 function renderTimingBreakdown(){
-  if(!validateTiming(true)){
+  if(!validateTiming(true,false)){
     $('timing-decision-amount').textContent='Check assumptions';$('timing-decision-sub').textContent='Correct the highlighted assumptions to calculate the comparison.';
     $('timing-breakdown').innerHTML='';$('timing-chart-wrap').innerHTML='';$('rate-sensitivity-chart-wrap').innerHTML='';$('rate-break-even-text').textContent='';
     $('end-result-timing').textContent='Check timing assumptions';return;
@@ -3962,27 +4401,56 @@ function renderTimingBreakdown(){
   const W=mwPositive('wait-years'),t=timingAnalysis(W),money=n=>(n<0?'−':'+')+fmt(Math.abs(n));
   $('v-wait-years').textContent=W;$('v-future-rate').textContent=mwPositive('future-mortgage-rate').toFixed(2)+'%';
   $('v-current-appreciation').textContent=mwNumber('current-home-appreciation').toFixed(2)+'%';$('v-target-appreciation').textContent=mwNumber('target-home-appreciation').toFixed(2)+'%';
-  $('timing-decision-amount').textContent=Math.abs(t.netImpact)<1?'About the same':`${fmt(Math.abs(t.netImpact))} ${t.netImpact>0?'MORE':'LESS'}`;
+  $('timing-decision-amount').innerHTML=Math.abs(t.netImpact)<1?'<span class="qual">About the same</span>'
+    :`${mwEscape(fmt(Math.abs(t.netImpact)))} <span class="qual">${t.netImpact>0?'more':'less'}</span>`;
   $('timing-decision-amount').className='big-number '+(t.netImpact>1?'bad':t.netImpact< -1?'good':'');
   $('timing-decision-eyebrow').textContent=W===0?'No waiting period':`Wait ${W} years, then move`;
-  $('timing-decision-sub').textContent=`Modeled ownership cost compared over the same ${t.H} years. Payments stop at payoff; sale cash, transaction expenses, and ending home equity are included. The entered down-payment percentage is used for both purchases.`;
+  // The headline adds spendable cash to unrealised equity and vehicle wear.
+  // Those behave nothing alike, and they routinely point in opposite directions,
+  // so show them apart. Depreciation gets its own line: it belongs in the total
+  // as a real ownership cost, but it is not money that leaves your account.
+  const cashPart=t.spendableCashDifference, depPart=t.depreciationDifference, equityPart=-t.equityDifference;
+  const sideText=n=>Math.abs(n)<1?'about level'
+    :(n>0?fmt(n)+' against waiting':fmt(-n)+' in favour of waiting');
+  $('timing-split-cash').textContent=sideText(cashPart);
+  $('timing-split-equity').textContent=sideText(equityPart);
+  // When the later loan is small enough the equity term flips and waiting ends
+  // with MORE equity, so the caption cannot assert you would have less.
+  const eqLabel=$('timing-split-equity-label');
+  if(eqLabel) eqLabel.textContent=equityPart<-1
+    ? 'Of that, extra home equity from waiting'
+    : 'Of that, home equity you would not have yet';
+  const depRow=$('timing-split-depreciation'),depWrap=$('timing-split-depreciation-row');
+  if(depRow) depRow.textContent=sideText(depPart);
+  if(depWrap) depWrap.hidden=Math.abs(depPart)<1;
+  const disagree=Math.abs(cashPart)>1&&Math.abs(equityPart)>1&&(cashPart>0)!==(equityPart>0);
+  const warnEl=$('timing-split-warning');
+  warnEl.textContent=disagree
+    ? (cashPart<0
+        ? 'These disagree: waiting is cheaper in the cash you actually pay out, and loses on home equity you cannot spend until you sell.'
+        : 'These disagree: waiting costs more in the cash you actually pay out, but ends with more home equity, which you cannot spend until you sell.')
+    : '';
+  warnEl.style.color=disagree?'var(--danger)':'';
+  $('timing-decision-sub').textContent=`Modeled ownership cost over the same ${t.H} years, combining the three rows above. Payments stop at payoff; sale cash, transaction expenses and ending home equity are included, and the entered down-payment percentage is used for both purchases. Vehicle replacement purchases are not counted here, unlike the ten-year comparison above — only the running costs of driving.`;
   $('timing-target-price').textContent=fmt(t.priceLater);$('timing-sale-proceeds').textContent=fmt(t.equityLater);
   $('timing-payment-now').textContent=fmt(t.moveNowMonthly)+' / month';$('timing-payment-later').textContent=fmt(t.laterMonthly)+' / month';
   const rows=[['Target price',fmt(t.priceNow)+' → '+fmt(t.priceLater)],['Current mortgage balance',fmt(t.mortgageBalanceNow)+' → '+fmt(t.mortgageBalanceLater)],
     ['Net sale proceeds',fmt(t.equityNow)+' → '+fmt(t.equityLater)],['Down payment',fmt(t.now.down)+' → '+fmt(t.later.down)],
     ['New mortgage',fmt(t.moveNowLoan)+' → '+fmt(t.laterLoan)],['Additional cash at purchase (negative = cash retained)',fmt(t.now.upfrontCash)+' → '+fmt(t.later.upfrontCash)],
     ['Difference while waiting',money(t.waitPeriodDifference)],['Difference after the later purchase',money(t.postMoveDifference)],
-    ['Difference in net cash at purchase',money(t.upfrontDifference)],['Subtract difference in ending home equity',money(-t.equityDifference)],
+    ['Difference in net cash at purchase',money(t.upfrontDifference)],['Add difference in ending home equity',money(-t.equityDifference)],
     ['Net modeled cost of waiting',timingImpactText(t.netImpact)]];
   $('timing-breakdown').innerHTML=rows.map(([label,v])=>`<div class="rc-row"><span>${mwEscape(label)}</span><span class="v">${mwEscape(v)}</span></div>`).join('')
-    +'<div class="rc-note">Extra principal changes both cash and debt. Unit driving costs include mileage depreciation in Full vehicle mode. Tax and insurance estimates scale with the purchase price at purchase, then remain fixed. No inflation, investment return, income-tax benefit, or sale of the final home is assumed.</div>';
+    +'<div class="rc-note">Extra principal changes both cash and debt. Unit driving costs include mileage depreciation in Full vehicle mode. Tax and insurance stay at the figures you entered in both branches, so the comparison is not tilted by when you buy. No inflation, investment return, income-tax benefit, or sale of the final home is assumed.</div>';
   renderRateOpportunity(W);drawTimingChart(W);renderTenYearTotalImpact();renderEndResult();
 }
 function summaryCostExplanation(housingDelta,drivingDelta,totalDelta){
   const hd=Math.abs(housingDelta),dd=Math.abs(drivingDelta);
   if(Math.abs(totalDelta)<0.5) return `The two scenarios are essentially equal on monthly housing + driving cost.`;
   if(housingDelta>0 && drivingDelta<0){
-    return `Housing rises by ${fmt(hd)} / month, while lower driving costs offset ${fmt(dd)} / month of that increase.`;
+    return dd>=hd
+      ? `Housing rises by ${fmt(hd)} / month, but lower driving costs more than cover it, saving ${fmt(dd)} / month.`
+      : `Housing rises by ${fmt(hd)} / month, while lower driving costs offset ${fmt(dd)} / month of that increase.`;
   }
   if(housingDelta<0 && drivingDelta>0){
     return `Housing falls by ${fmt(hd)} / month, while higher driving costs give back ${fmt(dd)} / month of that savings.`;
@@ -4004,21 +4472,88 @@ function endResultSignal(value,threshold=0.5){
 
 function renderEndResult(){
   if(!$('end-result-headline'))return;
+  if(!mwCheckForSummary()){
+    mwClearSummaryFigures();$('end-result-headline').textContent='Complete valid inputs';return;
+  }
   const t=tenYearTotalImpact(),monthly=(window.__sellMonthly||0)+monthlyCommuteCost('cur')-(window.__buyMonthly||0)-monthlyCommuteCost('new');
   const W=mwPositive('wait-years'),timing=timingAnalysis(W);
   const sign=endResultSignal(t.economicSavings,1);
   $('end-result-headline').textContent=sign===0?'The 10-year ownership costs are similar':`Modeled 10-year cost favors ${sign>0?'moving':'staying'}`;
-  $('end-result-headline').className='big-number'+(sign?' good':'');
+  $('end-result-headline').className='big-number is-phrase'+(sign?' good':'');
   $('end-result-sub').textContent='This compares entered transaction expenses, mortgage interest, recurring housing costs, home-value changes, and estimated driving costs. Home equity is included; extra principal is not treated as an economic expense. The timing comparison below answers a separate question over the wait period plus 10 years.';
   $('end-result-monthly').textContent=Math.abs(monthly)<.5?'About the same monthly estimate':`${monthly>0?'Moving':'Staying'} lowers the monthly estimate by ${fmt(Math.abs(monthly))}`;
   $('end-result-10yr').textContent=Math.abs(t.economicSavings)<1?'About the same modeled cost':`${t.economicSavings>0?'Moving':'Staying'} lowers modeled cost by ${fmt(Math.abs(t.economicSavings))}`;
   $('end-result-timing').textContent=W===0?'No wait period selected':timingImpactText(timing.netImpact);
   $('end-result-driver').textContent=`Keep the ${((mwMoney('buy-down')/Math.max(1,mwMoney('buy-price')))*100).toFixed(2)}% down payment in all purchase comparisons. Sale cash left over is retained; a shortfall requires additional cash. Vehicle depreciation is an estimate, and investment returns are set to zero.`;
 }
+// Bailing out used to leave every previously rendered figure on screen. The
+// numbers stayed authoritative-looking while describing inputs the user had
+// since changed — double the home price with a bad wait period and the ten-year
+// block still reported the old price. Blank the dependent figures instead, so
+// the screen never shows a total that does not belong to what is entered.
+function mwClearSummaryFigures(){
+  $('print-report').replaceChildren();
+  const ids=['summary-stay-housing','summary-stay-driving','summary-stay-total','summary-move-housing',
+    'summary-move-driving','summary-move-total','summary-housing-change','summary-driving-change',
+    'summary-mile-change','summary-time-change','summary-replacement-change','summary-10yr-stay-housing',
+    'summary-10yr-stay-vehicle','summary-10yr-stay-total','summary-10yr-move-housing','summary-10yr-move-vehicle',
+    'summary-10yr-move-total','summary-10yr-stay-equity','summary-10yr-move-equity','summary-vehicle-stay-replacements',
+    'summary-vehicle-stay-total','summary-vehicle-move-replacements','summary-vehicle-move-total',
+    'summary-net-proceeds','summary-sale-equity','summary-sale-costs','summary-buy-down','summary-breakeven-price',
+    'end-result-monthly','end-result-10yr','end-result-timing'];
+  // Blank the value AND its sign colouring — a red or green em-dash is a colour
+  // claim about a figure that is no longer being shown.
+  ids.forEach(id=>{const e=$(id);if(e){
+    e.textContent='—';
+    e.classList.remove('metric-good','metric-bad');
+    e.classList.add('metric-neutral');
+  }});
+  const notes=['summary-cost-explanation','summary-10yr-monthly-equivalent','breakeven-caption',
+    'summary-breakeven-year-sub','summary-breakeven-year-note','summary-drivers-note','summary-range',
+    'summary-range-note','summary-sale-note','end-result-sub','end-result-driver'];
+  notes.forEach(id=>{const e=$(id);if(e)e.textContent='';});
+  // Reset only the sign colouring; each element keeps the class its markup gives
+  // it. Forcing 'big-number' here turned the muted ownership caption into the
+  // largest line on the card, and nothing ever set it back.
+  [['summary-10yr-impact','big-number'],['summary-10yr-economic','big-label'],
+   ['summary-vehicle-longterm-impact','big-number']].forEach(([id,cls])=>{
+    const e=$(id); if(e){ e.className=cls; e.textContent='—'; }});
+  const drivers=$('summary-drivers'); if(drivers) drivers.innerHTML='';
+  const be=$('summary-breakeven-year');
+  if(be){ be.className='big-number is-phrase'; be.textContent='Check inputs'; }
+  // The timing card, its breakdown and all three charts used to survive this,
+  // so a bad wait period left a confident "Wait 8 years, then move / $125,155
+  // more" sitting beside a column of em-dashes.
+  const tAmt=$('timing-decision-amount');
+  if(tAmt){ tAmt.className='big-number'; tAmt.textContent='Check assumptions'; }
+  ['timing-decision-eyebrow','timing-decision-sub','timing-split-cash','timing-split-depreciation',
+   'timing-split-equity','timing-split-warning','timing-target-price','timing-sale-proceeds',
+   'timing-payment-now','timing-payment-later','rate-down-rate','rate-down-impact','rate-flat-rate',
+   'rate-flat-impact','rate-up-rate','rate-up-impact','rate-break-even-text'].forEach(id=>{
+    const e=$(id); if(e) e.textContent='';});
+  const depRow=$('timing-split-depreciation-row'); if(depRow) depRow.hidden=true;
+  ['timing-breakdown','timing-chart-wrap','rate-sensitivity-chart-wrap','breakeven-chart-wrap'].forEach(id=>{
+    const e=$(id); if(e) e.innerHTML='';});
+  const replCap=$('summary-replacement-caption'); if(replCap) replCap.textContent='';
+}
 function updateSummary(){
   if(!mwCheckForSummary()){
-    if($('summary-validation')){$('summary-validation').textContent='Complete valid housing, vehicle and timing inputs before using the comparison.';$('summary-validation').classList.add('show');}
-    $('delta-num').textContent='Check inputs';$('end-result-headline').textContent='Complete valid inputs';
+    // Say which field is wrong when the timing fields are the problem — they are
+    // the only ones editable from this screen, so a generic "check your inputs"
+    // sends people hunting through three other screens. validateTiming paints
+    // the message and the field outline; it must not grab focus mid-keystroke.
+    const timingOk=validateTiming(true,false);
+    if(timingOk&&$('summary-validation')){
+      $('summary-validation').textContent='Complete valid housing, vehicle and timing inputs before using the comparison.';
+      $('summary-validation').classList.add('show');
+    }
+    $('delta-num').className='delta-num';
+    $('delta-num').textContent='Check inputs';
+    $('delta-sub').textContent='';
+    $('delta-annual').textContent='';
+    $('end-result-headline').className='big-number is-phrase';
+    $('end-result-headline').textContent='Complete valid inputs';
+    mwClearSummaryFigures();
     return;
   }
   $('summary-validation')?.classList.remove('show');
@@ -4084,22 +4619,40 @@ function updateSummary(){
 
   const replacementSummary=summaryReplacementText();
   const replacementEl=$('summary-replacement-change');
-  replacementEl.textContent=replacementSummary.text;
+  // With a zero replacement cost this row reports a timing phrase, not dollars,
+  // so the caption cannot keep promising a ten-year total.
+  // Three kinds of value land in this row: a pair of dollar totals, a timing
+  // phrase, or a statement that no replacement is in scope. Gating on "dollars"
+  // alone gave the timing caption to "None within 10 yrs either way" and to
+  // "Not modeled in Fuel only", neither of which is about when anything falls due.
+  const replCaption=$('summary-replacement-caption');
+  if(replCaption) replCaption.textContent=replacementSummary.dollars
+    ? 'over the next 10 years, not per month'
+    : (replacementSummary.timing ? 'when the next replacement falls due' : '');
+  // Spreading the lump sum over the horizon puts it in the same units as the
+  // housing and driving rows, so the two can actually be added up by eye.
+  const replMonthly=replacementSummary.dollars&&Math.abs(replacementSummary.delta)>0.5
+    ? `<span class="row-sub">${replacementSummary.delta<0?'−':'+'}${mwEscape(fmt(Math.abs(replacementSummary.delta)/(VEHICLE_REPLACEMENT_HORIZON_YEARS*12)))} / month if spread over 10 years</span>`
+    : '';
+  replacementEl.innerHTML=mwEscape(replacementSummary.text)+replMonthly;
   replacementEl.className='v metric-neutral';
   if(replacementSummary.delta!==null && Math.abs(replacementSummary.delta)>0.001){
     replacementEl.classList.remove('metric-neutral');
     replacementEl.classList.add(replacementSummary.delta<0?'metric-good':'metric-bad');
   }
 
-  $('summary-cost-explanation').textContent=summaryCostExplanation(housingDelta,drivingDelta,delta);
+  $('summary-cost-explanation').textContent=summaryCostExplanation(housingDelta,drivingDelta,delta)
+    +(replacementSummary.dollars&&Math.abs(replacementSummary.delta)>0.5
+      ? ` The vehicle-purchase row is not part of those monthly figures — it is a ten-year total, and it is why the ten-year comparison below can favour the opposite choice.`
+      : '');
   renderLongTermVehicleOwnership();
   renderTenYearTotalImpact();
   drawCompareChart(curHousing,curCommute,newHousing,newCommute);
 
-  const value=parseFloat(sellValueEl.value)||0;
-  const balance=parseFloat(sellBalanceEl.value)||0;
+  const value=mwElNumber(sellValueEl);
+  const balance=mwElNumber(sellBalanceEl);
   const costPct=(parseFloat(sellCostpctEl.value)||0)/100;
-  const repairs=parseFloat(sellRepairsEl.value)||0;
+  const repairs=mwElNumber(sellRepairsEl);
   const equity=value-balance;
   const saleCosts=value*costPct+repairs;
   const proceeds=value-balance-saleCosts;
@@ -4122,15 +4675,99 @@ function updateSummary(){
 
   drawBreakEvenChart();
   renderTimingBreakdown();
+  renderDecisionConfidence();
   renderEndResult();
+  // The summary charts are drawn on demand, so name them once they exist.
+  if(typeof mwWireAccessibility==='function') mwWireAccessibility();
+}
+
+function renderDecisionConfidence(){
+  // The timing card bails when the assumptions are invalid; this one did not, so
+  // a half-typed appreciation rate produced seven-figure answers beside a "Check
+  // assumptions" notice, and an empty field was described back as "the 0% entered".
+  if(!validateTiming(false)){
+    const head=$('summary-breakeven-year');
+    if(head){ head.className='big-number is-phrase'; head.textContent='Check assumptions'; }
+    ['summary-breakeven-year-sub','summary-breakeven-year-note','summary-drivers-note',
+     'summary-range','summary-range-note'].forEach(id=>{const e=$(id);if(e)e.textContent='';});
+    const box=$('summary-drivers'); if(box) box.innerHTML='';
+    return;
+  }
+  const Y=TOTAL_IMPACT_HORIZON_YEARS;
+  const cash=moveBreakEven('savings'),own=moveBreakEven('economicSavings');
+  const M=MW_DECISION_MAX_YEARS;
+  const phrase=b=>b.sustained!=null
+      ? 'it stays ahead from year '+b.sustained+' onward'
+      : (b.everAhead
+          ? 'it is ahead in some years but never stays ahead within '+M+' years'
+          : 'it never gets ahead within '+M+' years');
+
+  const head=$('summary-breakeven-year'),sub=$('summary-breakeven-year-sub'),note=$('summary-breakeven-year-note');
+  head.className='big-number is-phrase';
+  if(own.sustained!=null){
+    head.textContent=own.sustained===1
+      ? 'Moving comes out ahead from the first year on'
+      : (own.sustained>=M
+          ? 'Moving only comes out ahead at the very end of a '+M+'-year view'
+          : 'Stay '+own.sustained+' years or more and moving comes out ahead');
+  }else if(cash.sustained!=null){
+    head.textContent='Moving is ahead on cash from year '+cash.sustained+', but not once equity is counted';
+  }else{
+    head.textContent='Moving does not clearly pay for itself within '+M+' years';
+  }
+  sub.textContent='Counting home equity, '+phrase(own)+'. On cash alone, '+phrase(cash)+'.';
+  note.textContent=(cash.jumps
+      ? 'The cash line moves in steps rather than a smooth curve, because a planned vehicle purchase lands in a single year. A break-even close to one of those steps is fragile. '
+      : '')
+    +'Compare this with how long you actually expect to stay. Transaction costs make the early years the worst ones, and a mortgage that finishes during the window can hand the advantage back to staying.';
+
+  // --- drivers ---
+  const d=decisionDrivers(Y),box=$('summary-drivers');
+  if(d.gross<1){
+    box.innerHTML='<div class="summary-simple-row"><span>No measurable difference between the two paths.</span><span class="v">—</span></div>';
+    $('summary-drivers-note').textContent='';
+  }else{
+    box.innerHTML=d.rows.map(r=>{
+      const favours=Math.abs(r.delta)<0.5?'no difference':(r.delta<0?'favours moving':'favours staying');
+      const share=Math.round(Math.abs(r.delta)/d.gross*100);
+      return '<div class="summary-simple-row"><span>'+mwEscape(r.key)+' <span class="field-hint" style="display:inline;">'
+        +favours+'</span></span><span class="v" style="color:'+(Math.abs(r.delta)<0.5?'var(--line-dim)':(r.delta<0?'var(--good)':'var(--danger)'))+'">'
+        +(r.delta<0?'−':'+')+fmt(Math.abs(r.delta))+' <span class="field-hint" style="display:inline;">'+share+'%</span></span></div>';
+    }).join('');
+    const top=d.rows[0];
+    // Shares are of the total movement (the sum of the three absolute amounts),
+    // not of the net answer — offsetting rows make those two diverge without
+    // limit, and calling the bigger one "the difference" read as a contradiction
+    // beside a card announcing the costs were about the same.
+    $('summary-drivers-note').textContent='Over '+Y+' years the biggest single factor is '+top.key.toLowerCase()+', moving the comparison by '
+      +fmt(Math.abs(top.delta))+'. Each amount is the whole of one effect; the answer is what is left after they are added together, so a single row can be larger than the answer itself. If that input is wrong, the answer is wrong — check it before anything else.';
+  }
+
+  // --- range ---
+  const rg=decisionRange(Y),verdict=n=>n>0?'moving ahead by '+fmt(n):'staying ahead by '+fmt(-n);
+  const pct=n=>(Math.round(n*100)/100)+'%';
+  $('summary-range').textContent='If the new home appreciates '+pct(rg.rateLo)+' to '+pct(rg.rateHi)
+    +' a year instead of the '+pct(rg.ratePct)+' entered: between '+verdict(rg.lo)+' and '+verdict(rg.hi);
+  $('summary-range-note').textContent=(rg.flips
+      ? 'The answer flips inside this band: one percentage point of difference in how the two homes appreciate is enough to reverse it, and nobody can know that number in advance. Treat this as too close to call on the figures alone. '
+      : 'The answer holds right across this band, so it does not hinge on the appreciation guess. ')
+    +'The band is the '+Y+'-year modeled ownership cost if the new home appreciates one point per year faster or slower than entered — appreciation does not change the cash total, because no sale happens inside the window. '
+    +'It covers that one assumption only; maintenance, investment returns and the cost of eventually selling are still excluded.';
 }
 
 $('future-mortgage-rate').addEventListener('input',e=>{
   e.target.dataset.userEdited='true';
-  renderTimingBreakdown();
+  // Same route as the other timing inputs. Repainting only the timing card left
+  // the rest of a blanked summary standing, which is the exact failure the other
+  // three were rewired to avoid.
+  updateSummary();
 });
+// Route the timing inputs through updateSummary rather than repainting pieces of
+// the screen directly. Repainting pieces left half a summary standing: a full
+// ten-year card and End Result under a "Check inputs" headline and a column of
+// em-dashes, because only updateSummary knows how to blank or restore the rest.
 ['wait-years','current-home-appreciation','target-home-appreciation'].forEach(id=>{
-  $(id).addEventListener('input',renderTimingBreakdown);
+  $(id).addEventListener('input',updateSummary);
 });
 $('breakeven-details').addEventListener('toggle',()=>{ if($('breakeven-details').open) drawBreakEvenChart(); });
 $('timing-details').addEventListener('toggle',()=>{ if($('timing-details').open) drawTimingChart(parseFloat($('wait-years').value)||0); });
@@ -4160,7 +4797,7 @@ function vehicleReportBlock(s,label){
       <div class="pr-row"><span class="k">Fuel/mi</span><span class="v">$${fuelPerMile.toFixed(3)}</span></div>
       <div class="pr-row"><span class="k">Full cost/mi</span><span class="v">$${totalPerMile.toFixed(3)}</span></div>
       <div class="pr-row"><span class="k">Vehicle cost / month</span><span class="v">${fmt(monthlyCost)}</span></div>
-      <div class="pr-row"><span class="k">Current odometer</span><span class="v">${Math.round(Number($(p+'-odo').value)||0).toLocaleString()} mi</span></div>
+      <div class="pr-row"><span class="k">Current odometer</span><span class="v">${Math.round(mwElNumber($(p+'-odo'))).toLocaleString()} mi</span></div>
       <div class="pr-row"><span class="k">Planning replacement mileage</span><span class="v">${Math.round(getPlanningReplacementMileage(s,slot)).toLocaleString()} mi</span></div>
       <div class="pr-row"><span class="k">Planned replacement cost</span><span class="v">${fmt(getPlannedReplacementCost(s,slot))}</span></div>`;
   }
@@ -4226,8 +4863,40 @@ function buildPrintReport(){
     ['Net additional cash now / later',fmt(time.now.upfrontCash)+' / '+fmt(time.later.upfrontCash)],
     ['Housing and driving monthly estimate now / later',fmt(time.moveNowMonthly)+' / '+fmt(time.laterMonthly)],
     ['Difference during wait',fmt(time.waitPeriodDifference)],['Difference after later purchase',fmt(time.postMoveDifference)],
-    ['Difference in net purchase cash',fmt(time.upfrontDifference)],['Subtract ending-equity difference',fmt(-time.equityDifference)],
+    ['Difference in net purchase cash',fmt(time.upfrontDifference)],['Add ending-equity difference',fmt(-time.equityDifference)],
     ['Net modeled cost of waiting',timingImpactText(time.netImpact)]]);
+  html+=section('The Same Net Figure, Split Three Ways',[
+    ['Of that, spendable cash',fmt(time.spendableCashDifference)],
+    ['Of that, vehicle wear (not paid out)',fmt(time.depreciationDifference)],
+    ['Of that, ending home equity',fmt(-time.equityDifference)],
+    ['Net modeled cost of waiting',timingImpactText(time.netImpact)]]);
+  html+='<div class="pr-note">These three rows re-split the same net figure above; they are not additional effects, so do not add them to the rows in the previous table. Only spendable cash is money that leaves your account — mileage depreciation and home equity are real but are not paid out month to month. When the rows disagree in sign, whichever is larger decides the headline — so check the spendable-cash row on its own before acting on the total. Vehicle replacement purchases are excluded from this timing comparison, though they are included in the ten-year comparison above.</div>';
+
+  // The screen tells you how much to trust the numbers; the printed copy has to
+  // carry that too, or the report reads as more certain than the model is.
+  {
+    const Y=TOTAL_IMPACT_HORIZON_YEARS,M=MW_DECISION_MAX_YEARS;
+    const bc=moveBreakEven('savings'),bo=moveBreakEven('economicSavings');
+    const horizon=(b)=>b.sustained!=null?('Stays ahead from year '+b.sustained)
+      :(b.everAhead?('Ahead in places, never sustained within '+M+' years'):('Never ahead within '+M+' years'));
+    const dr=decisionDrivers(Y),rg=decisionRange(Y);
+    const pct=n=>(Math.round(n*100)/100)+'%';
+    const side=n=>n>0?(fmt(n)+' favouring moving'):n<0?(fmt(-n)+' favouring staying'):'level';
+    const rows=[
+      ['Break-even, counting home equity',horizon(bo)],
+      ['Break-even, cash only',horizon(bc)],
+      ['Cash line moves in steps',bc.jumps?'Yes — a vehicle purchase lands in a single year':'No'],
+    ];
+    dr.rows.forEach(r=>rows.push([
+      r.key+' — share of the total movement',
+      (r.delta<0?'−':'+')+fmt(Math.abs(r.delta))+' ('+Math.round(Math.abs(r.delta)/(dr.gross||1)*100)+'%, '
+        +(Math.abs(r.delta)<0.5?'no difference':'favours '+(r.delta<0?'moving':'staying'))+')']));
+    rows.push(['Target-home appreciation tested',pct(rg.rateLo)+' to '+pct(rg.rateHi)+' (entered '+pct(rg.ratePct)+')']);
+    rows.push([Y+'-year ownership cost across that band',side(rg.lo)+' to '+side(rg.hi)]);
+    rows.push(['Does the answer flip inside the band',rg.flips?'Yes — too close to call on the figures alone':'No']);
+    html+=section('How Solid Is This',rows);
+    html+='<div class="pr-note">Break-even is the first year after which moving stays ahead for the rest of a '+M+'-year scan, not merely the first year it leads. The appreciation band varies only the target home; it does not change the cash total, because no sale happens inside the window. Maintenance, investment returns and the cost of eventually selling remain excluded.</div>';
+  }
   html+='<div class="pr-footer">Planning estimates. Enter actual tax, insurance, consumption, and transaction costs where available. PMI, home maintenance, investment returns, income-tax effects, and a sale of the final home are not modeled. Unit recurring costs stay constant after purchase. Vehicle profiles and replacement mileage are assumptions, not forecasts. Fuel-only scenarios omit maintenance, depreciation and replacements. A replacement outside the ten-year cash window is delayed, not necessarily avoided forever.</div></div>';
   $('print-report').innerHTML=html;return true;
 }
@@ -4274,19 +4943,12 @@ function printFullAnalysis(){
   if(status) status.textContent='Preparing print view…';
 
   try{
-    // Recalculate the latest visible results before taking the snapshot.
-    calcBuy();
-    calcSell();
-    refreshDrivingOutputs();
-    updateSummary();
-
-    if(!buildPrintReport()){
+    if(!mwPreparePrintReport()){
       if(status)status.textContent='Correct the input errors before printing.';
       if(!validateBuy(true))goToScreen('buy');else if(!validateSell(true))goToScreen('sell');else if(!validateCars(true))goToScreen('cars');else validateTiming(true);
       return;
     }
     const report=$('print-report');
-    mwApplySubtree(report);
     const reportMarkup=report.innerHTML;
     const docHTML=printableDocumentHTML(reportMarkup);
 
@@ -4331,6 +4993,21 @@ function printFullAnalysis(){
 }
 
 $('print-report-btn').addEventListener('click', printFullAnalysis);
+
+// The toolbar button and the browser's own Print command share one fresh snapshot.
+function mwPreparePrintReport(){
+  calcBuy();calcSell();refreshDrivingOutputs();updateSummary();
+  if(!buildPrintReport()) return false;
+  mwApplySubtree($('print-report'));
+  return true;
+}
+window.addEventListener('beforeprint',()=>{
+  if(!mwPreparePrintReport()){
+    const notice=document.createElement('div');notice.className='pr-page';
+    notice.textContent='MoveWise: correct the input errors before printing this analysis.';
+    $('print-report').replaceChildren(notice);
+  }
+});
 
 
 // ---- English / Japanese interface ----
@@ -4464,6 +5141,144 @@ function mwTranslateDynamic(core){
   if(detailMap[core]) return detailMap[core];
   if((m=core.match(/^Difference during (\d+(?:\.\d+)?) years after the later move$/))) return `後から引っ越した後${m[1]}年間の差額`;
 
+  if((m=core.match(/^Enter MPG for the (current|after-move) vehicle to compare driving costs\.$/)))
+    return `${m[1]==='current'?'現在':'引っ越し後'}の車両の燃費を入力すると運転コストを比較できます。`;
+
+  // Rate-sensitivity table row labels
+  if(core==='· rates fall 1%') return '· 金利が1%低下';
+  if(core==='· the rate you entered') return '· 入力した金利';
+  if(core==='· rates rise 1%') return '· 金利が1%上昇';
+  if(core==='Waiting vs. moving now') return '待つ場合 vs 今引っ越す場合';
+
+  // Placeholders shortened so they are not clipped in narrow fields.
+  if(core==='From %') return '比率から計算';
+  if(core==='Auto-filled') return '所在地から自動入力';
+  if(core==='Blank uses profile') return '空欄なら車種の推定値';
+
+  // Decision card — break-even, drivers, sensitivity band
+  const decisionMap={
+    'HOW SOLID IS THIS?':'この結論はどれだけ確かか',
+    'HOW LONG UNTIL MOVING PAYS OFF':'引っ越しが元を取るまでの年数',
+    "WHAT'S DRIVING THE ANSWER":'結論を左右している要因',
+    'HOW WRONG COULD THIS BE':'結論はどれだけ外れうるか',
+    'How Solid Is This':'この結論はどれだけ確かか',
+    'Housing':'住宅費',
+    'Housing payments and costs':'住宅の支払いと諸費用',
+    'MoveWise fills in what it can from the verified location — insurance everywhere, property tax where county rates are available. Edit either if you have actual figures.':'確認した所在地から入力できる範囲を自動入力します。保険料は全州、固定資産税は郡別データがある場合のみです。実際の金額が分かる場合はいずれも編集してください。',
+    'Home equity built':'積み上がる住宅資産',
+    'Driving':'運転コスト',
+    'Fuel and maintenance':'燃料費・整備費',
+    'Vehicle purchases':'車両の買い替え',
+    'over the next 10 years, not per month':'今後10年間の合計（月額ではありません）',
+    'None within 10 yrs either way':'どちらも10年以内には該当なし',
+    'favours moving':'引っ越しに有利',
+    'favours staying':'現状維持に有利',
+    'no difference':'差なし',
+    'more':'多い',
+    'less':'少ない',
+    'level':'同等',
+    'about level':'ほぼ同じ',
+    'About the same':'ほぼ同じ',
+    'About the same net cash used':'正味現金支出はほぼ同じ',
+    'Of that, spendable cash':'うち、使える現金',
+    'Of that, home equity you would not have yet':'うち、まだ手にしていない住宅資産',
+    'Of that, extra home equity from waiting':'うち、待つことで増える住宅資産',
+    'The two sides are set to different cost bases — one is fuel only, the other includes maintenance and mileage wear. Match them before reading the difference.':'2つの側で費用の基準が異なります。一方は燃料費のみ、もう一方は整備費と走行距離に応じた価値低下を含みます。差額を読む前に基準を揃えてください。',
+    'Fuel':'燃料費',
+    'Of that, ending home equity':'うち、最終的な住宅資産',
+    'These three rows re-split the same net figure above; they are not additional effects, so do not add them to the rows in the previous table. Only spendable cash is money that leaves your account — mileage depreciation and home equity are real but are not paid out month to month. When the rows disagree in sign, whichever is larger decides the headline — so check the spendable-cash row on its own before acting on the total. Vehicle replacement purchases are excluded from this timing comparison, though they are included in the ten-year comparison above.':'この3行は上の純額を分け直したもので、追加の影響ではありません。前の表の行に足さないでください。実際に口座から出ていくのは「使える現金」だけで、走行距離に応じた価値低下と住宅資産は実在する費用ですが毎月支払うものではありません。符号が食い違う場合は金額の大きい方が結論を決めるため、合計だけで判断せず「使える現金」の行を単独で確認してください。車両の買い替え費用はこのタイミング比較には含めず、上の10年比較には含まれます。',
+    'Moving only comes out ahead at the very end of a 30-year view':'30年の検証期間の最後になってようやく引っ越しが有利になります',
+    'The Same Net Figure, Split Three Ways':'同じ純額を3つに分けた内訳',
+    'when the next replacement falls due':'次の買い替え時期の比較',
+    'Moving comes out ahead from the first year on':'1年目から引っ越しの方が有利です',
+    'Check assumptions':'前提条件を確認してください',
+    'Enter MPG for both vehicles to compare':'比較するには両方の車両の燃費を入力してください',
+    'No estimate yet':'まだ見積もれません',
+    'Move now housing + driving / month':'今引っ越す場合の住宅費＋運転コスト / 月',
+    'After waiting housing + driving / month':'待った後の住宅費＋運転コスト / 月',
+    'Extra principal changes both cash and debt. Unit driving costs include mileage depreciation in Full vehicle mode. Tax and insurance stay at the figures you entered in both branches, so the comparison is not tilted by when you buy. No inflation, investment return, income-tax benefit, or sale of the final home is assumed.':'繰上返済は現金と負債の両方を変化させます。運転コストの単価は「車両フルコスト」モードでは走行距離に応じた価値低下を含みます。固定資産税と保険料は両方の選択肢で入力値のまま据え置くため、購入時期によって比較が偏ることはありません。インフレ、投資利回り、所得税の軽減、最終的な住宅の売却は想定していません。',
+    'Each point is scored over its own window — that wait plus ten years — so the points answer "what does this much delay cost?" one at a time. They are not measured to a common end date, so read the curve against the wait you are actually considering rather than hunting for its lowest point.':'各点はそれぞれの期間（その待機年数＋10年）で計算しており、「この年数だけ待つといくらかかるか」に個別に答えるものです。共通の終了時点で測っていないため、最も低い点を探すのではなく、実際に検討している待機年数の位置で読んでください。',
+    'Tax and insurance stay at the figures you entered in both branches, so the comparison is not tilted by when you buy.':'固定資産税と保険料は両方の選択肢で入力値のまま据え置くため、購入時期によって比較が偏ることはありません。',
+    'Add difference in ending home equity':'最終住宅資産の差額を加算',
+    'No measurable difference between the two paths.':'2つの選択肢に測定できる差はありません。',
+    'These disagree: waiting is cheaper in the cash you actually pay out, and loses on home equity you cannot spend until you sell.':'この2行は逆を示しています。実際に支払う現金では待つ方が安く、売却するまで使えない住宅資産で不利になります。',
+    'These disagree: waiting costs more in the cash you actually pay out, but ends with more home equity, which you cannot spend until you sell.':'この2行は逆を示しています。実際に支払う現金では待つ方が高くつきますが、最終的な住宅資産は多くなります。ただし売却するまで使えません。',
+    'Of that, vehicle wear':'うち、車両の価値低下',
+    'a cost, but not money you pay out':'費用ですが、支払う現金ではありません',
+    'Of that, vehicle wear (not paid out)':'うち、車両の価値低下（現金支出ではない）',
+    'Break-even, counting home equity':'損益分岐（住宅資産を含む）',
+    'Break-even, cash only':'損益分岐（現金のみ）',
+    'Cash line moves in steps':'現金の推移が段階的か',
+    'Yes — a vehicle purchase lands in a single year':'はい — 車両の買い替えが特定の年に集中します',
+    'Target-home appreciation tested':'検証した新居の値上がり率',
+    'Does the answer flip inside the band':'この範囲内で結論が逆転するか',
+    'Yes — too close to call on the figures alone':'はい — 数値だけでは判断できません',
+    'No':'いいえ'
+  };
+  if(decisionMap[core]) return decisionMap[core];
+
+  if((m=core.match(/^(\$[\d,]+) in favour of waiting$/))) return `待つ方が ${m[1]} 有利`;
+  if((m=core.match(/^(\$[\d,]+) against waiting$/))) return `待つ方が ${m[1]} 不利`;
+  if((m=core.match(/^(less|more) net cash used by moving$/))) return `引っ越した場合の正味現金支出が${m[1]==='less'?'少ない':'多い'}`;
+  if((m=core.match(/^(less|more) vehicle cash over (\d+) years if you move$/))) return `引っ越した場合の${m[2]}年間の車両関連現金支出が${m[1]==='less'?'少ない':'多い'}`;
+  if((m=core.match(/^Modeled ownership cost over the same (\d+(?:\.\d+)?) years, combining the three rows above\./)))
+    return `上の3行を合算した、同じ${m[1]}年間のモデル上の保有コストです。支払いは完済時点で終了し、売却現金・取引費用・最終住宅資産を含みます。頭金比率は両方の購入で入力値を使用します。車両の買い替え費用はここには含めず（上の10年比較とは異なります）、燃料費・整備費・走行距離に応じた価値低下のみを対象とします。`;
+
+  if((m=core.match(/^Stay (\d+) years or more and moving comes out ahead$/))) return `${m[1]}年以上住み続けるなら、引っ越す方が有利になります`;
+  if((m=core.match(/^Moving is ahead on cash from year (\d+), but not once equity is counted$/))) return `現金では${m[1]}年目から引っ越しが有利ですが、住宅資産を含めるとそうではありません`;
+  if((m=core.match(/^Moving does not clearly pay for itself within (\d+) years$/))) return `${m[1]}年以内に引っ越しが明確に元を取ることはありません`;
+  if((m=core.match(/^Counting home equity, (.+?)\. On cash alone, (.+?)\.$/))){
+    const ph=s=>{
+      let q;
+      if((q=s.match(/^it stays ahead from year (\d+) onward$/))) return `${q[1]}年目以降は有利が続きます`;
+      if((q=s.match(/^it is ahead in some years but never stays ahead within (\d+) years$/))) return `有利な年もありますが、${q[1]}年以内に有利が続くことはありません`;
+      if((q=s.match(/^it never gets ahead within (\d+) years$/))) return `${q[1]}年以内に有利になることはありません`;
+      return s;
+    };
+    return `住宅資産を含めた場合、${ph(m[1])}。現金のみで見た場合、${ph(m[2])}。`;
+  }
+  if(/Compare this with how long you actually expect to stay\./.test(core)){
+    return (/^The cash line moves in steps/.test(core)
+        ? '現金の推移は滑らかな曲線ではなく段階的に動きます。計画している車両の買い替えが特定の年に集中するためです。損益分岐がその段差の近くにある場合、その結論は不安定です。'
+        : '')
+      +'実際に住み続けるつもりの年数と比べてください。取引費用があるため最初の数年が最も不利で、期間中に住宅ローンが完済すると有利さが現状維持の側に戻ることもあります。';
+  }
+  if((m=core.match(/^Over (\d+) years the biggest single factor is (.+?), moving the comparison by (\$[\d,]+)\./))){
+    const factor={'housing':'住宅費','fuel and maintenance':'燃料費・整備費','vehicle purchases':'車両の買い替え',
+      'housing payments and costs':'住宅の支払いと諸費用','home equity built':'積み上がる住宅資産','driving':'運転コスト'}[m[2]]||m[2];
+    return `${m[1]}年間で最大の要因は${factor}で、比較を ${m[3]} 動かします。3つの金額は互いに打ち消し合う方向に働くため、それぞれの金額は合計した答えより大きくなります。この入力が誤っていれば結論も誤りです。まずここを確認してください。`;
+  }
+
+  const mwAheadJa=s=>{
+    let q;
+    if((q=s.match(/^moving ahead by (\$[\d,]+)$/))) return `引っ越しが ${q[1]} 有利`;
+    if((q=s.match(/^staying ahead by (\$[\d,]+)$/))) return `現状維持が ${q[1]} 有利`;
+    return s;
+  };
+  if((m=core.match(/^If the new home appreciates ([\d.]+%) to ([\d.]+%) a year instead of the ([\d.]+%) entered: between (.+?) and (.+)$/)))
+    return `新居の値上がり率が入力値の${m[3]}ではなく年${m[1]}〜${m[2]}だった場合: ${mwAheadJa(m[4])} 〜 ${mwAheadJa(m[5])}`;
+  if((m=core.match(/^(The answer flips inside this band|The answer holds right across this band).*?The band is the (\d+)-year modeled ownership cost/))){
+    return (m[1]==='The answer flips inside this band'
+        ? 'この範囲の中で結論が逆転します。2つの住宅の値上がり率が1ポイント違うだけで逆転し、その数値は誰にも事前には分かりません。数値だけでは判断できないものとして扱ってください。'
+        : 'この範囲の全体で結論は変わらないため、値上がり率の見込みに左右されません。')
+      +`この範囲は、新居の値上がり率が入力値より年1ポイント高い場合と低い場合の、${m[2]}年間のモデル上の保有コストです。期間内に売却しないため、値上がり率は現金の合計には影響しません。対象はこの前提1つだけで、修繕費、投資利回り、最終的な売却費用は依然として除外しています。`;
+  }
+
+  // Decision card in the print report
+  if((m=core.match(/^Stays ahead from year (\d+)$/))) return `${m[1]}年目以降は有利が続く`;
+  if((m=core.match(/^Ahead in places, never sustained within (\d+) years$/))) return `有利な年はあるが、${m[1]}年以内に継続しない`;
+  if((m=core.match(/^Never ahead within (\d+) years$/))) return `${m[1]}年以内に有利にならない`;
+  if((m=core.match(/^(.+?) — share of the total movement$/))) return `${decisionMap[m[1]]||m[1]} — 変動全体に占める割合`;
+  if((m=core.match(/^([+−]\$[\d,]+) \((\d+)%, (no difference|favours moving|favours staying)\)$/))) return `${m[1]}（${m[2]}%、${decisionMap[m[3]]}）`;
+  if((m=core.match(/^([\d.]+%) to ([\d.]+%) \(entered ([\d.]+%)\)$/))) return `年${m[1]}〜${m[2]}（入力値 ${m[3]}）`;
+  if((m=core.match(/^(\d+)-year ownership cost across that band$/))) return `その範囲での${m[1]}年間の保有コスト`;
+  if((m=core.match(/^((?:\$[\d,]+ favouring (?:moving|staying))|level) to ((?:\$[\d,]+ favouring (?:moving|staying))|level)$/))){
+    const fav=s=>{let q;return (q=s.match(/^(\$[\d,]+) favouring (moving|staying)$/))?`${q[2]==='moving'?'引っ越し':'現状維持'}が ${q[1]} 有利`:'同等';};
+    return `${fav(m[1])} 〜 ${fav(m[2])}`;
+  }
+  if((m=core.match(/^Break-even is the first year after which moving stays ahead for the rest of a (\d+)-year scan/)))
+    return `損益分岐とは、その年以降${m[1]}年間の検証期間の残り全体で引っ越しが有利であり続ける最初の年であり、単に初めて上回る年ではありません。値上がり率の範囲は新居のみを変動させます。期間内に売却しないため、現金の合計は変わりません。修繕費、投資利回り、最終的な売却費用は引き続き除外しています。`;
+
   // Print report
   if((m=core.match(/^Generated (.+)$/))) return `作成日: ${m[1]}`;
   if((m=core.match(/^Break-even home price at (.+)$/))) return `損益分岐の住宅価格（金利 ${m[1]}）`;
@@ -4590,6 +5405,23 @@ function mwSetLanguage(lang,save=true){
   mwUpdateLanguageButton();
   mwLanguageObserver.observe(document.body,MW_OBSERVER_OPTIONS);
 
+  // The dictionary covers the static labels. Calculated results and their notes
+  // are built with numbers interpolated and are not translated, so say so rather
+  // than letting the toggle imply the whole page turns over.
+  let notice=$('mw-lang-notice');
+  if(mwCurrentLang==='ja'){
+    if(!notice){
+      notice=document.createElement('div');
+      notice.id='mw-lang-notice';
+      notice.className='field-hint';
+      notice.style.cssText='margin:6px 0 0;text-align:right;';
+      const bar=document.querySelector('[data-lang-choice]');
+      if(bar&&bar.parentElement) bar.parentElement.insertAdjacentElement('afterend',notice);
+    }
+    notice.textContent='表示ラベルのみ日本語です。計算結果と注記は英語のまま表示されます。';
+    notice.hidden=false;
+  }else if(notice){ notice.hidden=true; }
+
   if(save){
     try{ localStorage.setItem('movewise-language',mwCurrentLang); }catch(e){}
   }
@@ -4614,11 +5446,36 @@ function mwInitLanguage(){
 }
 
 
-function mwNumber(id,fallback=0){
-  const raw=$(id)?.value;
-  if(raw==null||String(raw).trim()==='') return fallback;
-  const n=Number(raw);
+// Accepts plain numbers and money-formatted text ("1,234.56", "$1,234.56"),
+// so a field can render thousands separators without every caller changing.
+function mwStripSeparators(raw){
+  return String(raw).trim().replace(/^\$\s*/,'').replace(/,/g,'');
+}
+// Renders a number with thousands separators for display in an input.
+function mwGroupNumber(n){
+  const num=Number(n);
+  return Number.isFinite(num)?num.toLocaleString('en-US',{maximumFractionDigits:2}):String(n??'');
+}
+// parseFloat('1,500') is 1, so money-formatted fields must never be read with it.
+function mwElNumber(el,fallback=0){
+  if(!el) return fallback;
+  const raw=String(el.value??'').trim();
+  if(raw==='') return fallback;
+  const n=mwParseDecimal(raw,el.type==='number');
   return Number.isFinite(n)?n:fallback;
+}
+function mwNumber(id,fallback=0){
+  return mwElNumber($(id),fallback);
+}
+function mwParseDecimal(value,allowExponent=false){
+  const raw=String(value??'').trim().replace(/^\$\s*/,'');
+  // Validate the notation before Number(): hexadecimal and broken grouping
+  // must not quietly become valid dollar amounts.
+  const decimal=/^[+-]?(?:(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d*)?|\.\d+)$/;
+  const scientific=/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)[eE][+-]?\d+$/;
+  if(!decimal.test(raw)&&!(allowExponent&&scientific.test(raw))) return NaN;
+  const n=Number(raw.replace(/,/g,''));
+  return Number.isFinite(n)?n:NaN;
 }
 
 function mwMoney(id){
@@ -4634,14 +5491,16 @@ function mwEscape(value){
   return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function mwAmortizePayment(principal,rate,payment,extra=0){
+function mwAmortizePayment(principal,rate,payment,extra=0,termMonths=null){
   const r=rate/1200,target=payment+extra;
   const schedule=[];
   let balance=principal,totalInterest=0,totalPaid=0;
   if(principal>0&&(!(payment>principal*r)||!Number.isFinite(target))) return {scheduledPayment:payment,monthlyWithExtra:target,totalInterest:0,totalPaid:0,months:0,schedule,valid:false};
   for(let m=1;m<=1200&&balance>1e-7;m++){
     const interestPay=balance*r;
-    const paid=Math.min(target,balance+interestPay);
+    // A payment computed for a fixed term settles the remaining balance in
+    // its last month, including any floating-point residue from prior months.
+    const paid=termMonths!=null&&m===termMonths?balance+interestPay:Math.min(target,balance+interestPay);
     const principalPay=Math.min(balance,paid-interestPay);
     balance=Math.max(0,balance-principalPay);
     totalInterest+=interestPay;totalPaid+=paid;
@@ -4671,12 +5530,13 @@ function mwCurrentRecurring(){
   return Math.max(0,mwPositive('sell-housing')-currentMortgageAmortization(0).scheduledPayment);
 }
 
-function mwHousePath(moveAtYears,horizonYears,futureRateOverride=null){
+function mwHousePath(moveAtYears,horizonYears,futureRateOverride=null,opts={}){
   const H=Math.max(0,Math.round(horizonYears*12));
   const moves=Number.isFinite(moveAtYears)&&Math.round(moveAtYears*12)<=H;
   const before=moves?Math.max(0,Math.round(moveAtYears*12)):H,after=H-before;
   const price0=mwMoney('buy-price'),value0=mwPositive('sell-value'),balance0=mwPositive('sell-balance');
-  const gCur=mwNumber('current-home-appreciation')/100,gNew=mwNumber('target-home-appreciation')/100;
+  const gCur=opts.gCur!=null?opts.gCur:mwNumber('current-home-appreciation')/100;
+  const gNew=opts.gNew!=null?opts.gNew:mwNumber('target-home-appreciation')/100;
   const oldAmort=currentMortgageAmortization(mwPositive('sell-extra'));
   const oldSlice=mwLoanSlice(oldAmort,before,balance0);
   const oldRecurring=mwCurrentRecurring()*before;
@@ -4696,7 +5556,15 @@ function mwHousePath(moveAtYears,horizonYears,futureRateOverride=null){
     const rate=before===0?mwPositive('buy-rate'):(futureRateOverride==null?mwPositive('future-mortgage-rate'):Math.max(0,futureRateOverride));
     newAmort=mortgageAmortization(loan,rate,mwPositive('buy-term'),mwPositive('buy-extra'));
     newSlice=mwLoanSlice(newAmort,after,loan);
-    const recurring=(price0>0?price/price0:0)*(mwPositive('buy-tax')+mwPositive('buy-ins'))/12+mwPositive('buy-hoa');
+    // Tax and insurance used to be scaled by price/price0, which is 1 when you
+    // move now and (1+appreciation)^waitYears when you wait. That charged the
+    // waiting branch more for the same house in the same calendar years, because
+    // the move-now branch's tax stayed frozen at year-zero levels for the whole
+    // horizon. In reality assessments rise for both owners, so the difference
+    // between the branches is roughly nothing — which is what holding the entered
+    // figures does. Selling an identical house and rebuying it for the same price
+    // now costs $0 to delay, instead of $48,057 at a fifteen-year wait.
+    const recurring=(mwPositive('buy-tax')+mwPositive('buy-ins'))/12+mwPositive('buy-hoa');
     newRecurring=recurring*after;
     newMonthly=(newAmort.schedule[0]?.payment||0)+recurring;
     endValue=price0*Math.pow(1+gNew,H/12);endBalance=newSlice.balance;
@@ -4710,34 +5578,46 @@ function mwHousePath(moveAtYears,horizonYears,futureRateOverride=null){
     economicCost:cash-(endEquity-startEquity),newMonthly,newAmort,oldSlice};
 }
 
+// A rough US EV average, used only when someone marks a vehicle electric that
+// has no EV profile behind it. Entering actual kWh per mile always wins.
+const EV_DEFAULT_KWH_PER_MILE=0.30;
 function mwVehicleEnergy(s,slot){
   const p=carPrefix(s,slot),base=getCarStats(s,slot),selected=$(p+'-powertrain')?.value||'auto';
   const electric=selected==='electric'||(selected==='auto'&&normalizeVehicleName($(p+'-make').value)==='tesla');
-  const consumption=mwPositive(p+'-efficiency')||(electric?33.7/base.mpg:base.mpg);
+  // 33.7 kWh/gal converts MPGe to kWh per mile, but only a profile that stores
+  // MPGe can be converted that way. Every other profile stores gasoline MPG, so
+  // running it through the same formula turned a 28 MPG car into 1.20 kWh/mile
+  // — about four times a real EV — for anyone choosing Electric outside the
+  // Tesla profiles, which is exactly what the field hint tells them to do.
+  const consumption=mwPositive(p+'-efficiency')
+    ||(electric?(base.mpge?33.7/base.mpg:EV_DEFAULT_KWH_PER_MILE):base.mpg);
   return {electric,consumption,perMile:electric?consumption*mwPositive(s+'-electricity'):mwPositive(s+'-car-gasprice')/consumption};
 }
 
-function mwValidate(screen,checks,showErrors=false){
+function mwValidate(screen,checks,showErrors=false,focusFirst=true){
   const failures=checks.filter(c=>!c.ok);
   if(showErrors){
     document.querySelectorAll('#screen-'+screen+' .field-invalid').forEach(el=>el.classList.remove('field-invalid'));
     for(const f of failures) $(f.id)?.closest('.field')?.classList.add('field-invalid');
     const box=$(screen+'-validation');
     if(box){box.textContent=[...new Set(failures.map(f=>f.message))].join(' ');box.classList.toggle('show',failures.length>0);}
-    if(failures.length) $(failures[0].id)?.focus?.();
+    // Focusing the first bad field is right when someone presses Continue, and
+    // wrong on every keystroke: it pulled the caret out of the field being typed
+    // in, so digits meant for one box landed in another.
+    if(focusFirst&&failures.length) $(failures[0].id)?.focus?.();
   }
   return failures.length===0;
 }
 
 function mwFieldCheck(id,min,max,label,optional=false,money=false){
   const value=String($(id)?.value??'').trim();
-  const n=money?parseMoneyInput(value):Number(value);
+  const n=money?parseMoneyInput(value):mwParseDecimal(value,$(id)?.type==='number');
   return {id,ok:optional&&value===''||value!==''&&Number.isFinite(n)&&n>=min&&n<=max,message:`${label}: enter a value from ${min.toLocaleString('en-US')} to ${max.toLocaleString('en-US')}.`};
 }
 
-function validateTiming(showErrors=false){
+function validateTiming(showErrors=false,focusFirst=true){
   return mwValidate('summary',[mwFieldCheck('wait-years',0,15,'Years to wait'),mwFieldCheck('future-mortgage-rate',0,20,'Future mortgage rate'),
-    mwFieldCheck('current-home-appreciation',-10,15,'Current-home appreciation'),mwFieldCheck('target-home-appreciation',-10,15,'Target-home appreciation')],showErrors);
+    mwFieldCheck('current-home-appreciation',-10,15,'Current-home appreciation'),mwFieldCheck('target-home-appreciation',-10,15,'Target-home appreciation')],showErrors,focusFirst);
 }
 
 function monthlyCommuteCostForCar(s,slot){
@@ -4755,10 +5635,60 @@ function mwCheckForSummary(){
   return validateBuy(false)&&validateSell(false)&&validateCars(false)&&validateTiming(false);
 }
 
+// Every visible field caption is a real <label>, but they sit beside their input
+// rather than wrapping it, so nothing was programmatically associated and a screen
+// reader announced most of this form as unlabelled text boxes. The markup is
+// consistent enough to wire up in one pass, which also keeps new fields covered.
+function mwWireAccessibility(){
+  const labelable='input:not([type=hidden]),select,textarea';
+  let auto=0;
+  document.querySelectorAll('.step-btn').forEach(step=>{
+    if(step.classList.contains('active')) step.setAttribute('aria-current','step');
+    else step.removeAttribute('aria-current');
+  });
+
+  document.querySelectorAll('label').forEach(lab=>{
+    if(lab.hasAttribute('for')||lab.querySelector(labelable)) return;
+    let node=lab.nextElementSibling,hops=0,ctrl=null;
+    while(node&&hops<4){
+      if(node.matches(labelable)){ ctrl=node; break; }
+      const inner=node.querySelector&&node.querySelector(labelable);
+      if(inner){ ctrl=inner; break; }
+      node=node.nextElementSibling; hops++;
+    }
+    if(!ctrl) return;
+    if(!ctrl.id) ctrl.id='mw-auto-field-'+(++auto);
+    if(document.querySelector('label[for="'+CSS.escape(ctrl.id)+'"]')) return;
+    lab.setAttribute('for',ctrl.id);
+  });
+
+  // Section captions are styled divs. Expose them as headings so the page can be
+  // navigated by structure instead of read start to finish.
+  document.querySelectorAll('.section-label').forEach(el=>{
+    if(el.hasAttribute('role')) return;
+    el.setAttribute('role','heading'); el.setAttribute('aria-level','2');
+  });
+  document.querySelectorAll('.rc-title').forEach(el=>{
+    if(el.hasAttribute('role')) return;
+    el.setAttribute('role','heading'); el.setAttribute('aria-level','3');
+  });
+
+  // Charts carry the same figures as the rows beside them, so name each one and
+  // let assistive tech skip the individual <text> nodes.
+  [['buy-chart-wrap','Principal and interest split over the life of the loan'],
+   ['rate-sensitivity-chart-wrap','Ten-year modeled ownership cost across a range of future mortgage rates'],
+   ['timing-chart-wrap','Cost of waiting compared with moving now, year by year']
+  ].forEach(([id,label])=>{
+    const svg=document.querySelector('#'+id+' svg');
+    if(svg&&!svg.getAttribute('aria-label')){ svg.setAttribute('role','img'); svg.setAttribute('aria-label',label); }
+  });
+}
+
 // ---- init ----
-// Calculation corrections: 2026-09-05.
+// Calculation and workflow corrections: 2026-09-12.
 calcBuy();
 calcSell();
+mwWireAccessibility();
 mwInitLanguage();
 </script>
 </body>
